@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Расписание АПО-31</string>
+    <string name="large_text">
+        Текст который можно скролить
+    </string>
+    <string name="action_settings">Поменять группу</string>
+</resources>
