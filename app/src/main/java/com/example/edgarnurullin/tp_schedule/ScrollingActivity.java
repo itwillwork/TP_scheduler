@@ -1,5 +1,6 @@
 package com.example.edgarnurullin.tp_schedule;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -36,39 +37,43 @@ public class ScrollingActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //открытие нового активити с выбором  группы
+                Intent intent = new Intent(view.getContext(), GroupChooser.class);
+                startActivity(intent);
             }
         });
 
         try{
             JSONArray jsonArray = new JSONArray("" +
                     "[" +
-                    "{discipline: \"Тестирование\", location: \"Ауд. 395\", startTime: \"Nov 1 20:29:30 2016\"}," +
-                    "{discipline: \"Информационная безопасность\", location: \"Ауд. 395\", startTime: \"Nov 2 20:29:30 2016\"}," +
-                    "{discipline: \"Android\", location: \"Ауд. 395\", startTime: \"Nov 3 20:29:30 2016\"}," +
-                    "{discipline: \"Тестирование\", location: \"Ауд. 395\", startTime: \"Nov 1 20:29:30 2016\"}," +
-                    "{discipline: \"Информационная безопасность\", location: \"Ауд. 395\", startTime: \"Nov 2 20:29:30 2016\"}," +
-                    "{discipline: \"Android\", location: \"Ауд. 395\", startTime: \"Nov 3 20:29:30 2016\"}," +
-                    "{discipline: \"Тестирование\", location: \"Ауд. 395\", startTime: \"Nov 1 20:29:30 2016\"}," +
-                    "{discipline: \"Информационная безопасность\", location: \"Ауд. 395\", startTime: \"Nov 2 20:29:30 2016\"}," +
-                    "{discipline: \"Android\", location: \"Ауд. 395\", startTime: \"Nov 3 20:29:30 2016\"}," +
-                    "{discipline: \"Тестирование\", location: \"Ауд. 395\", startTime: \"Nov 1 20:29:30 2016\"}," +
-                    "{discipline: \"Информационная безопасность\", location: \"Ауд. 395\", startTime: \"Nov 2 20:29:30 2016\"}," +
-                    "{discipline: \"Android\", location: \"Ауд. 395\", startTime: \"Nov 3 20:29:30 2016\"}," +
-                    "{discipline: \"Тестирование\", location: \"Ауд. 395\", startTime: \"Nov 1 20:29:30 2016\"}," +
-                    "{discipline: \"Информационная безопасность\", location: \"Ауд. 395\", startTime: \"Nov 2 20:29:30 2016\"}," +
-                    "{discipline: \"Android\", location: \"Ауд. 395\", startTime: \"Nov 3 20:29:30 2016\"}," +
+                    "{discipline: \"Тестирование\", status: \"ЛК\", location: \"ауд. 395\", startTime: \"Nov 1 20:29:30 2016\"}," +
+                    "{discipline: \"Информационная безопасность\", status: \"РК\", location: \"ауд. 395\", startTime: \"Nov 2 20:29:30 2016\"}," +
+                    "{discipline: \"Android\", location: \"ауд. 395\",  status: \"ЛК\", startTime: \"Nov 3 20:29:30 2016\"}," +
+                    "{discipline: \"Тестирование\", location: \"ауд. 395\", status: \"ЛК\",  startTime: \"Nov 1 20:29:30 2016\"}," +
+                    "{discipline: \"Информационная безопасность\", status: \"СМ\",  location: \"ауд. 395\", startTime: \"Nov 2 20:29:30 2016\"}," +
+                    "{discipline: \"Android\", location: \"ауд. 395\",  status: \"ЛК\", startTime: \"Nov 3 20:29:30 2016\"}," +
+                    "{discipline: \"Тестирование\", location: \"ауд. 395\",  status: \"ЛК\", startTime: \"Nov 1 20:29:30 2016\"}," +
+                    "{discipline: \"Информационная безопасность\",  status: \"РК\", location: \"ауд. 395\", startTime: \"Nov 2 20:29:30 2016\"}," +
+                    "{discipline: \"Android\", location: \"ауд. 395\",  status: \"ЛК\", startTime: \"Nov 3 20:29:30 2016\"}," +
+                    "{discipline: \"Тестирование\", location: \"ауд. 395\", status: \"ЛК\",  startTime: \"Nov 1 20:29:30 2016\"}," +
+                    "{discipline: \"Информационная безопасность\",  status: \"СМ\", location: \"ауд. 395\", startTime: \"Nov 2 20:29:30 2016\"}," +
+                    "{discipline: \"Android\", location: \"ауд. 395\",  status: \"ЛК\", startTime: \"Nov 3 20:29:30 2016\"}," +
+                    "{discipline: \"Тестирование\", location: \"ауд. 395\",  status: \"ЛК\", startTime: \"Nov 1 20:29:30 2016\"}," +
+                    "{discipline: \"Информационная безопасность\",  status: \"ЛК\", location: \"ауд. 395\", startTime: \"Nov 2 20:29:30 2016\"}," +
+                    "{discipline: \"Android\", location: \"ауд. 395\",  status: \"ЛК\", startTime: \"Nov 3 20:29:30 2016\"}," +
                     "]");
 
             String[] weekdays = {"СБ", "ВС", "ПН", "ВТ", "СР", "ЧТ", "ПТ"};
             String[] months = {"января", "февраля", "марта", "апреля", "мая", "июня",
                     "июля", "августа", "сентября", "октября", "ноября", "декабря"};
-
+            String delimeter = ", ";
             LinearLayout linearLayout = (LinearLayout) findViewById(R.id.pull_city);
             linearLayout.setPadding(0, 0, 0, 50);
             for (int i = 0; i < jsonArray.length(); i++) {
                 try {
                     JSONObject dateLesson = jsonArray.getJSONObject(i);
                     String nameLesson = dateLesson.getString("discipline");
+                    String locationLesson = delimeter + dateLesson.getString("location");
+                    String statusLesson = dateLesson.getString("status") + delimeter;
                     DateFormat format = new SimpleDateFormat("MMM dd kk:mm:ss yyyy", Locale.ENGLISH);
                     Date date = format.parse(dateLesson.getString("startTime"));
                     Calendar calendar = Calendar.getInstance();
@@ -87,7 +92,7 @@ public class ScrollingActivity extends AppCompatActivity {
 
                     TextView nameLessonNode = new TextView(this);
                     nameLessonNode.setTextSize(14);
-                    nameLessonNode.setText(nameLesson);
+                    nameLessonNode.setText(statusLesson + nameLesson);
 
 
                     TextView weekdayLessonNode = new TextView(this);
@@ -96,7 +101,7 @@ public class ScrollingActivity extends AppCompatActivity {
 
                     TextView dateLessonNode = new TextView(this);
                     dateLessonNode.setTextSize(14);
-                    dateLessonNode.setText(dayLesson + monthLesson);
+                    dateLessonNode.setText(dayLesson + monthLesson + locationLesson);
 
                     weekdayLessonNode.setPadding(10, 0, 0, 0);
                     lessonNodeV.setPadding(30, 0, 10, 0);
@@ -123,15 +128,14 @@ public class ScrollingActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                Intent intent = new Intent(this, GroupChooser.class);
+                startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
     }
 }
+

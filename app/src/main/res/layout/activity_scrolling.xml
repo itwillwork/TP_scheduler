@@ -6,9 +6,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     tools:context="com.example.edgarnurullin.tp_schedule.ScrollingActivity">
-
     <include layout="@layout/content_scrolling" />
-
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar"
