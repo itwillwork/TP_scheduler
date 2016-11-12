@@ -4,6 +4,7 @@ import android.content.AsyncTaskLoader;
 import android.content.Context;
 import android.content.Loader;
 import android.database.Cursor;
+import android.util.Log;
 
 import com.example.edgarnurullin.tp_schedule.fetch.response.RequestResult;
 import com.example.edgarnurullin.tp_schedule.fetch.response.Response;
@@ -30,6 +31,7 @@ public abstract class BaseLoader extends AsyncTaskLoader<Response> {
         try {
             Response response = apiCall();
             if (response.getRequestResult() == RequestResult.SUCCESS) {
+                Log.d("lol", "1234");
                 response.save(getContext());
                 onSuccess();
             } else {

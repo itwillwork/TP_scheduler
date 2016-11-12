@@ -14,12 +14,15 @@ public class Lesson {
     private String airportName;
 
     public Lesson() {
+        this.iata = "iata";
+        this.name = "name";
+        this.airportName = "airportName";
     }
 
     public Lesson(String iata, String name, String airportName) {
-        this.iata = iata;
-        this.name = name;
-        this.airportName = airportName;
+        this.iata = "iata";
+        this.name = "name";
+        this.airportName = "airportName";
     }
 
     public String getIata() {

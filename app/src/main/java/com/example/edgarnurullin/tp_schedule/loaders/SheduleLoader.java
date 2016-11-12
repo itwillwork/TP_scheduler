@@ -1,10 +1,8 @@
 package com.example.edgarnurullin.tp_schedule.loaders;
 
 import android.content.Context;
-import android.database.Cursor;
 
 import com.example.edgarnurullin.tp_schedule.content.Lesson;
-import com.example.edgarnurullin.tp_schedule.db.tables.AirportsTable;
 import com.example.edgarnurullin.tp_schedule.fetch.ApiFactory;
 import com.example.edgarnurullin.tp_schedule.fetch.ShedulerService;
 import com.example.edgarnurullin.tp_schedule.fetch.response.AirportsResponse;

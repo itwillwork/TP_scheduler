@@ -28,7 +28,7 @@ public class ApiFactory {
             .setExclusionStrategies(new ExclusionStrategy() {
                 @Override
                 public boolean shouldSkipField(FieldAttributes f) {
-                    return true; //f.getDeclaringClass().equals(RealmObject.class);
+                    return true;
                 }
 
                 @Override

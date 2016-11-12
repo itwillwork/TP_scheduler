@@ -9,11 +9,11 @@ import com.example.edgarnurullin.tp_schedule.db.tables.AirportsTable;
 
 public class SqliteHelper extends SQLiteOpenHelper {
 
-    public static final String CONTENT_AUTHORITY = "ru.sample.retrofit.loaders";
+    public static final String CONTENT_AUTHORITY = "com.example.edgarnurullin.tp_schedule";
 
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
 
-    private static final String DATABASE_NAME = "ru.sample.database.db";
+    private static final String DATABASE_NAME = ".db.AirportsContentProvider";
 
     private static final int DATABASE_VERSION = 1;
 
