@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -168,6 +169,11 @@ public class ScrollingActivity extends AppCompatActivity implements LoaderManage
         if (id == R.id.airports_loader) {
             List<Lesson> airports = data.getTypedAnswer();
             //do something here
+            Log.d("lol", airports.toString());
+//            for (int i = 0; i < airports.size(); i++) {
+//                Log.d("lol", airports.get(i).getAirportName());
+//            }
+
         }
         getLoaderManager().destroyLoader(id);
     }
