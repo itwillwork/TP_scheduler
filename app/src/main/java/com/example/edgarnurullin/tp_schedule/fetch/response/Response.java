@@ -4,6 +4,9 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+/**
+ * @author Artur Vasilov
+ */
 public class Response {
 
     @Nullable

@@ -3,7 +3,7 @@ package com.example.edgarnurullin.tp_schedule.content;
 import com.google.gson.annotations.SerializedName;
 
 
-public class Lessons {
+public class Lesson {
     @SerializedName("iata")
     private String iata;
 
@@ -13,10 +13,10 @@ public class Lessons {
     @SerializedName("airport_name")
     private String airportName;
 
-    public Lessons() {
+    public Lesson() {
     }
 
-    public Lessons(String iata, String name, String airportName) {
+    public Lesson(String iata, String name, String airportName) {
         this.iata = iata;
         this.name = name;
         this.airportName = airportName;

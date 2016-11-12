@@ -14,7 +14,9 @@ import android.view.MenuItem;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.edgarnurullin.tp_schedule.content.Lesson;
 import com.example.edgarnurullin.tp_schedule.fetch.response.Response;
+import com.example.edgarnurullin.tp_schedule.loaders.SheduleLoader;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -37,6 +39,9 @@ public class ScrollingActivity extends AppCompatActivity implements LoaderManage
         setContentView(R.layout.activity_scrolling);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        //указание на создание лоудера
+        getLoaderManager().initLoader(R.id.airports_loader, Bundle.EMPTY, this);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -143,28 +148,31 @@ public class ScrollingActivity extends AppCompatActivity implements LoaderManage
                 return super.onOptionsItemSelected(item);
         }
     }
+
+    //создание лоудера
     @Override
     public Loader<Response> onCreateLoader(int id, Bundle args) {
-//        switch (id) {
-//            case R.id.airports_loader:
-//                return new AirportsLoader(this, "55.749792,37.6324949");
-//
-//            default:
-//                return null;
-//        }
-        return null;
+        switch (id) {
+            case R.id.airports_loader:
+                return new SheduleLoader(this, "55.749792,37.6324949");
+
+            default:
+                return null;
+        }
     }
 
+    //когда лоудер закончил работу
     @Override
     public void onLoadFinished(Loader<Response> loader, Response data) {
         int id = loader.getId();
-//        if (id == R.id.airports_loader) {
-//            List<Airport> airports = data.getTypedAnswer();
-//            //do something here
-//        }
+        if (id == R.id.airports_loader) {
+            List<Lesson> airports = data.getTypedAnswer();
+            //do something here
+        }
         getLoaderManager().destroyLoader(id);
     }
 
+    //когда LoaderManager собрался уничтожать лоадер
     @Override
     public void onLoaderReset(Loader<Response> loader) {
         // Do nothing

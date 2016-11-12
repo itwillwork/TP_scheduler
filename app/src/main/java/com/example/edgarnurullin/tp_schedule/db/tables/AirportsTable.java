@@ -6,7 +6,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 
-import com.example.edgarnurullin.tp_schedule.content.Lessons;
+import com.example.edgarnurullin.tp_schedule.content.Lesson;
 import com.example.edgarnurullin.tp_schedule.db.SqliteHelper;
 
 import java.util.ArrayList;
@@ -17,11 +17,11 @@ public class AirportsTable {
 
     public static final Uri URI = SqliteHelper.BASE_CONTENT_URI.buildUpon().appendPath(Requests.TABLE_NAME).build();
 
-    public static void save(Context context, @NonNull Lessons airport) {
+    public static void save(Context context, @NonNull Lesson airport) {
         context.getContentResolver().insert(URI, toContentValues(airport));
     }
 
-    public static void save(Context context, @NonNull List<Lessons> airports) {
+    public static void save(Context context, @NonNull List<Lesson> airports) {
         ContentValues[] values = new ContentValues[airports.size()];
         for (int i = 0; i < airports.size(); i++) {
             values[i] = toContentValues(airports.get(i));
@@ -30,7 +30,7 @@ public class AirportsTable {
     }
 
     @NonNull
-    public static ContentValues toContentValues(@NonNull Lessons airport) {
+    public static ContentValues toContentValues(@NonNull Lesson airport) {
         ContentValues values = new ContentValues();
         values.put(Columns.IATA, airport.getIata());
         values.put(Columns.NAME, airport.getName());
@@ -39,16 +39,16 @@ public class AirportsTable {
     }
 
     @NonNull
-    public static Lessons fromCursor(@NonNull Cursor cursor) {
+    public static Lesson fromCursor(@NonNull Cursor cursor) {
         String iata = cursor.getString(cursor.getColumnIndex(Columns.IATA));
         String name = cursor.getString(cursor.getColumnIndex(Columns.NAME));
         String airportName = cursor.getString(cursor.getColumnIndex(Columns.AIRPORT_NAME));
-        return new Lessons(iata, name, airportName);
+        return new Lesson(iata, name, airportName);
     }
 
     @NonNull
-    public static List<Lessons> listFromCursor(@NonNull Cursor cursor) {
-        List<Lessons> airports = new ArrayList<>();
+    public static List<Lesson> listFromCursor(@NonNull Cursor cursor) {
+        List<Lesson> airports = new ArrayList<>();
         if (!cursor.moveToFirst()) {
             return airports;
         }

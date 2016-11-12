@@ -3,16 +3,20 @@ package com.example.edgarnurullin.tp_schedule.loaders;
 import android.content.Context;
 import android.database.Cursor;
 
-import com.example.edgarnurullin.tp_schedule.content.Lessons;
+import com.example.edgarnurullin.tp_schedule.content.Lesson;
 import com.example.edgarnurullin.tp_schedule.db.tables.AirportsTable;
 import com.example.edgarnurullin.tp_schedule.fetch.ApiFactory;
 import com.example.edgarnurullin.tp_schedule.fetch.ShedulerService;
+import com.example.edgarnurullin.tp_schedule.fetch.response.AirportsResponse;
+import com.example.edgarnurullin.tp_schedule.fetch.response.RequestResult;
+import com.example.edgarnurullin.tp_schedule.fetch.response.Response;
 
 import java.io.IOException;
 import java.util.List;
 
 import retrofit2.Call;
-import retrofit2.Response;
+
+
 
 
 public class SheduleLoader extends BaseLoader {
@@ -25,12 +29,13 @@ public class SheduleLoader extends BaseLoader {
     }
 
     @Override
-    protected Cursor apiCall() throws IOException {
+    protected Response apiCall() throws IOException {
         ShedulerService service = ApiFactory.getAirportsService();
-        Call<List<Lessons>> call = service.airports(mGps);
-        List<Lessons> airports = call.execute().body();
-        AirportsTable.save(getContext(), airports);
-        return getContext().getContentResolver().query(AirportsTable.URI,
-                null, null, null, null);
+        Call<List<Lesson>> call = service.airports(mGps);
+        //тело запроса
+        List<Lesson> airports = call.execute().body();
+        return new AirportsResponse()
+                .setRequestResult(RequestResult.SUCCESS)
+                .setAnswer(airports);
     }
 }
