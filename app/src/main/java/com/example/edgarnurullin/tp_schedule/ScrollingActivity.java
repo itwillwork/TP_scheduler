@@ -1,5 +1,6 @@
 package com.example.edgarnurullin.tp_schedule;
 
+import android.app.LoaderManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -10,6 +11,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.example.edgarnurullin.tp_schedule.fetch.response.Response;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -23,7 +26,7 @@ import java.util.Date;
 import java.util.Locale;
 
 
-public class ScrollingActivity extends AppCompatActivity {
+public class ScrollingActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Response> {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
