@@ -2,6 +2,8 @@ package com.example.edgarnurullin.tp_schedule;
 
 import android.app.LoaderManager;
 import android.content.Intent;
+import android.content.Loader;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -23,6 +25,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 
@@ -140,5 +143,30 @@ public class ScrollingActivity extends AppCompatActivity implements LoaderManage
                 return super.onOptionsItemSelected(item);
         }
     }
-}
+    @Override
+    public Loader<Response> onCreateLoader(int id, Bundle args) {
+//        switch (id) {
+//            case R.id.airports_loader:
+//                return new AirportsLoader(this, "55.749792,37.6324949");
+//
+//            default:
+//                return null;
+//        }
+        return null;
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Response> loader, Response data) {
+        int id = loader.getId();
+//        if (id == R.id.airports_loader) {
+//            List<Airport> airports = data.getTypedAnswer();
+//            //do something here
+//        }
+        getLoaderManager().destroyLoader(id);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Response> loader) {
+        // Do nothing
+    }}
 

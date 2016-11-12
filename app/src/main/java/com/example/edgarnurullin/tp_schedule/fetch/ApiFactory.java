@@ -15,8 +15,6 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-import io.realm.RealmObject;
-
 
 public class ApiFactory {
 
@@ -30,7 +28,7 @@ public class ApiFactory {
             .setExclusionStrategies(new ExclusionStrategy() {
                 @Override
                 public boolean shouldSkipField(FieldAttributes f) {
-                    return f.getDeclaringClass().equals(RealmObject.class);
+                    return true; //f.getDeclaringClass().equals(RealmObject.class);
                 }
 
                 @Override
