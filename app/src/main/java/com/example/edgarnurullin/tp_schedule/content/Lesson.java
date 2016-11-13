@@ -2,7 +2,6 @@ package com.example.edgarnurullin.tp_schedule.content;
 
 import com.google.gson.annotations.SerializedName;
 
-
 public class Lesson {
     @SerializedName("iata")
     private String iata;

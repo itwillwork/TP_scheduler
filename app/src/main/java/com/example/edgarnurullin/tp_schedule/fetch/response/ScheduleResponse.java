@@ -3,7 +3,6 @@ package com.example.edgarnurullin.tp_schedule.fetch.response;
 import android.content.Context;
 import android.util.Log;
 
-import com.example.edgarnurullin.tp_schedule.content.Lesson;
 import com.example.edgarnurullin.tp_schedule.db.tables.LessonsTable;
 import com.example.edgarnurullin.tp_schedule.db.tables.GroupsTable;
 
@@ -14,18 +13,19 @@ import java.util.Map;
 public class ScheduleResponse extends Response {
     @Override
     public void save(Context context) {
-        Map<String, Object> groupsWithLessons = getTypedAnswer();
+        Map<String, List> groupsWithLessons = getTypedAnswer();
         if (groupsWithLessons != null) {
             List<String> groupNames = new ArrayList(groupsWithLessons.keySet());
 
-            for (String groupName : groupNames) {
-                Object groupSchedule = groupsWithLessons.get(groupName);
+            for (int idx = 0; idx < groupNames.size(); idx++) {
+                List<Map<String, Object>> groupSchedule = groupsWithLessons.get(groupNames.get(idx));
                 //предмет отдельно
-                Log.d(groupName, groupSchedule.toString());
+                //Log.d(groupNames.get(idx), groupSchedule.toString());
+                LessonsTable.save(context, idx, groupSchedule);
             }
 
             GroupsTable.save(context, groupNames);
-            LessonsTable.save(context, new ArrayList<Lesson>());
+
         }
     }
 }
