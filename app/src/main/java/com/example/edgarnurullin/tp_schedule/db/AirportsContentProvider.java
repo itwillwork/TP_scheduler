@@ -12,6 +12,7 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.example.edgarnurullin.tp_schedule.db.tables.AirportsTable;
+import com.example.edgarnurullin.tp_schedule.db.tables.GroupsTable;
 
 /**
  * @author Artur Vasilov
@@ -19,11 +20,13 @@ import com.example.edgarnurullin.tp_schedule.db.tables.AirportsTable;
 public class AirportsContentProvider extends ContentProvider {
 
     private static final int AIRPORTS_TABLE = 1;
+    private static final int GROUPS_TABLE = 2;
 
     private static final UriMatcher URI_MATCHER;
 
     static {
         URI_MATCHER = new UriMatcher(UriMatcher.NO_MATCH);
+        URI_MATCHER.addURI(SqliteHelper.CONTENT_AUTHORITY, GroupsTable.Requests.TABLE_NAME, GROUPS_TABLE);
         URI_MATCHER.addURI(SqliteHelper.CONTENT_AUTHORITY, AirportsTable.Requests.TABLE_NAME, AIRPORTS_TABLE);
     }
 
@@ -41,6 +44,8 @@ public class AirportsContentProvider extends ContentProvider {
         switch (URI_MATCHER.match(uri)) {
             case AIRPORTS_TABLE:
                 return AirportsTable.Requests.TABLE_NAME;
+            case GROUPS_TABLE:
+                return GroupsTable.Requests.TABLE_NAME;
             default:
                 return "";
         }

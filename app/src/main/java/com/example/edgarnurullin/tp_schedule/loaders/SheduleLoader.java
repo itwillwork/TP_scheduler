@@ -13,6 +13,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 
@@ -31,9 +32,9 @@ public class SheduleLoader extends BaseLoader {
     @Override
     protected Response apiCall() throws IOException {
         ShedulerService service = ApiFactory.getAirportsService();
-        Call<Object> call = service.airports(mGps);
+        Call<Map<String, Object>> call = service.airports(mGps);
         //тело запроса
-        Object airports = call.execute().body();
+        Map<String, Object> airports = call.execute().body();
         return new AirportsResponse()
                 .setRequestResult(RequestResult.SUCCESS)
                 .setAnswer(airports);

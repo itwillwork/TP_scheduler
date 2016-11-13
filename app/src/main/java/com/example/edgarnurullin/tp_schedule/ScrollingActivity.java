@@ -50,19 +50,19 @@ public class ScrollingActivity extends AppCompatActivity implements LoaderManage
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ArrayList<Lesson> result = new ArrayList<Lesson>();
-                Uri uri = Uri.parse("content://com.example.edgarnurullin.tp_schedule/AirportsTable");
+                ArrayList<String> result = new ArrayList<String>();
+                Uri uri = Uri.parse("content://com.example.edgarnurullin.tp_schedule/GroupsTable");
                 Cursor cursor = getContentResolver().query(uri, null, null, null, null);
 
                 if (cursor.getCount() > 0) {
                     cursor.moveToFirst();
                     do {
-                        result.add(new Lesson (cursor.getString(0), cursor.getString(1), cursor.getString(2)));
+                        result.add(cursor.getString(1));
                     } while (cursor.moveToNext());
                     cursor.close();
                 }
 
-                Log.d("kek", result.get(0).getIata());
+                Log.d("kek", result.toString());
 
 
             }
@@ -181,10 +181,10 @@ public class ScrollingActivity extends AppCompatActivity implements LoaderManage
     public void onLoadFinished(Loader<Response> loader, Response data) {
         int id = loader.getId();
         if (id == R.id.airports_loader) {
-            List<Lesson> airports = data.getTypedAnswer();
+            //List<Lesson> airports = data.getTypedAnswer();
 
             //do something here
-            Log.d("lol", airports.toString());
+            //Log.d("lol", airports.toString());
 
 
         }

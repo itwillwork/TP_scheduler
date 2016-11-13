@@ -5,16 +5,27 @@ import android.util.Log;
 
 import com.example.edgarnurullin.tp_schedule.content.Lesson;
 import com.example.edgarnurullin.tp_schedule.db.tables.AirportsTable;
+import com.example.edgarnurullin.tp_schedule.db.tables.GroupsTable;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class AirportsResponse extends Response {
     @Override
     public void save(Context context) {
-        Object airports = getTypedAnswer();
-        if (airports != null) {
+        Map<String, Object> groupsWithLessons = getTypedAnswer();
+        if (groupsWithLessons != null) {
+            List<String> groupNames = new ArrayList(groupsWithLessons.keySet());
 
-            AirportsTable.save(context, new Lesson());
+            for (String groupName : groupNames) {
+                Object groupSchedule = groupsWithLessons.get(groupName);
+                //предмет отдельно
+                Log.d(groupName, groupSchedule.toString());
+            }
+
+            GroupsTable.save(context, groupNames);
+            AirportsTable.save(context, new ArrayList<Lesson>());
         }
     }
 }
