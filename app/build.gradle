@@ -11,7 +11,7 @@ android {
         versionCode 1
         versionName "1.0"
 
-        buildConfigField "String", "API_ENDPOINT", '"http://nano.aviasales.ru"'
+        buildConfigField "String", "API_ENDPOINT", '"http://komitsky.xyz/"'
     }
     buildTypes {
         release {

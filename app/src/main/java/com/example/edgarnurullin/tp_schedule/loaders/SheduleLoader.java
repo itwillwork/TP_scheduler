@@ -9,6 +9,8 @@ import com.example.edgarnurullin.tp_schedule.fetch.response.AirportsResponse;
 import com.example.edgarnurullin.tp_schedule.fetch.response.RequestResult;
 import com.example.edgarnurullin.tp_schedule.fetch.response.Response;
 
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -29,9 +31,9 @@ public class SheduleLoader extends BaseLoader {
     @Override
     protected Response apiCall() throws IOException {
         ShedulerService service = ApiFactory.getAirportsService();
-        Call<List<Lesson>> call = service.airports(mGps);
+        Call<Object> call = service.airports(mGps);
         //тело запроса
-        List<Lesson> airports = call.execute().body();
+        Object airports = call.execute().body();
         return new AirportsResponse()
                 .setRequestResult(RequestResult.SUCCESS)
                 .setAnswer(airports);

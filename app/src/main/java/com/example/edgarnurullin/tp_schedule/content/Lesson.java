@@ -14,9 +14,9 @@ public class Lesson {
     private String airportName;
 
     public Lesson() {
-        this.iata = "iata";
-        this.name = "name";
-        this.airportName = "airportName";
+        this.iata = "";
+        this.name = "";
+        this.airportName = "";
     }
 
     public Lesson(String iata, String name, String airportName) {
