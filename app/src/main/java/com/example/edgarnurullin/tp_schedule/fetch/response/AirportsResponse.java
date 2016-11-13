@@ -19,7 +19,6 @@ public class AirportsResponse extends Response {
 //    }
     @Override
     public void save(Context context) {
-        Log.d("lol", "234234");
         List<Lesson> airports = getTypedAnswer();
         if (airports != null) {
             AirportsTable.save(context, airports);

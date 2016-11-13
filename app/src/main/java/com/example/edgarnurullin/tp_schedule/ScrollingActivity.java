@@ -4,6 +4,7 @@ import android.app.LoaderManager;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -26,6 +27,7 @@ import org.json.JSONObject;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -48,9 +50,21 @@ public class ScrollingActivity extends AppCompatActivity implements LoaderManage
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //открытие нового активити с выбором  группы
-                Intent intent = new Intent(view.getContext(), GroupChooser.class);
-                startActivity(intent);
+                ArrayList<Lesson> result = new ArrayList<Lesson>();
+                Uri uri = Uri.parse("content://com.example.edgarnurullin.tp_schedule/AirportsTable");
+                Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+
+                if (cursor.getCount() > 0) {
+                    cursor.moveToFirst();
+                    do {
+                        result.add(new Lesson (cursor.getString(0), cursor.getString(1), cursor.getString(2)));
+                    } while (cursor.moveToNext());
+                    cursor.close();
+                }
+
+                Log.d("kek", result.get(0).getIata());
+
+
             }
         });
 
@@ -168,11 +182,10 @@ public class ScrollingActivity extends AppCompatActivity implements LoaderManage
         int id = loader.getId();
         if (id == R.id.airports_loader) {
             List<Lesson> airports = data.getTypedAnswer();
+
             //do something here
             Log.d("lol", airports.toString());
-//            for (int i = 0; i < airports.size(); i++) {
-//                Log.d("lol", airports.get(i).getAirportName());
-//            }
+
 
         }
         getLoaderManager().destroyLoader(id);

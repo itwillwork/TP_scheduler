@@ -31,7 +31,6 @@ public abstract class BaseLoader extends AsyncTaskLoader<Response> {
         try {
             Response response = apiCall();
             if (response.getRequestResult() == RequestResult.SUCCESS) {
-                Log.d("lol", "1234");
                 response.save(getContext());
                 onSuccess();
             } else {
