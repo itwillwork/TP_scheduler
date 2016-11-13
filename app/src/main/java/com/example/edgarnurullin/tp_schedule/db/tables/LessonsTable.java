@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class AirportsTable {
+public class LessonsTable {
 
     public static final Uri URI = SqliteHelper.BASE_CONTENT_URI.buildUpon().appendPath(Requests.TABLE_NAME).build();
 
@@ -74,7 +74,7 @@ public class AirportsTable {
 
     public interface Requests {
 
-        String TABLE_NAME = AirportsTable.class.getSimpleName();
+        String TABLE_NAME = LessonsTable.class.getSimpleName();
 
         String CREATION_REQUEST = "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" +
                 Columns.IATA + " VARCHAR(10) NOT NULL, " +

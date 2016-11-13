@@ -4,14 +4,14 @@ import android.content.Context;
 import android.util.Log;
 
 import com.example.edgarnurullin.tp_schedule.content.Lesson;
-import com.example.edgarnurullin.tp_schedule.db.tables.AirportsTable;
+import com.example.edgarnurullin.tp_schedule.db.tables.LessonsTable;
 import com.example.edgarnurullin.tp_schedule.db.tables.GroupsTable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class AirportsResponse extends Response {
+public class ScheduleResponse extends Response {
     @Override
     public void save(Context context) {
         Map<String, Object> groupsWithLessons = getTypedAnswer();
@@ -25,7 +25,7 @@ public class AirportsResponse extends Response {
             }
 
             GroupsTable.save(context, groupNames);
-            AirportsTable.save(context, new ArrayList<Lesson>());
+            LessonsTable.save(context, new ArrayList<Lesson>());
         }
     }
 }

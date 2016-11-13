@@ -22,7 +22,7 @@
         </activity>
         <activity android:name=".GroupChooser"></activity>
         <provider
-            android:name=".db.AirportsContentProvider"
+            android:name=".db.ScheduleContentProvider"
             android:authorities="com.example.edgarnurullin.tp_schedule"
             android:exported="false"
             android:label="SporticsProvider"/>
