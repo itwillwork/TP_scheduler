@@ -6,7 +6,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 
-import com.example.edgarnurullin.tp_schedule.content.Lesson;
+import com.example.edgarnurullin.tp_schedule.content.Group;
 import com.example.edgarnurullin.tp_schedule.db.SqliteHelper;
 
 import java.util.ArrayList;
@@ -34,26 +34,27 @@ public class GroupsTable {
     }
 
     @NonNull
-    public static String fromCursor(@NonNull Cursor cursor) {
-        return cursor.getString(cursor.getColumnIndex(Columns.GROUP_NAME));
+    public static Group fromCursor(@NonNull Cursor cursor) {
+        Group group = new Group();
+        group.setName(cursor.getString(cursor.getColumnIndex(Columns.ID)));
+        group.setName(cursor.getString(cursor.getColumnIndex(Columns.GROUP_NAME)));
+        return group;
     }
 
     @NonNull
-    public static List<String> listFromCursor(@NonNull Cursor cursor) {
-        //TODO listFromCursor
-//        List<String> airports = new ArrayList<>();
-//        if (!cursor.moveToFirst()) {
-//            return airports;
-//        }
-//        try {
-//            do {
-//                airports.add(fromCursor(cursor));
-//            } while (cursor.moveToNext());
-//            return airports;
-//        } finally {
-//            cursor.close();
-//        }
-        return new ArrayList<>();
+    public static List<Group> listFromCursor(@NonNull Cursor cursor) {
+        List<Group> groups = new ArrayList<>();
+        if (!cursor.moveToFirst()) {
+            return groups;
+        }
+        try {
+            do {
+                groups.add(fromCursor(cursor));
+            } while (cursor.moveToNext());
+            return groups;
+        } finally {
+            cursor.close();
+        }
     }
 
     public static void clear(Context context) {

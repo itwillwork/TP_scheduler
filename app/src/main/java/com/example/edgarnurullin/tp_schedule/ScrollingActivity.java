@@ -16,7 +16,9 @@ import android.view.MenuItem;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.edgarnurullin.tp_schedule.content.Group;
 import com.example.edgarnurullin.tp_schedule.content.Lesson;
+import com.example.edgarnurullin.tp_schedule.db.tables.GroupsTable;
 import com.example.edgarnurullin.tp_schedule.fetch.response.Response;
 import com.example.edgarnurullin.tp_schedule.loaders.SheduleLoader;
 
@@ -50,19 +52,14 @@ public class ScrollingActivity extends AppCompatActivity implements LoaderManage
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ArrayList<String> result = new ArrayList<String>();
+
+                // TODO перенести в хелпер базы
+                // api запроса за группой
+                List<Group> result = new ArrayList<Group>();
                 Uri uri = Uri.parse("content://com.example.edgarnurullin.tp_schedule/GroupsTable");
                 Cursor cursor = getContentResolver().query(uri, null, null, null, null);
-
-                if (cursor.getCount() > 0) {
-                    cursor.moveToFirst();
-                    do {
-                        result.add(cursor.getString(1));
-                    } while (cursor.moveToNext());
-                    cursor.close();
-                }
-
-                Log.d("kek", result.toString());
+                result = GroupsTable.listFromCursor(cursor);
+                Log.d("kek", result.get(1).getName());
 
 
             }
