@@ -4,7 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 public class TimeHelper {
-    //ALL FORMATED IN YYYY/MM/DD
+    //везде единый формат даты YYYY/MM/DD
     private static TimeHelper instance;
     private String date;
     private int nowYear;

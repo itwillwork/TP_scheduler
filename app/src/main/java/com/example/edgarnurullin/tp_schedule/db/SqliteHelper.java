@@ -24,8 +24,6 @@ public class SqliteHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(GroupsTable.Requests.DROP_REQUEST);
-        db.execSQL(LessonsTable.Requests.DROP_REQUEST);
         db.execSQL(GroupsTable.Requests.CREATION_REQUEST);
         db.execSQL(LessonsTable.Requests.CREATION_REQUEST);
     }
@@ -37,7 +35,4 @@ public class SqliteHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public void lol () {
-
-    }
 }

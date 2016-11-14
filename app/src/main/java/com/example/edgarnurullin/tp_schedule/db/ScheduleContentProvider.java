@@ -131,8 +131,4 @@ public class ScheduleContentProvider extends ContentProvider {
             return database.update(table, values, selection, selectionArgs);
         }
     }
-
-    public void lol () {
-
-    }
 }

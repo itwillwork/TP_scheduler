@@ -16,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.edgarnurullin.tp_schedule.content.Group;
 import com.example.edgarnurullin.tp_schedule.content.Lesson;
@@ -62,8 +63,12 @@ public class ScrollingActivity extends AppCompatActivity implements LoaderManage
                 //получение списка групп
                 List<Group> result = dbApi.getGroups();
 
+                Log.d("lol", "для дебаггера ");
+
                 //конкретной группы
                 List<Lesson> result2 = dbApi.getLessons(result.get(3));
+
+                Log.d("lol", "для дебаггера ");
 
                 //все занятия технопарка
                 List<Lesson> result3 = dbApi.getLessons();
@@ -185,6 +190,7 @@ public class ScrollingActivity extends AppCompatActivity implements LoaderManage
     public void onLoadFinished(Loader<Response> loader, Response data) {
         int id = loader.getId();
         if (id == R.id.airports_loader) {
+            Toast.makeText(this, "Запрос пришел  ", Toast.LENGTH_LONG).show();
             //List<Lesson> airports = data.getTypedAnswer();
 
             //do something here
