@@ -36,7 +36,7 @@ public class GroupsTable {
     @NonNull
     public static Group fromCursor(@NonNull Cursor cursor) {
         Group group = new Group();
-        group.setName(cursor.getString(cursor.getColumnIndex(Columns.ID)));
+        group.setId(cursor.getInt(cursor.getColumnIndex(Columns.ID)));
         group.setName(cursor.getString(cursor.getColumnIndex(Columns.GROUP_NAME)));
         return group;
     }

@@ -1,6 +1,7 @@
 package com.example.edgarnurullin.tp_schedule;
 
 import android.app.LoaderManager;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
@@ -18,6 +19,8 @@ import android.widget.TextView;
 
 import com.example.edgarnurullin.tp_schedule.content.Group;
 import com.example.edgarnurullin.tp_schedule.content.Lesson;
+import com.example.edgarnurullin.tp_schedule.db.DBApi;
+import com.example.edgarnurullin.tp_schedule.db.SqliteHelper;
 import com.example.edgarnurullin.tp_schedule.db.tables.GroupsTable;
 import com.example.edgarnurullin.tp_schedule.db.tables.LessonsTable;
 import com.example.edgarnurullin.tp_schedule.fetch.response.Response;
@@ -39,10 +42,11 @@ import java.util.Locale;
 
 
 public class ScrollingActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Response> {
-
+    private DBApi dbApi;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.dbApi = new DBApi(getContentResolver());
         setContentView(R.layout.activity_scrolling);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -55,43 +59,16 @@ public class ScrollingActivity extends AppCompatActivity implements LoaderManage
             @Override
             public void onClick(View view) {
 
-                // TODO перенести в хелпер базы
-                // api запроса за группой
-                List<Group> result = new ArrayList<Group>();
-                Uri uri = Uri.parse("content://com.example.edgarnurullin.tp_schedule/GroupsTable");
-                Cursor cursor = getContentResolver().query(uri, null, null, null, null);
-                result = GroupsTable.listFromCursor(cursor);
-//                Integer idxGroup = result.get(3).getId();
-//                Log.d("group ", result.get(3).getName());
+                //получение списка групп
+                //List<Group> result = dbApi.getGroups();
 
-                // TODO перенести в хелпер базы
-                // api запроса за занятиями ВСЕМИ
-//                List<Lesson> result = new ArrayList<Lesson>();
-//                Uri uri = Uri.parse("content://com.example.edgarnurullin.tp_schedule/LessonsTable");
-//                Cursor cursor = getContentResolver().query(uri, null, null, null, null);
-//                result = LessonsTable.listFromCursor(cursor);
-//                Log.d("kek", result.get(1).getTitle());
+                //конкретной группы
+                //List<Lesson> result2 = dbApi.getLessons(result.get(3));
 
-//                String nowDate = new SimpleDateFormat("yyyy/MM/dd").format(Calendar.getInstance().getTime());
-//                String [] partsNowDate = nowDate.split("/");
-//                Integer nowYear = Integer.parseInt(partsNowDate[0]);
-//                Integer nowMonth = Integer.parseInt(partsNowDate[1]);
-//                Integer nowDay = Integer.parseInt(partsNowDate[2]);
+                //все занятия технопарка
+                List<Lesson> result3 = dbApi.getLessons();
 
-                // TODO перенести в хелпер базы
-                // api запроса за занятиями ВСЕМИ
-                List<Lesson> result2 = new ArrayList<Lesson>();
-                Uri uri2 = Uri.parse("content://com.example.edgarnurullin.tp_schedule/LessonsTable");
-                Cursor cursor2 = getContentResolver().query(uri2, null, " group_id = 2 ", null, " date ASC, time ASC");
-                result2 = LessonsTable.listFromCursor(cursor2);
-                for (int idx = 0; idx < result2.size(); idx++) {
-                    String lessonDate = result2.get(idx).getDate();
-                    result2.get(idx).setGroupName(result.get(3).getName());
-                    if (TimeHelper.getInstance().isFutureDate(lessonDate)) {
-                        Log.d("lessons date", lessonDate + " " + result2.get(idx).getGroupName());
-                    }
-                }
-
+                Log.d("lol", "для дебаггера ");
             }
         });
 

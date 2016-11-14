@@ -132,4 +132,7 @@ public class ScheduleContentProvider extends ContentProvider {
         }
     }
 
+    public void lol () {
+
+    }
 }

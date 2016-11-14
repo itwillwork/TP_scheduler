@@ -36,4 +36,8 @@ public class SqliteHelper extends SQLiteOpenHelper {
         db.execSQL(LessonsTable.Requests.DROP_REQUEST);
         onCreate(db);
     }
+
+    public void lol () {
+
+    }
 }
