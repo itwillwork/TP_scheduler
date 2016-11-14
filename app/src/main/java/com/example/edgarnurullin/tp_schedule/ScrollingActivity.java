@@ -56,11 +56,12 @@ public class ScrollingActivity extends AppCompatActivity implements LoaderManage
 
                 // TODO перенести в хелпер базы
                 // api запроса за группой
-//                List<Group> result = new ArrayList<Group>();
-//                Uri uri = Uri.parse("content://com.example.edgarnurullin.tp_schedule/GroupsTable");
-//                Cursor cursor = getContentResolver().query(uri, null, null, null, null);
-//                result = GroupsTable.listFromCursor(cursor);
-//                Log.d("kek", result.get(1).getName());
+                List<Group> result = new ArrayList<Group>();
+                Uri uri = Uri.parse("content://com.example.edgarnurullin.tp_schedule/GroupsTable");
+                Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+                result = GroupsTable.listFromCursor(cursor);
+                Integer idxGroup = result.get(3).getId();
+                Log.d("group ", result.get(3).getName());
 
                 // TODO перенести в хелпер базы
                 // api запроса за занятиями ВСЕМИ
@@ -69,6 +70,35 @@ public class ScrollingActivity extends AppCompatActivity implements LoaderManage
 //                Cursor cursor = getContentResolver().query(uri, null, null, null, null);
 //                result = LessonsTable.listFromCursor(cursor);
 //                Log.d("kek", result.get(1).getTitle());
+
+                String nowDate = new SimpleDateFormat("yyyy/MM/dd").format(Calendar.getInstance().getTime());
+                String [] partsNowDate = nowDate.split("/");
+                Integer nowYear = Integer.parseInt(partsNowDate[0]);
+                Integer nowMonth = Integer.parseInt(partsNowDate[1]);
+                Integer nowDay = Integer.parseInt(partsNowDate[2]);
+
+                // TODO перенести в хелпер базы
+                // api запроса за занятиями ВСЕМИ
+                List<Lesson> result2 = new ArrayList<Lesson>();
+                Uri uri2 = Uri.parse("content://com.example.edgarnurullin.tp_schedule/LessonsTable");
+                Cursor cursor2 = getContentResolver().query(uri2, null, " group_id = 2 ", null, " date ASC, time ASC");
+                result2 = LessonsTable.listFromCursor(cursor2);
+                for (int idx = 0; idx < result2.size(); idx++) {
+                    String lessonDate = result2.get(idx).getDate();
+                        //format YYYY/MM/DD
+                        Boolean passed = false;
+                        String [] partsLessonDate = lessonDate.split("/");
+                        Integer lessonYear = Integer.parseInt(partsLessonDate[0]);
+                        Integer lessonMonth = Integer.parseInt(partsLessonDate[1]);
+                        Integer lessonDay = Integer.parseInt(partsLessonDate[2]);
+                        if (lessonYear >= nowYear && lessonMonth >= nowMonth && lessonDay >= nowDay) {
+                            passed = true;
+                        }
+
+                    if (passed) {
+                        Log.d("lessons date", lessonDate);
+                    }
+                }
 
             }
         });

@@ -7,7 +7,11 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import com.example.edgarnurullin.tp_schedule.content.Lesson;
 import com.example.edgarnurullin.tp_schedule.db.SqliteHelper;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -32,7 +36,7 @@ public class LessonsTable {
             if (key.equals("event_title")) {
                 resultLesson.setTypeLesson(data.get(key));
             } else if (key.equals("schedule_date")) {
-                resultLesson.setDate(data.get(key));
+                resultLesson.setAndReversDate(data.get(key));
             } else if (key.equals("start_time")) {
                 resultLesson.setTime(data.get(key));
             } else if (key.equals("auditorium_title")) {

@@ -1,12 +1,7 @@
 package com.example.edgarnurullin.tp_schedule.content;
 
-import com.google.gson.annotations.SerializedName;
-
 public class Group {
-    @SerializedName("id")
     private Integer id;
-
-    @SerializedName("name")
     private String name;
 
     public Group() {
