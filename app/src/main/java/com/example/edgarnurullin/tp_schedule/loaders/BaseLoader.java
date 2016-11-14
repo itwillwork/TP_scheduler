@@ -11,9 +11,6 @@ import com.example.edgarnurullin.tp_schedule.fetch.response.Response;
 
 import java.io.IOException;
 
-/**
- * @author Artur Vasilov
- */
 public abstract class BaseLoader extends AsyncTaskLoader<Response> {
 
     public BaseLoader(Context context) {

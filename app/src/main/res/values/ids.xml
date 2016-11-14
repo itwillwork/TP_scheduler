@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <item name="airports_loader" type="id" />
-    <item name="local_airports_loader" type="id" />
+    <item name="schedule_loader" type="id" />
 </resources>

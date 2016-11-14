@@ -15,26 +15,19 @@ import java.util.Map;
 
 import retrofit2.Call;
 
-
-
-
 public class SheduleLoader extends BaseLoader {
 
-    private final String mGps;
-
-    public SheduleLoader(Context context, String gps) {
+    public SheduleLoader(Context context) {
         super(context);
-        mGps = gps;
     }
 
     @Override
     protected Response apiCall() throws IOException {
-        ShedulerService service = ApiFactory.getAirportsService();
-        Call<Map<String, List<Map>>> call = service.airports(mGps);
-        //тело запроса
-        Map<String, List<Map>> airports = call.execute().body();
+        ShedulerService service = ApiFactory.getLessonsService();
+        Call<Map<String, List<Map>>> call = service.lessons();
+        Map<String, List<Map>> schedule = call.execute().body();
         return new ScheduleResponse()
                 .setRequestResult(RequestResult.SUCCESS)
-                .setAnswer(airports);
+                .setAnswer(schedule);
     }
 }

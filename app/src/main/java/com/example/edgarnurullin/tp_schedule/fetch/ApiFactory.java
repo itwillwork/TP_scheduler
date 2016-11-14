@@ -39,7 +39,7 @@ public class ApiFactory {
             .create();
 
     @NonNull
-    public static ShedulerService getAirportsService() {
+    public static ShedulerService getLessonsService() {
         return buildRetrofit().create(ShedulerService.class);
     }
 

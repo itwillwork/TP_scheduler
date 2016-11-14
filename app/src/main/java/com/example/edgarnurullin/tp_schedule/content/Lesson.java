@@ -2,9 +2,6 @@ package com.example.edgarnurullin.tp_schedule.content;
 
 import com.example.edgarnurullin.tp_schedule.helpers.TimeHelper;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Lesson {
     private Integer groupId;
     private String groupName;

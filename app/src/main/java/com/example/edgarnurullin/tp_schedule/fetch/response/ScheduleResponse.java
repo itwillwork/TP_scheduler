@@ -1,12 +1,8 @@
 package com.example.edgarnurullin.tp_schedule.fetch.response;
 
 import android.content.Context;
-import android.util.Log;
-
-import com.example.edgarnurullin.tp_schedule.content.Lesson;
 import com.example.edgarnurullin.tp_schedule.db.tables.LessonsTable;
 import com.example.edgarnurullin.tp_schedule.db.tables.GroupsTable;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;

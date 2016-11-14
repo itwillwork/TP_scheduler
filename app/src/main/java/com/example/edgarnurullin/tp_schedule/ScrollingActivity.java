@@ -53,7 +53,7 @@ public class ScrollingActivity extends AppCompatActivity implements LoaderManage
         setSupportActionBar(toolbar);
 
         //указание на создание лоудера
-        getLoaderManager().initLoader(R.id.airports_loader, Bundle.EMPTY, this);
+        getLoaderManager().initLoader(R.id.schedule_loader, Bundle.EMPTY, this);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -177,8 +177,8 @@ public class ScrollingActivity extends AppCompatActivity implements LoaderManage
     @Override
     public Loader<Response> onCreateLoader(int id, Bundle args) {
         switch (id) {
-            case R.id.airports_loader:
-                return new SheduleLoader(this, "55.749792,37.6324949");
+            case R.id.schedule_loader:
+                return new SheduleLoader(this);
 
             default:
                 return null;
@@ -189,21 +189,14 @@ public class ScrollingActivity extends AppCompatActivity implements LoaderManage
     @Override
     public void onLoadFinished(Loader<Response> loader, Response data) {
         int id = loader.getId();
-        if (id == R.id.airports_loader) {
+        if (id == R.id.schedule_loader) {
             Toast.makeText(this, "Запрос пришел  ", Toast.LENGTH_LONG).show();
-            //List<Lesson> airports = data.getTypedAnswer();
-
-            //do something here
-            //Log.d("lol", airports.toString());
-
-
         }
         getLoaderManager().destroyLoader(id);
     }
 
-    //когда LoaderManager собрался уничтожать лоадер
     @Override
     public void onLoaderReset(Loader<Response> loader) {
-        // Do nothing
+        //когда LoaderManager собрался уничтожать лоадер
     }}
 
