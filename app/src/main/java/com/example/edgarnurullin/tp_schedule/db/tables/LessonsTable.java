@@ -67,30 +67,29 @@ public class LessonsTable {
 
     @NonNull
     public static Lesson fromCursor(@NonNull Cursor cursor) {
-        //TODO
-//        String iata = cursor.getString(cursor.getColumnIndex(Columns.IATA));
-//        String name = cursor.getString(cursor.getColumnIndex(Columns.NAME));
-//        String airportName = cursor.getString(cursor.getColumnIndex(Columns.AIRPORT_NAME));
-//        return new Lesson(iata, name, airportName);
-        return new Lesson();
+        Integer groupId = cursor.getInt(cursor.getColumnIndex(Columns.GROUP_ID));
+        String title = cursor.getString(cursor.getColumnIndex(Columns.TITLE));
+        String typeLesson = cursor.getString(cursor.getColumnIndex(Columns.TYPE_LESSON));
+        String date = cursor.getString(cursor.getColumnIndex(Columns.DATE));
+        String time = cursor.getString(cursor.getColumnIndex(Columns.TIME));
+        String place = cursor.getString(cursor.getColumnIndex(Columns.PLACE));
+        return new Lesson(groupId, title, typeLesson, date, time, place);
     }
 
     @NonNull
     public static List<Lesson> listFromCursor(@NonNull Cursor cursor) {
-        //TODO
-//        List<Lesson> airports = new ArrayList<>();
-//        if (!cursor.moveToFirst()) {
-//            return airports;
-//        }
-//        try {
-//            do {
-//                airports.add(fromCursor(cursor));
-//            } while (cursor.moveToNext());
-//            return airports;
-//        } finally {
-//            cursor.close();
-//        }
-        return new ArrayList<Lesson>();
+        List<Lesson> lessons = new ArrayList<>();
+        if (!cursor.moveToFirst()) {
+            return lessons;
+        }
+        try {
+            do {
+                lessons.add(fromCursor(cursor));
+            } while (cursor.moveToNext());
+            return lessons;
+        } finally {
+            cursor.close();
+        }
     }
 
     public static void clear(Context context) {
@@ -118,12 +117,13 @@ public class LessonsTable {
         String TABLE_NAME = LessonsTable.class.getSimpleName();
 
         String CREATION_REQUEST = "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" +
-                " ID int NOT NULL AUTO_INCREMENT, " +
+                " id INTEGER PRIMARY KEY ASC, " +
                 Columns.GROUP_ID + " INT NOT NULL, " +
                 Columns.TITLE + " VARCHAR(50), " +
                 Columns.DATE + " VARCHAR(50), " +
                 Columns.TIME + " VARCHAR(50), " +
-                Columns.TYPE_LESSON + " VARCHAR(50)" + "PRIMARY KEY (ID) );";
+                Columns.PLACE + " VARCHAR(50), " +
+                Columns.TYPE_LESSON + " VARCHAR(50)" + " );";
 
         String DROP_REQUEST = "DROP TABLE IF EXISTS " + TABLE_NAME;
     }

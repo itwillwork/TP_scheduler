@@ -11,6 +11,15 @@ public class Lesson {
     public Lesson() {
     }
 
+    public Lesson(Integer groupId, String title, String typeLesson, String date, String time, String place) {
+        this.groupId = groupId;
+        this.title = title;
+        this.typeLesson = typeLesson;
+        this.date = date;
+        this.time = time;
+        this.place = place;
+    }
+
     public Integer getGroupId() {
         return groupId;
     }
