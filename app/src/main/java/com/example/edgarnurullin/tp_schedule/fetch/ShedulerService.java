@@ -15,5 +15,5 @@ import retrofit2.http.Query;
 public interface ShedulerService {
     @GET("api/")
     //запрос
-    Call<Map<String, Object>> airports(@Query("coords") String gps);
+    Call<Map<String, List<Map>>> airports(@Query("coords") String gps);
 }

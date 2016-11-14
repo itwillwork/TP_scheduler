@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.example.edgarnurullin.tp_schedule.content.Lesson;
 import com.example.edgarnurullin.tp_schedule.db.SqliteHelper;
@@ -20,6 +21,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
+
 
 public class LessonsTable {
 
@@ -29,49 +32,54 @@ public class LessonsTable {
         //context.getContentResolver().insert(URI, toContentValues(airport));
     }
 
-    public static void save(Context context, Integer groupIdx, @NonNull List<Map<String, Object>> lessonsOfGroup) {
+    public static void save(Context context, Integer groupIdx, @NonNull List<Map> lessonsOfGroup) {
         ContentValues[] values = new ContentValues[lessonsOfGroup.size()];
         for (int i = 0; i < lessonsOfGroup.size(); i++) {
-            Map<String, Object> lesson = lessonsOfGroup.get(i);
+            Map<String, String> lesson = lessonsOfGroup.get(i);
             values[i] = toContentValues(groupIdx, lesson);
         }
         context.getContentResolver().bulkInsert(URI, values);
     }
 
+    public static Lesson crutchForSerializationObject(Map<String, String> data) {
+        List<String> keysFields = new ArrayList(data.keySet());
+        Lesson resultLesson = new Lesson();
+        for (int idx = 0; idx < keysFields.size(); idx++) {
+            String key = keysFields.get(idx);
+            if (key.equals("event_title")) {
+                resultLesson.setTypeLesson(data.get(key));
+            } else if (key.equals("schedule_date")) {
+                resultLesson.setDate(data.get(key));
+            } else if (key.equals("start_time")) {
+                resultLesson.setTime(data.get(key));
+            } else if (key.equals("auditorium_title")) {
+                resultLesson.setPlace(data.get(key));
+            } else if (key.equals("place_title")) {
+                resultLesson.setPlace(data.get(key));
+            } else if (key.equals("title")) {
+                resultLesson.setTitle(data.get(key));
+            } else if (key.equals("short_title")) {
+                resultLesson.setTitle(data.get(key));
+            } else {
+                //default
+            }
+        }
+        return resultLesson;
+    }
+
     @NonNull
-    public static ContentValues toContentValues(Integer groupIdx, @NonNull Map<String, Object> lesson) {
+    public static ContentValues toContentValues(Integer groupIdx, @NonNull Map<String, String> lesson) {
         ContentValues values = new ContentValues();
         values.put(Columns.GROUP_ID, groupIdx);
 
-        try {
-            JSONObject lol = new JSONObject(lesson.toString());
-            String[] jsonNames = lol.getNames();
-            String lalka = lol.getString("short_title");
-        } catch (JSONException e) {
+        Lesson lessonData = crutchForSerializationObject(lesson);
 
-        }
-
-//        Type listType = new TypeToken<ArrayList<Lesson>>(){}.getType();
-
-//        List<Lesson> yourClassList = new Gson().fromJson(jsonArray, listType);
-
-//        Gson gson = new Gson();
-//        Lesson pojo = gson.fromJson(lesson, Lesson.class);
-
- //       String lol = lesson.getField("short_title");
-        //values.put(Columns.TITLE, lol);
-//        values.put(Columns.TYPE_LESSON, airport.getName());
-//        values.put(Columns.DATE, airport.getName());
-//        values.put(Columns.TIME, airport.getAirportName());
+        values.put(Columns.TITLE, lessonData.getTitle());
+        values.put(Columns.TYPE_LESSON, lessonData.getTypeLesson());
+        values.put(Columns.DATE, lessonData.getDate());
+        values.put(Columns.TIME, lessonData.getTime());
+        values.put(Columns.PLACE, lessonData.getPlace());
         return values;
-
-        //        event_title: "Лекция"
-//        schedule_date: "10/04/2016"
-//        start_time: "18:00"
-//        short_title: "Perl"
-        //группа
-        //auto increment id
-
     }
 
     @NonNull
@@ -117,6 +125,8 @@ public class LessonsTable {
         String DATE = "date";
         // 18:00
         String TIME = "time";
+        // ауд. 395
+        String PLACE = "place";
 
     }
 

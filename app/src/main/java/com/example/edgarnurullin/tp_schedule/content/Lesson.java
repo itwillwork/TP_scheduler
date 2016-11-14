@@ -1,50 +1,51 @@
 package com.example.edgarnurullin.tp_schedule.content;
 
-import com.google.gson.annotations.SerializedName;
-
 public class Lesson {
-    @SerializedName("iata")
-    private String iata;
-
-    @SerializedName("name")
-    private String name;
-
-    @SerializedName("airport_name")
-    private String airportName;
+    private Integer groupId;
+    private String title;
+    private String typeLesson;
+    private String date;
+    private String time;
+    private String place;
 
     public Lesson() {
-        this.iata = "";
-        this.name = "";
-        this.airportName = "";
     }
 
-    public Lesson(String iata, String name, String airportName) {
-        this.iata = "iata";
-        this.name = "name";
-        this.airportName = "airportName";
+    public Integer getGroupId() {
+        return groupId;
+    }
+    public void setGroupId(Integer id) {
+        this.groupId = id;
     }
 
-    public String getIata() {
-        return iata;
+    public String getTitle() {
+        return title;
+    }
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    public void setIata(String iata) {
-        this.iata = iata;
+    public String getTypeLesson() {
+        return typeLesson;
+    }
+    public void setTypeLesson(String typeLesson) {
+        this.typeLesson = typeLesson;
     }
 
-    public String getName() {
-        return name;
+    public String getDate() {
+        return date;
+    }
+    public void setDate(String date) {
+        this.date = date;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getTime() {
+        return time;
     }
+    public void setTime(String time) { this.time = time; }
 
-    public String getAirportName() {
-        return airportName;
+    public String getPlace() {
+        return place;
     }
-
-    public void setAirportName(String airportName) {
-        this.airportName = airportName;
-    }
+    public void setPlace(String place) { this.place = place; }
 }
