@@ -190,7 +190,11 @@ public class ScrollingActivity extends AppCompatActivity implements LoaderManage
     public void onLoadFinished(Loader<Response> loader, Response data) {
         int id = loader.getId();
         if (id == R.id.schedule_loader) {
-            Toast.makeText(this, "Запрос пришел  ", Toast.LENGTH_LONG).show();
+            if (data.getTypedAnswer() != null) {
+                Toast.makeText(this, "Запрос пришел", Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(this, "Что-то пошло не так..", Toast.LENGTH_LONG).show();
+            }
         }
         getLoaderManager().destroyLoader(id);
     }
