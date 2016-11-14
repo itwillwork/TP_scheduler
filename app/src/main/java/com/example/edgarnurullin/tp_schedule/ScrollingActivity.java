@@ -21,6 +21,7 @@ import com.example.edgarnurullin.tp_schedule.content.Lesson;
 import com.example.edgarnurullin.tp_schedule.db.tables.GroupsTable;
 import com.example.edgarnurullin.tp_schedule.db.tables.LessonsTable;
 import com.example.edgarnurullin.tp_schedule.fetch.response.Response;
+import com.example.edgarnurullin.tp_schedule.helpers.TimeHelper;
 import com.example.edgarnurullin.tp_schedule.loaders.SheduleLoader;
 
 import org.json.JSONArray;
@@ -60,8 +61,8 @@ public class ScrollingActivity extends AppCompatActivity implements LoaderManage
                 Uri uri = Uri.parse("content://com.example.edgarnurullin.tp_schedule/GroupsTable");
                 Cursor cursor = getContentResolver().query(uri, null, null, null, null);
                 result = GroupsTable.listFromCursor(cursor);
-                Integer idxGroup = result.get(3).getId();
-                Log.d("group ", result.get(3).getName());
+//                Integer idxGroup = result.get(3).getId();
+//                Log.d("group ", result.get(3).getName());
 
                 // TODO перенести в хелпер базы
                 // api запроса за занятиями ВСЕМИ
@@ -71,11 +72,11 @@ public class ScrollingActivity extends AppCompatActivity implements LoaderManage
 //                result = LessonsTable.listFromCursor(cursor);
 //                Log.d("kek", result.get(1).getTitle());
 
-                String nowDate = new SimpleDateFormat("yyyy/MM/dd").format(Calendar.getInstance().getTime());
-                String [] partsNowDate = nowDate.split("/");
-                Integer nowYear = Integer.parseInt(partsNowDate[0]);
-                Integer nowMonth = Integer.parseInt(partsNowDate[1]);
-                Integer nowDay = Integer.parseInt(partsNowDate[2]);
+//                String nowDate = new SimpleDateFormat("yyyy/MM/dd").format(Calendar.getInstance().getTime());
+//                String [] partsNowDate = nowDate.split("/");
+//                Integer nowYear = Integer.parseInt(partsNowDate[0]);
+//                Integer nowMonth = Integer.parseInt(partsNowDate[1]);
+//                Integer nowDay = Integer.parseInt(partsNowDate[2]);
 
                 // TODO перенести в хелпер базы
                 // api запроса за занятиями ВСЕМИ
@@ -85,18 +86,9 @@ public class ScrollingActivity extends AppCompatActivity implements LoaderManage
                 result2 = LessonsTable.listFromCursor(cursor2);
                 for (int idx = 0; idx < result2.size(); idx++) {
                     String lessonDate = result2.get(idx).getDate();
-                        //format YYYY/MM/DD
-                        Boolean passed = false;
-                        String [] partsLessonDate = lessonDate.split("/");
-                        Integer lessonYear = Integer.parseInt(partsLessonDate[0]);
-                        Integer lessonMonth = Integer.parseInt(partsLessonDate[1]);
-                        Integer lessonDay = Integer.parseInt(partsLessonDate[2]);
-                        if (lessonYear >= nowYear && lessonMonth >= nowMonth && lessonDay >= nowDay) {
-                            passed = true;
-                        }
-
-                    if (passed) {
-                        Log.d("lessons date", lessonDate);
+                    result2.get(idx).setGroupName(result.get(3).getName());
+                    if (TimeHelper.getInstance().isFutureDate(lessonDate)) {
+                        Log.d("lessons date", lessonDate + " " + result2.get(idx).getGroupName());
                     }
                 }
 

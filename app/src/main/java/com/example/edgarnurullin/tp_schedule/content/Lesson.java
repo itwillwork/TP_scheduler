@@ -1,10 +1,13 @@
 package com.example.edgarnurullin.tp_schedule.content;
 
+import com.example.edgarnurullin.tp_schedule.helpers.TimeHelper;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class Lesson {
     private Integer groupId;
+    private String groupName;
     private String title;
     private String typeLesson;
     private String date;
@@ -51,7 +54,7 @@ public class Lesson {
         this.date = date;
     }
     public void setAndReversDate(String date) {
-        setDate(reversDate(date));
+        setDate(TimeHelper.getInstance().reversDate(date));
     }
 
     public String getTime() {
@@ -64,13 +67,8 @@ public class Lesson {
     }
     public void setPlace(String place) { this.place = place; }
 
-    //return date in YYYY/MM/DD format
-    private String reversDate(String sourceDate) {
-        // 08/16/2016 to 2016/08/16
-        String [] partsDate = sourceDate.split("/");
-        String year = partsDate[2];
-        String month = partsDate[0];
-        String day = partsDate[1];
-        return year + "/" + month + "/" + day;
+    public String getGroupName() {
+        return groupName;
     }
+    public void setGroupName(String groupName) { this.groupName = groupName; }
 }
