@@ -5,32 +5,15 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.support.annotation.NonNull;
-import android.util.Log;
-
 import com.example.edgarnurullin.tp_schedule.content.Lesson;
 import com.example.edgarnurullin.tp_schedule.db.SqliteHelper;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
-
 
 public class LessonsTable {
 
     public static final Uri URI = SqliteHelper.BASE_CONTENT_URI.buildUpon().appendPath(Requests.TABLE_NAME).build();
-
-    public static void save(Context context, @NonNull Lesson airport) {
-        //context.getContentResolver().insert(URI, toContentValues(airport));
-    }
 
     public static void save(Context context, Integer groupIdx, @NonNull List<Map> lessonsOfGroup) {
         ContentValues[] values = new ContentValues[lessonsOfGroup.size()];
