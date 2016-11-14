@@ -16,15 +16,17 @@ public class ScheduleResponse extends Response {
     public void save(Context context) {
         Map<String, List> groupsWithLessons = getTypedAnswer();
         if (groupsWithLessons != null) {
-            List<String> groupNames = new ArrayList(groupsWithLessons.keySet());
 
+            //чистим базу
+            LessonsTable.clear(context);
+            GroupsTable.clear(context);
+
+            //напонляем базу
+            List<String> groupNames = new ArrayList(groupsWithLessons.keySet());
             for (int idx = 0; idx < groupNames.size(); idx++) {
                 List<Map> groupSchedule = groupsWithLessons.get(groupNames.get(idx));
-                //предмет отдельно
-                //Log.d(groupNames.get(idx), groupSchedule.toString());
                 LessonsTable.save(context, idx, groupSchedule);
             }
-
             GroupsTable.save(context, groupNames);
 
         }

@@ -60,10 +60,10 @@ public class ScrollingActivity extends AppCompatActivity implements LoaderManage
             public void onClick(View view) {
 
                 //получение списка групп
-                //List<Group> result = dbApi.getGroups();
+                List<Group> result = dbApi.getGroups();
 
                 //конкретной группы
-                //List<Lesson> result2 = dbApi.getLessons(result.get(3));
+                List<Lesson> result2 = dbApi.getLessons(result.get(3));
 
                 //все занятия технопарка
                 List<Lesson> result3 = dbApi.getLessons();
