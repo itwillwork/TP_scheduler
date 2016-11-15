@@ -1,49 +1,80 @@
 package com.example.edgarnurullin.tp_schedule;
 
+import android.app.Activity;
+import android.app.LoaderManager;
 import android.content.Intent;
+import android.content.Loader;
 import android.os.Bundle;
-import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+//import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.example.edgarnurullin.tp_schedule.content.Group;
+import com.example.edgarnurullin.tp_schedule.content.Lesson;
+import com.example.edgarnurullin.tp_schedule.db.dbApi;
+import com.example.edgarnurullin.tp_schedule.fetch.response.Response;
+import com.example.edgarnurullin.tp_schedule.loaders.SheduleLoader;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 
-public class ScrollingActivity extends AppCompatActivity {
+public class ScrollingActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Response> {
 
-    public Item scheduleItem;
-
+    private com.example.edgarnurullin.tp_schedule.db.dbApi dbApi;
+    private List<Group> all_groups;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.dbApi = new dbApi(getContentResolver());
         setContentView(R.layout.activity_scrolling);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+      //  Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        //setSupportActionBar(toolbar);
+
+        //указание на создание лоудера
+        getLoaderManager().initLoader(R.id.schedule_loader, Bundle.EMPTY, this);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //открытие нового активити с выбором  группы
-                Intent intent = new Intent(view.getContext(), GroupChooser.class);
-                startActivity(intent);
+
+                //получение списка групп
+                all_groups = dbApi.getGroups();
+
+                Log.d("lol", "для дебаггера ");
+
+                //конкретной группы
+                List<Lesson> result2 = dbApi.getLessons(all_groups.get(3));
+
+                Log.d("lol", "для дебаггера ");
+
+                //все занятия технопарка
+                List<Lesson> result3 = dbApi.getLessons();
+
+                Log.d("lol", "для дебаггера ");
+
             }
         });
 
@@ -72,10 +103,6 @@ public class ScrollingActivity extends AppCompatActivity {
                     "июля", "августа", "сентября", "октября", "ноября", "декабря"};
             String delimeter = ", ";
             LinearLayout linearLayout = (LinearLayout) findViewById(R.id.pull_city);
-
-            TextView num_group = (TextView) findViewById(R.id.num_of_group);
-            num_group.setText("Группа ?");
-
             linearLayout.setPadding(0, 0, 0, 50);
             for (int i = 0; i < jsonArray.length(); i++) {
                 try {
@@ -128,17 +155,19 @@ public class ScrollingActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
 
-        TextView num_group = (TextView) findViewById(R.id.num_of_group);
-        Intent intent = getIntent();
+    public class SpinnerActivity extends Activity implements AdapterView.OnItemSelectedListener {
 
-        String group = intent.getStringExtra("current_group");
-        num_group.setText("Группа " + group);
+        public void onItemSelected(AdapterView<?> parent, View view,
+                                   int pos, long id) {
+            // An item was selected. You can retrieve the selected item using
+            // parent.getItemAtPosition(pos)
+        }
+
+        public void onNothingSelected(AdapterView<?> parent) {
+            // Another interface callback
+        }
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -158,5 +187,57 @@ public class ScrollingActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
+
+    //создание лоудера
+    @Override
+    public Loader<Response> onCreateLoader(int id, Bundle args) {
+        switch (id) {
+            case R.id.schedule_loader:
+                return new SheduleLoader(this);
+
+            default:
+                return null;
+        }
+    }
+
+    //когда лоудер закончил работу
+    @Override
+    public void onLoadFinished(Loader<Response> loader, Response data) {
+        int id = loader.getId();
+        if (id == R.id.schedule_loader) {
+            if (data.getTypedAnswer() != null) {
+                Toast.makeText(this, "Запрос пришел", Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(this, "Что-то пошло не так..", Toast.LENGTH_LONG).show();
+            }
+        }
+        getLoaderManager().destroyLoader(id);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Response> loader) {
+        //когда LoaderManager собрался уничтожать лоадер
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        all_groups = dbApi.getGroups();
+        List<String> group_names = new ArrayList<String>();
+        for (Group cur_group: all_groups) {
+            group_names.add(cur_group.getName());
+        }
+        Spinner spinner = (Spinner) findViewById(R.id.spinner);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(ScrollingActivity.this,
+                android.R.layout.simple_spinner_item, group_names);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+
+
+
+    }
+
+
 }
 
