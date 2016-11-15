@@ -11,7 +11,6 @@ import android.widget.LinearLayout;
 public class GroupChooser extends AppCompatActivity {
 
 
-    private Item scheduleItem = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,8 +29,8 @@ public class GroupChooser extends AppCompatActivity {
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    scheduleItem.group = cur_group;
                     Intent service_intent = new Intent(GroupChooser.this, ScheduleItemService.class);
+                    service_intent.putExtra("current_group", cur_group.toString());
                     startService(service_intent);
                     finish();
                 }

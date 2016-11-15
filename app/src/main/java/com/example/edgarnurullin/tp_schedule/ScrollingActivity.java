@@ -133,7 +133,9 @@ public class ScrollingActivity extends AppCompatActivity {
         super.onResume();
 
         TextView num_group = (TextView) findViewById(R.id.num_of_group);
-        String group = scheduleItem.getGroup();
+        Intent intent = getIntent();
+
+        String group = intent.getStringExtra("current_group");
         num_group.setText("Группа " + group);
     }
 
