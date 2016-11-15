@@ -6,13 +6,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
-import com.example.edgarnurullin.tp_schedule.content.Group;
-
-import java.util.List;
-
 public class GroupChooser extends AppCompatActivity {
 
-    private com.example.edgarnurullin.tp_schedule.db.dbApi dbApi;
+
+    private Item scheduleItem = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,11 +17,11 @@ public class GroupChooser extends AppCompatActivity {
         setContentView(R.layout.activity_group_chooser);
         LinearLayout linearLayout = (LinearLayout)findViewById(R.id.pull_groups);
 
-        List<Group> all_groups = dbApi.getGroups();
+        String[] groups = {"АПО-11", "АПО-12", "АПО-13", "АПО-21", "АПО-22", "АПО-31", "АПО-41"};
 
-        for (Group current_group: all_groups) {
+        for (int i = 0; i < groups.length; i++) {
             Button groupNode = new Button(this);
-            groupNode.setText(current_group.getName());
+            groupNode.setText(groups[i]);
             groupNode.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

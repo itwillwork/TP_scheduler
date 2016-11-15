@@ -17,9 +17,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class dbApi {
+public class DBApi {
     ContentResolver mContentResolver;
-    public dbApi(ContentResolver mContentResolver) {
+    public DBApi(ContentResolver mContentResolver) {
         this.mContentResolver = mContentResolver;
     }
     public List<Group> getGroups () {
