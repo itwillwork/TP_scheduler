@@ -59,6 +59,7 @@ public class Item implements Parcelable {
     public String getVenue() {
         return venue;
     }
+
     public String getGroup() {
         return group;
     }

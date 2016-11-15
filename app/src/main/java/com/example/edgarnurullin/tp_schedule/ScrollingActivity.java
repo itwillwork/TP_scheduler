@@ -2,6 +2,7 @@ package com.example.edgarnurullin.tp_schedule;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -24,6 +26,9 @@ import java.util.Locale;
 
 
 public class ScrollingActivity extends AppCompatActivity {
+
+    public Item scheduleItem;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +72,10 @@ public class ScrollingActivity extends AppCompatActivity {
                     "июля", "августа", "сентября", "октября", "ноября", "декабря"};
             String delimeter = ", ";
             LinearLayout linearLayout = (LinearLayout) findViewById(R.id.pull_city);
+
+            TextView num_group = (TextView) findViewById(R.id.num_of_group);
+            num_group.setText("Группа ?");
+
             linearLayout.setPadding(0, 0, 0, 50);
             for (int i = 0; i < jsonArray.length(); i++) {
                 try {
@@ -118,6 +127,16 @@ public class ScrollingActivity extends AppCompatActivity {
         } catch (JSONException e) {}
 
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        TextView num_group = (TextView) findViewById(R.id.num_of_group);
+        String group = scheduleItem.getGroup();
+        num_group.setText("Группа " + group);
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
