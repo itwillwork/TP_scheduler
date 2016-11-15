@@ -1,11 +1,8 @@
 package com.example.edgarnurullin.tp_schedule;
 
 import android.app.LoaderManager;
-import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.Loader;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -20,12 +17,8 @@ import android.widget.Toast;
 
 import com.example.edgarnurullin.tp_schedule.content.Group;
 import com.example.edgarnurullin.tp_schedule.content.Lesson;
-import com.example.edgarnurullin.tp_schedule.db.DBApi;
-import com.example.edgarnurullin.tp_schedule.db.SqliteHelper;
-import com.example.edgarnurullin.tp_schedule.db.tables.GroupsTable;
-import com.example.edgarnurullin.tp_schedule.db.tables.LessonsTable;
+import com.example.edgarnurullin.tp_schedule.db.dbApi;
 import com.example.edgarnurullin.tp_schedule.fetch.response.Response;
-import com.example.edgarnurullin.tp_schedule.helpers.TimeHelper;
 import com.example.edgarnurullin.tp_schedule.loaders.SheduleLoader;
 
 import org.json.JSONArray;
@@ -35,7 +28,6 @@ import org.json.JSONObject;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -43,11 +35,11 @@ import java.util.Locale;
 
 
 public class ScrollingActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Response> {
-    private DBApi dbApi;
+    private com.example.edgarnurullin.tp_schedule.db.dbApi dbApi;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.dbApi = new DBApi(getContentResolver());
+        this.dbApi = new dbApi(getContentResolver());
         setContentView(R.layout.activity_scrolling);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
