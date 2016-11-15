@@ -1,31 +1,28 @@
 package com.example.edgarnurullin.tp_schedule;
 
+import android.app.Activity;
 import android.app.LoaderManager;
-import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.Loader;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+//import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.edgarnurullin.tp_schedule.content.Group;
 import com.example.edgarnurullin.tp_schedule.content.Lesson;
-import com.example.edgarnurullin.tp_schedule.db.DBApi;
-import com.example.edgarnurullin.tp_schedule.db.SqliteHelper;
-import com.example.edgarnurullin.tp_schedule.db.tables.GroupsTable;
-import com.example.edgarnurullin.tp_schedule.db.tables.LessonsTable;
+import com.example.edgarnurullin.tp_schedule.db.dbApi;
 import com.example.edgarnurullin.tp_schedule.fetch.response.Response;
-import com.example.edgarnurullin.tp_schedule.helpers.TimeHelper;
 import com.example.edgarnurullin.tp_schedule.loaders.SheduleLoader;
 
 import org.json.JSONArray;
@@ -43,14 +40,14 @@ import java.util.Locale;
 
 
 public class ScrollingActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Response> {
-    private DBApi dbApi;
+    private com.example.edgarnurullin.tp_schedule.db.dbApi dbApi;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.dbApi = new DBApi(getContentResolver());
+        this.dbApi = new dbApi(getContentResolver());
         setContentView(R.layout.activity_scrolling);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        //setSupportActionBar(toolbar);
 
         //указание на создание лоудера
         getLoaderManager().initLoader(R.id.schedule_loader, Bundle.EMPTY, this);
@@ -61,12 +58,12 @@ public class ScrollingActivity extends AppCompatActivity implements LoaderManage
             public void onClick(View view) {
 
                 //получение списка групп
-                List<Group> result = dbApi.getGroups();
+                List<Group> all_groups = dbApi.getGroups();
 
                 Log.d("lol", "для дебаггера ");
 
                 //конкретной группы
-                List<Lesson> result2 = dbApi.getLessons(result.get(3));
+                List<Lesson> result2 = dbApi.getLessons(all_groups.get(3));
 
                 Log.d("lol", "для дебаггера ");
 
@@ -74,6 +71,9 @@ public class ScrollingActivity extends AppCompatActivity implements LoaderManage
                 List<Lesson> result3 = dbApi.getLessons();
 
                 Log.d("lol", "для дебаггера ");
+
+
+
             }
         });
 
@@ -155,6 +155,24 @@ public class ScrollingActivity extends AppCompatActivity implements LoaderManage
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+
+        List<Group> all_groups = dbApi.getGroups();
+        List<String> group_names = new ArrayList<String>();
+        for (Group cur_group: all_groups) {
+            group_names.add(cur_group.getName());
+        }
+        Spinner spinner = (Spinner) findViewById(R.id.spinner);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(ScrollingActivity.this,
+                android.R.layout.simple_spinner_item, group_names);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+    }
+
+
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_scrolling, menu);
@@ -202,5 +220,23 @@ public class ScrollingActivity extends AppCompatActivity implements LoaderManage
     @Override
     public void onLoaderReset(Loader<Response> loader) {
         //когда LoaderManager собрался уничтожать лоадер
-    }}
+    }
+
+
+    public class SpinnerActivity extends Activity implements AdapterView.OnItemSelectedListener {
+
+        public void onItemSelected(AdapterView<?> parent, View view,
+                                   int pos, long id) {
+            // An item was selected. You can retrieve the selected item using
+            // parent.getItemAtPosition(pos)
+        }
+
+        public void onNothingSelected(AdapterView<?> parent) {
+            // Another interface callback
+        }
+    }
+
+
+
+}
 
