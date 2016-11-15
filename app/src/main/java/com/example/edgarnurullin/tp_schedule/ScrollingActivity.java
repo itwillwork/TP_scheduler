@@ -1,15 +1,32 @@
 package com.example.edgarnurullin.tp_schedule;
 
+import android.app.LoaderManager;
+import android.content.ContentResolver;
 import android.content.Intent;
+import android.content.Loader;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.example.edgarnurullin.tp_schedule.content.Group;
+import com.example.edgarnurullin.tp_schedule.content.Lesson;
+import com.example.edgarnurullin.tp_schedule.db.DBApi;
+import com.example.edgarnurullin.tp_schedule.db.SqliteHelper;
+import com.example.edgarnurullin.tp_schedule.db.tables.GroupsTable;
+import com.example.edgarnurullin.tp_schedule.db.tables.LessonsTable;
+import com.example.edgarnurullin.tp_schedule.fetch.response.Response;
+import com.example.edgarnurullin.tp_schedule.helpers.TimeHelper;
+import com.example.edgarnurullin.tp_schedule.loaders.SheduleLoader;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -18,27 +35,45 @@ import org.json.JSONObject;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 
-public class ScrollingActivity extends AppCompatActivity {
-
+public class ScrollingActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Response> {
+    private DBApi dbApi;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.dbApi = new DBApi(getContentResolver());
         setContentView(R.layout.activity_scrolling);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        //указание на создание лоудера
+        getLoaderManager().initLoader(R.id.schedule_loader, Bundle.EMPTY, this);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //открытие нового активити с выбором  группы
-                Intent intent = new Intent(view.getContext(), GroupChooser.class);
-                startActivity(intent);
+
+                //получение списка групп
+                List<Group> result = dbApi.getGroups();
+
+                Log.d("lol", "для дебаггера ");
+
+                //конкретной группы
+                List<Lesson> result2 = dbApi.getLessons(result.get(3));
+
+                Log.d("lol", "для дебаггера ");
+
+                //все занятия технопарка
+                List<Lesson> result3 = dbApi.getLessons();
+
+                Log.d("lol", "для дебаггера ");
             }
         });
 
@@ -137,5 +172,35 @@ public class ScrollingActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
-}
+
+    //создание лоудера
+    @Override
+    public Loader<Response> onCreateLoader(int id, Bundle args) {
+        switch (id) {
+            case R.id.schedule_loader:
+                return new SheduleLoader(this);
+
+            default:
+                return null;
+        }
+    }
+
+    //когда лоудер закончил работу
+    @Override
+    public void onLoadFinished(Loader<Response> loader, Response data) {
+        int id = loader.getId();
+        if (id == R.id.schedule_loader) {
+            if (data.getTypedAnswer() != null) {
+                Toast.makeText(this, "Запрос пришел", Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(this, "Что-то пошло не так..", Toast.LENGTH_LONG).show();
+            }
+        }
+        getLoaderManager().destroyLoader(id);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Response> loader) {
+        //когда LoaderManager собрался уничтожать лоадер
+    }}
 
