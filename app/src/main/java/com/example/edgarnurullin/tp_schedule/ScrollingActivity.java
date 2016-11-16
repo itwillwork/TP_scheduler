@@ -2,10 +2,14 @@ package com.example.edgarnurullin.tp_schedule;
 
 import android.app.Activity;
 import android.app.LoaderManager;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.Loader;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 //import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -41,6 +45,7 @@ import java.util.Locale;
 
 public class ScrollingActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Response> {
     private com.example.edgarnurullin.tp_schedule.db.dbApi dbApi;
+    private BroadcastReceiver receiver = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,6 +57,13 @@ public class ScrollingActivity extends AppCompatActivity implements LoaderManage
         //указание на создание лоудера
         getLoaderManager().initLoader(R.id.schedule_loader, Bundle.EMPTY, this);
 
+        //привязка интент сервера
+        Intent intent = new Intent(ScrollingActivity.this, ScheduleIntentService.class);
+        intent.setAction(ScheduleIntentService.ACTION_GET_SCHEDULE);
+        startService(intent);
+
+        //так события побаловаться
+        //TODO перенести внутренности
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -151,6 +163,24 @@ public class ScrollingActivity extends AppCompatActivity implements LoaderManage
                 } catch (ParseException e) {}
             }
         } catch (JSONException e) {}
+
+    }
+
+    protected void onStart() {
+        super.onStart();
+        //бродкаст ресивер
+        final IntentFilter filter = new IntentFilter();
+        filter.addAction(ScheduleIntentService.ACTION_RECEIVE_SCHEDULE);
+        filter.addAction(ScheduleIntentService.ACTION_RECEIVE_GROUPS);
+
+        receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(final Context context, final Intent intent) {
+                Log.d("lalka", "onReceive");
+            }
+        };
+
+        LocalBroadcastManager.getInstance(ScrollingActivity.this).registerReceiver(receiver, filter);
 
     }
 

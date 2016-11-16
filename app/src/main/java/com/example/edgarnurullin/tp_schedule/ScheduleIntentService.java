@@ -1,0 +1,118 @@
+package com.example.edgarnurullin.tp_schedule;
+
+import android.app.IntentService;
+import android.content.Intent;
+import android.content.Context;
+import android.database.Cursor;
+import android.net.Uri;
+import android.util.Log;
+
+import com.example.edgarnurullin.tp_schedule.content.Group;
+import com.example.edgarnurullin.tp_schedule.content.Lesson;
+import com.example.edgarnurullin.tp_schedule.db.tables.GroupsTable;
+import com.example.edgarnurullin.tp_schedule.db.tables.LessonsTable;
+import com.example.edgarnurullin.tp_schedule.helpers.TimeHelper;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.example.edgarnurullin.tp_schedule.db.tables.GroupsTable.listFromCursor;
+
+public class ScheduleIntentService extends IntentService {
+    //отдача расписания для группы группы
+    public static final String ACTION_GET_SCHEDULE = "com.example.edgarnurullin.tp_schedule.action.GET_SCHEDULE";
+
+    //отдача всех групп
+    public static final String ACTION_GET_GROUPS = "com.example.edgarnurullin.tp_schedule.action.GET_GROUPS";
+
+    //на обновление базы
+    private static final String ACTION_NEED_FETCH = "com.example.edgarnurullin.tp_schedule.action.NEED_FETCH";
+
+    //отдача расписания группы
+    public static final String ACTION_RECEIVE_SCHEDULE = "com.example.edgarnurullin.tp_schedule.action.RECEIVE_SCHEDULE";
+
+    //отдача групп
+    public static final String ACTION_RECEIVE_GROUPS = "com.example.edgarnurullin.tp_schedule.action.RECEIVE_GROUPS";
+
+    public ScheduleIntentService() {
+        super("ScheduleIntentService");
+    }
+
+    @Override
+    protected void onHandleIntent(Intent intent) {
+        if (intent != null) {
+            final String action = intent.getAction();
+            if (ACTION_NEED_FETCH.equals(action)) {
+                handleActionNeedFetch();
+            } else if (ACTION_GET_GROUPS.equals(action)) {
+                handleActionGetGroups();
+            } else if (ACTION_GET_SCHEDULE.equals(action)) {
+//                final String groupName = intent.getStringExtra(EXTRA_GROUP_NAME);
+//                final int groupId = intent.getIntExtra(EXTRA_GROUP_ID, -1);
+//                handleActionGetSchedule(groupName, groupId);
+                handleActionGetSchedule();
+            }
+        }
+    }
+
+    private void handleActionNeedFetch() {
+        //TODO связать как - нибудь с лоудером
+        handleActionGetSchedule();
+        handleActionGetGroups();
+    }
+
+    private void handleActionGetSchedule() {
+        Uri uri = Uri.parse("content://com.example.edgarnurullin.tp_schedule/GroupsTable");
+        Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+        List<Group> lol = GroupsTable.listFromCursor(cursor);
+        Log.d("lol", "handleActionGetSchedule");
+    }
+
+    private void handleActionGetGroups() {
+        //запрос за занятиями конкретной группы
+        Uri uri = Uri.parse("content://com.example.edgarnurullin.tp_schedule/LessonsTable");
+        Cursor cursor2 = mContentResolver.query(uri, null, " group_id = " + selectedGroup.getId(), null, " date ASC, time ASC");
+        List<Lesson> result = LessonsTable.listFromCursor(cursor2);
+
+        //проставляем название группы
+        for (int idx = 0; idx < result.size(); idx++) {
+            result.get(idx).setGroupName(selectedGroup.getName());
+        }
+
+        return passedActualLessons(result);
+        Log.d("lol", "handleActionGetGroups");
+    }
+
+
+//    private List<Lesson> passedActualLessons (List<Lesson> listLessons) {
+//        List<Lesson> result = new ArrayList<>();
+//        for (int idx = 0; idx < listLessons.size(); idx++) {
+//            String lessonDate = listLessons.get(idx).getDate();
+//            if (TimeHelper.getInstance().isFutureDate(lessonDate)) {
+//                result.add(listLessons.get(idx));
+//            }
+//        }
+//        return result;
+//    }
+//    public List<Lesson> getLessons () {
+//        //занятия всех групп
+//        Uri uri = Uri.parse("content://com.example.edgarnurullin.tp_schedule/LessonsTable");
+//        Cursor cursor2 = mContentResolver.query(uri, null, null, null, " date ASC, time ASC");
+//        List<Lesson> result = LessonsTable.listFromCursor(cursor2);
+//
+//        result = passedActualLessons(result);
+//
+//        //проставляем название группы
+//        List<Group> groups = getGroups();
+//        for (int idx = 0; idx < result.size(); idx++) {
+//            Lesson curLesson = result.get(idx);
+//            Integer group = curLesson.getGroupId();
+//            curLesson.setGroupName(groups.get(group).getName());
+//        }
+//        return result;
+//    }
+//
+//    private void handleActionGetSchedule(String groupName, int groupId) {
+//        Log.d("lol", "handleActionGetSchedule");
+//    }
+}
