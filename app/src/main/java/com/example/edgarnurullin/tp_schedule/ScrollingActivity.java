@@ -179,7 +179,7 @@ public class ScrollingActivity extends AppCompatActivity implements LoaderManage
             @Override
             public void onReceive(final Context context, final Intent intent) {
                 Log.d("lalka", "onReceive");
-                ArrayList<Parcelable> lal = intent.getParcelableArrayListExtra("lol");
+                ArrayList<Group> lal = intent.getParcelableArrayListExtra("lal");
             }
         };
 

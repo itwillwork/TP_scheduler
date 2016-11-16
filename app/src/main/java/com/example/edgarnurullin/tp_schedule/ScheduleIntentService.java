@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
@@ -67,9 +68,10 @@ public class ScheduleIntentService extends IntentService {
     private void handleActionGetSchedule() {
         Uri uri = Uri.parse("content://com.example.edgarnurullin.tp_schedule/GroupsTable");
         Cursor cursor = getContentResolver().query(uri, null, null, null, null);
-        List<Group> result = GroupsTable.listFromCursor(cursor);
+        ArrayList<Group> result = GroupsTable.listFromCursor(cursor);
+
         final Intent outIntent = new Intent(ACTION_RECEIVE_GROUPS);
-        outIntent.putParcelableArrayListExtra("lol", result);
+        outIntent.putParcelableArrayListExtra("lal", result);
         LocalBroadcastManager.getInstance(this).sendBroadcast(outIntent);
     }
 

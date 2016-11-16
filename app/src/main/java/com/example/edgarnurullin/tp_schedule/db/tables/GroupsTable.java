@@ -42,8 +42,8 @@ public class GroupsTable {
     }
 
     @NonNull
-    public static List<Group> listFromCursor(@NonNull Cursor cursor) {
-        List<Group> groups = new ArrayList<>();
+    public static ArrayList<Group> listFromCursor(@NonNull Cursor cursor) {
+        ArrayList<Group> groups = new ArrayList<>();
         if (!cursor.moveToFirst()) {
             return groups;
         }
