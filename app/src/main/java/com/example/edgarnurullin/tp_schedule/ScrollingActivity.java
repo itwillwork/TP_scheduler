@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.Loader;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
@@ -33,6 +34,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -177,6 +179,7 @@ public class ScrollingActivity extends AppCompatActivity implements LoaderManage
             @Override
             public void onReceive(final Context context, final Intent intent) {
                 Log.d("lalka", "onReceive");
+                ArrayList<Parcelable> lal = intent.getParcelableArrayListExtra("lol");
             }
         };
 

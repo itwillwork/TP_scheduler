@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Parcelable;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.example.edgarnurullin.tp_schedule.content.Group;
@@ -13,6 +15,7 @@ import com.example.edgarnurullin.tp_schedule.db.tables.GroupsTable;
 import com.example.edgarnurullin.tp_schedule.db.tables.LessonsTable;
 import com.example.edgarnurullin.tp_schedule.helpers.TimeHelper;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,55 +67,62 @@ public class ScheduleIntentService extends IntentService {
     private void handleActionGetSchedule() {
         Uri uri = Uri.parse("content://com.example.edgarnurullin.tp_schedule/GroupsTable");
         Cursor cursor = getContentResolver().query(uri, null, null, null, null);
-        List<Group> lol = GroupsTable.listFromCursor(cursor);
-        Log.d("lol", "handleActionGetSchedule");
+        List<Group> result = GroupsTable.listFromCursor(cursor);
+        final Intent outIntent = new Intent(ACTION_RECEIVE_GROUPS);
+        outIntent.putParcelableArrayListExtra("lol", result);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(outIntent);
     }
 
     private void handleActionGetGroups() {
+        //TODO определить selectedGroup
+        Group selectedGroup = new Group(3, "АПО-22");
         //запрос за занятиями конкретной группы
         Uri uri = Uri.parse("content://com.example.edgarnurullin.tp_schedule/LessonsTable");
-        Cursor cursor2 = mContentResolver.query(uri, null, " group_id = " + selectedGroup.getId(), null, " date ASC, time ASC");
+        Cursor cursor2 = getContentResolver().query(uri, null, " group_id = " + selectedGroup.getId(), null, " date ASC, time ASC");
         List<Lesson> result = LessonsTable.listFromCursor(cursor2);
 
         //проставляем название группы
         for (int idx = 0; idx < result.size(); idx++) {
-            result.get(idx).setGroupName(selectedGroup.getName());
+            //result.get(idx).setGroupName(selectedGroup.getName());
         }
 
-        return passedActualLessons(result);
+        result = passedActualLessons(result);
+
         Log.d("lol", "handleActionGetGroups");
     }
 
 
-//    private List<Lesson> passedActualLessons (List<Lesson> listLessons) {
-//        List<Lesson> result = new ArrayList<>();
-//        for (int idx = 0; idx < listLessons.size(); idx++) {
-//            String lessonDate = listLessons.get(idx).getDate();
-//            if (TimeHelper.getInstance().isFutureDate(lessonDate)) {
-//                result.add(listLessons.get(idx));
-//            }
-//        }
-//        return result;
-//    }
-//    public List<Lesson> getLessons () {
-//        //занятия всех групп
-//        Uri uri = Uri.parse("content://com.example.edgarnurullin.tp_schedule/LessonsTable");
-//        Cursor cursor2 = mContentResolver.query(uri, null, null, null, " date ASC, time ASC");
-//        List<Lesson> result = LessonsTable.listFromCursor(cursor2);
-//
-//        result = passedActualLessons(result);
-//
-//        //проставляем название группы
-//        List<Group> groups = getGroups();
-//        for (int idx = 0; idx < result.size(); idx++) {
-//            Lesson curLesson = result.get(idx);
-//            Integer group = curLesson.getGroupId();
-//            curLesson.setGroupName(groups.get(group).getName());
-//        }
-//        return result;
-//    }
-//
-//    private void handleActionGetSchedule(String groupName, int groupId) {
-//        Log.d("lol", "handleActionGetSchedule");
-//    }
+    private List<Lesson> passedActualLessons (List<Lesson> listLessons) {
+        List<Lesson> result = new ArrayList<>();
+        for (int idx = 0; idx < listLessons.size(); idx++) {
+            String lessonDate = listLessons.get(idx).getDate();
+            if (TimeHelper.getInstance().isFutureDate(lessonDate)) {
+                result.add(listLessons.get(idx));
+            }
+        }
+        return result;
+    }
+    public List<Lesson> getLessons () {
+        //занятия всех групп
+        Uri uri = Uri.parse("content://com.example.edgarnurullin.tp_schedule/LessonsTable");
+        Cursor cursor2 = getContentResolver().query(uri, null, null, null, " date ASC, time ASC");
+        List<Lesson> result = LessonsTable.listFromCursor(cursor2);
+
+        result = passedActualLessons(result);
+
+        //проставляем название группы
+        List<Group> groups = getGroups();
+        for (int idx = 0; idx < result.size(); idx++) {
+            Lesson curLesson = result.get(idx);
+            Integer group = curLesson.getGroupId();
+            curLesson.setGroupName(groups.get(group).getName());
+        }
+        return result;
+    }
+
+    public List<Group> getGroups () {
+        Uri uri = Uri.parse("content://com.example.edgarnurullin.tp_schedule/GroupsTable");
+        Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+        return GroupsTable.listFromCursor(cursor);
+    }
 }
