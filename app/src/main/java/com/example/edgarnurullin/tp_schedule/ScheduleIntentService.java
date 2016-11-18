@@ -3,10 +3,12 @@ package com.example.edgarnurullin.tp_schedule;
 import android.app.IntentService;
 import android.content.Intent;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
@@ -45,6 +47,12 @@ public class ScheduleIntentService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         if (intent != null) {
+
+            Context lol = getApplicationContext();
+SharedPreferences myPrefs = lol.getSharedPreferences("lol", 0);
+            String wallPaper = myPrefs.getString("kek", null);
+            Log.d("lol", "для дебаггера ");
+
             final String action = intent.getAction();
             if (ACTION_NEED_FETCH.equals(action)) {
                 handleActionNeedFetch();
@@ -66,12 +74,16 @@ public class ScheduleIntentService extends IntentService {
     }
 
     private void handleActionGetSchedule() {
+
+        SharedPreferences sPref = PreferenceManager.getDefaultSharedPreferences(this);
+        String res = sPref.getString("kek", "");
+
         Uri uri = Uri.parse("content://com.example.edgarnurullin.tp_schedule/GroupsTable");
         Cursor cursor = getContentResolver().query(uri, null, null, null, null);
         ArrayList<Group> result = GroupsTable.listFromCursor(cursor);
 
         final Intent outIntent = new Intent(ACTION_RECEIVE_GROUPS);
-        outIntent.putParcelableArrayListExtra("lal", result);
+        outIntent.putParcelableArrayListExtra("groups", result);
         LocalBroadcastManager.getInstance(this).sendBroadcast(outIntent);
     }
 

@@ -1,14 +1,17 @@
 package com.example.edgarnurullin.tp_schedule;
 
 import android.app.Activity;
+import android.app.Application;
 import android.app.LoaderManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.Loader;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
@@ -64,6 +67,8 @@ public class ScrollingActivity extends AppCompatActivity implements LoaderManage
         intent.setAction(ScheduleIntentService.ACTION_GET_SCHEDULE);
         startService(intent);
 
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+
         //так события побаловаться
         //TODO перенести внутренности
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -71,23 +76,16 @@ public class ScrollingActivity extends AppCompatActivity implements LoaderManage
             @Override
             public void onClick(View view) {
 
-                //получение списка групп
-                List<Group> all_groups = dbApi.getGroups();
+                //SharedPreferences.Editor sPref = preferences.edit();
+                //sPref.putString("lol", "kek");
+                //sPref.commit();
 
+                Context lol = getApplicationContext();
+                SharedPreferences myPrefs = lol.getSharedPreferences("lol", 0);
+                SharedPreferences.Editor prefsEditor = myPrefs.edit();
+                prefsEditor.putString("kek", "Sai");
+                prefsEditor.commit();
                 Log.d("lol", "для дебаггера ");
-
-                //конкретной группы
-                List<Lesson> result2 = dbApi.getLessons(all_groups.get(3));
-
-                Log.d("lol", "для дебаггера ");
-
-                //все занятия технопарка
-                List<Lesson> result3 = dbApi.getLessons();
-
-                Log.d("lol", "для дебаггера ");
-
-
-
             }
         });
 
@@ -179,7 +177,7 @@ public class ScrollingActivity extends AppCompatActivity implements LoaderManage
             @Override
             public void onReceive(final Context context, final Intent intent) {
                 Log.d("lalka", "onReceive");
-                ArrayList<Group> lal = intent.getParcelableArrayListExtra("lal");
+                ArrayList<Group> lal = intent.getParcelableArrayListExtra("groups");
             }
         };
 
