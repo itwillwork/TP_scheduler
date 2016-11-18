@@ -48,7 +48,7 @@ import java.util.List;
 import java.util.Locale;
 
 
-public class ScrollingActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Response> {
+public class ScrollingActivity extends AppCompatActivity {
     private com.example.edgarnurullin.tp_schedule.db.dbApi dbApi;
     private BroadcastReceiver receiver = null;
     @Override
@@ -60,12 +60,13 @@ public class ScrollingActivity extends AppCompatActivity implements LoaderManage
         //setSupportActionBar(toolbar);
 
         //указание на создание лоудера
-        getLoaderManager().initLoader(R.id.schedule_loader, Bundle.EMPTY, this);
+        //getLoaderManager().initLoader(R.id.schedule_loader, Bundle.EMPTY, this);
 
         //привязка интент сервера
         Intent intent = new Intent(ScrollingActivity.this, ScheduleIntentService.class);
-        //intent.setAction(ScheduleIntentService.ACTION_GET_SCHEDULE);
-        intent.setAction(ScheduleIntentService.ACTION_GET_GROUPS);
+        intent.setAction(ScheduleIntentService.ACTION_GET_SCHEDULE);
+        //intent.setAction(ScheduleIntentService.ACTION_GET_GROUPS);
+        //intent.setAction(ScheduleIntentService.ACTION_NEED_FETCH);
         startService(intent);
 
         //жмяк на кнопку
@@ -223,38 +224,6 @@ public class ScrollingActivity extends AppCompatActivity implements LoaderManage
                 return super.onOptionsItemSelected(item);
         }
     }
-
-    //создание лоудера
-    @Override
-    public Loader<Response> onCreateLoader(int id, Bundle args) {
-        switch (id) {
-            case R.id.schedule_loader:
-                return new SheduleLoader(this);
-
-            default:
-                return null;
-        }
-    }
-
-    //когда лоудер закончил работу
-    @Override
-    public void onLoadFinished(Loader<Response> loader, Response data) {
-        int id = loader.getId();
-        if (id == R.id.schedule_loader) {
-            if (data.getTypedAnswer() != null) {
-                Toast.makeText(this, "Запрос пришел", Toast.LENGTH_LONG).show();
-            } else {
-                Toast.makeText(this, "Что-то пошло не так..", Toast.LENGTH_LONG).show();
-            }
-        }
-        getLoaderManager().destroyLoader(id);
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Response> loader) {
-        //когда LoaderManager собрался уничтожать лоадер
-    }
-
 
     public class SpinnerActivity extends Activity implements AdapterView.OnItemSelectedListener {
 
