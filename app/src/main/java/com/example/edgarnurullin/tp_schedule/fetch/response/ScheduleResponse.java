@@ -18,8 +18,11 @@ public class ScheduleResponse extends Response {
             GroupsTable.clear(context);
 
             //напонляем базу
-            List<String> groupNames = new ArrayList(groupsWithLessons.keySet());
-            for (int idx = 0; idx < groupNames.size(); idx++) {
+            List<String> groupNames = new ArrayList();
+            groupNames.add("Все группы");
+            groupNames.addAll(groupsWithLessons.keySet());
+
+            for (int idx = 1; idx < groupNames.size(); idx++) {
                 List<Map> groupSchedule = groupsWithLessons.get(groupNames.get(idx));
                 LessonsTable.save(context, idx, groupSchedule);
             }

@@ -64,27 +64,16 @@ public class ScrollingActivity extends AppCompatActivity implements LoaderManage
 
         //привязка интент сервера
         Intent intent = new Intent(ScrollingActivity.this, ScheduleIntentService.class);
-        intent.setAction(ScheduleIntentService.ACTION_GET_SCHEDULE);
+        //intent.setAction(ScheduleIntentService.ACTION_GET_SCHEDULE);
+        intent.setAction(ScheduleIntentService.ACTION_GET_GROUPS);
         startService(intent);
 
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-
-        //так события побаловаться
-        //TODO перенести внутренности
+        //жмяк на кнопку
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                //SharedPreferences.Editor sPref = preferences.edit();
-                //sPref.putString("lol", "kek");
-                //sPref.commit();
-
-                Context lol = getApplicationContext();
-                SharedPreferences myPrefs = lol.getSharedPreferences("lol", 0);
-                SharedPreferences.Editor prefsEditor = myPrefs.edit();
-                prefsEditor.putString("kek", "Sai");
-                prefsEditor.commit();
+                setGroupIdToPreferences(0);
                 Log.d("lol", "для дебаггера ");
             }
         });
@@ -176,8 +165,15 @@ public class ScrollingActivity extends AppCompatActivity implements LoaderManage
         receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(final Context context, final Intent intent) {
-                Log.d("lalka", "onReceive");
-                ArrayList<Group> lal = intent.getParcelableArrayListExtra("groups");
+                String action=intent.getAction();
+                if(action.equals(ScheduleIntentService.ACTION_RECEIVE_SCHEDULE)) {
+                    ArrayList<Lesson> result = intent.getParcelableArrayListExtra("schedule");
+                    Log.d("lalka", "onReceive");
+                } else if(action.equals(ScheduleIntentService.ACTION_RECEIVE_GROUPS)) {
+
+                    ArrayList<Group> result = intent.getParcelableArrayListExtra("groups");
+                    Log.d("lalka", "onReceive");
+                }
             }
         };
 
@@ -185,6 +181,12 @@ public class ScrollingActivity extends AppCompatActivity implements LoaderManage
 
     }
 
+    private void setGroupIdToPreferences(int id) {
+        SharedPreferences myPrefs = getApplicationContext().getSharedPreferences("app", 0);
+        SharedPreferences.Editor prefsEditor = myPrefs.edit();
+        prefsEditor.putInt("groupId", id);
+        prefsEditor.commit();
+    }
     @Override
     protected void onResume() {
         super.onResume();
