@@ -1,6 +1,10 @@
 package com.example.edgarnurullin.tp_schedule.content;
 
-public class Group {
+import android.icu.text.Replaceable;
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class Group implements Parcelable {
     private Integer id;
     private String name;
 
@@ -30,4 +34,28 @@ public class Group {
         this.name = name;
     }
 
+    public int describeContents() {
+        return 0;
+    }
+
+    public void writeToParcel(Parcel parcel, int flags) {
+        parcel.writeString(name);
+        parcel.writeInt(id);
+    }
+
+    public static final Parcelable.Creator<Group> CREATOR = new Parcelable.Creator<Group>() {
+        // распаковываем объект из Parcel
+        public Group createFromParcel(Parcel in) {
+            return new Group(in);
+        }
+
+        public Group[] newArray(int size) {
+            return new Group[size];
+        }
+    };
+
+    private Group(Parcel parcel) {
+        name = parcel.readString();
+        id = parcel.readInt();
+    }
 }

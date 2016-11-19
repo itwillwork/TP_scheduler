@@ -7,6 +7,10 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 
 public class GroupChooser extends AppCompatActivity {
+
+
+    private Item scheduleItem = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

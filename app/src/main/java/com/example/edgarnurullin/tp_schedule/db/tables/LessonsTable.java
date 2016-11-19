@@ -81,8 +81,8 @@ public class LessonsTable {
     }
 
     @NonNull
-    public static List<Lesson> listFromCursor(@NonNull Cursor cursor) {
-        List<Lesson> lessons = new ArrayList<>();
+    public static ArrayList<Lesson> listFromCursor(@NonNull Cursor cursor) {
+        ArrayList<Lesson> lessons = new ArrayList<>();
         if (!cursor.moveToFirst()) {
             return lessons;
         }

@@ -1,11 +1,14 @@
 package com.example.edgarnurullin.tp_schedule;
 
 import android.app.Activity;
-import android.app.LoaderManager;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
-import android.content.Loader;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 //import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -17,18 +20,14 @@ import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.edgarnurullin.tp_schedule.content.Group;
 import com.example.edgarnurullin.tp_schedule.content.Lesson;
 import com.example.edgarnurullin.tp_schedule.db.dbApi;
-import com.example.edgarnurullin.tp_schedule.fetch.response.Response;
-import com.example.edgarnurullin.tp_schedule.loaders.SheduleLoader;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -39,8 +38,9 @@ import java.util.List;
 import java.util.Locale;
 
 
-public class ScrollingActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Response> {
+public class ScrollingActivity extends AppCompatActivity {
     private com.example.edgarnurullin.tp_schedule.db.dbApi dbApi;
+    private BroadcastReceiver receiver = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,30 +49,28 @@ public class ScrollingActivity extends AppCompatActivity implements LoaderManage
         //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         //setSupportActionBar(toolbar);
 
-        //указание на создание лоудера
-        getLoaderManager().initLoader(R.id.schedule_loader, Bundle.EMPTY, this);
+        //привязка интент сервера
+        Intent intent = new Intent(ScrollingActivity.this, ScheduleIntentService.class);
+        // для получения всего расписания
+        // intent.setAction(ScheduleIntentService.ACTION_GET_SCHEDULE);
+        // для получения всех групп
+        // intent.setAction(ScheduleIntentService.ACTION_GET_GROUPS);
+        // для обновления расписания
+        intent.setAction(ScheduleIntentService.ACTION_NEED_FETCH);
+        startService(intent);
 
+        //жмяк на кнопку
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                //получение списка групп
-                List<Group> all_groups = dbApi.getGroups();
-
+                setGroupIdToPreferences(0);
                 Log.d("lol", "для дебаггера ");
 
-                //конкретной группы
-                List<Lesson> result2 = dbApi.getLessons(all_groups.get(3));
+                SharedPreferences myPrefs = getApplicationContext().getSharedPreferences("app", 0);
+                String fetchDate = myPrefs.getString("fetchDate", "");
 
                 Log.d("lol", "для дебаггера ");
-
-                //все занятия технопарка
-                List<Lesson> result3 = dbApi.getLessons();
-
-                Log.d("lol", "для дебаггера ");
-
-
 
             }
         });
@@ -154,6 +152,38 @@ public class ScrollingActivity extends AppCompatActivity implements LoaderManage
 
     }
 
+    protected void onStart() {
+        super.onStart();
+        //бродкаст ресивер
+        final IntentFilter filter = new IntentFilter();
+        filter.addAction(ScheduleIntentService.ACTION_RECEIVE_SCHEDULE);
+        filter.addAction(ScheduleIntentService.ACTION_RECEIVE_GROUPS);
+
+        receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(final Context context, final Intent intent) {
+                String action=intent.getAction();
+                if(action.equals(ScheduleIntentService.ACTION_RECEIVE_SCHEDULE)) {
+                    ArrayList<Lesson> result = intent.getParcelableArrayListExtra("schedule");
+                    Log.d("lalka", "onReceive");
+                } else if(action.equals(ScheduleIntentService.ACTION_RECEIVE_GROUPS)) {
+
+                    ArrayList<Group> result = intent.getParcelableArrayListExtra("groups");
+                    Log.d("lalka", "onReceive");
+                }
+            }
+        };
+
+        LocalBroadcastManager.getInstance(ScrollingActivity.this).registerReceiver(receiver, filter);
+
+    }
+
+    private void setGroupIdToPreferences(int id) {
+        SharedPreferences myPrefs = getApplicationContext().getSharedPreferences("app", 0);
+        SharedPreferences.Editor prefsEditor = myPrefs.edit();
+        prefsEditor.putInt("groupId", id);
+        prefsEditor.commit();
+    }
     @Override
     protected void onResume() {
         super.onResume();
@@ -190,38 +220,6 @@ public class ScrollingActivity extends AppCompatActivity implements LoaderManage
                 return super.onOptionsItemSelected(item);
         }
     }
-
-    //создание лоудера
-    @Override
-    public Loader<Response> onCreateLoader(int id, Bundle args) {
-        switch (id) {
-            case R.id.schedule_loader:
-                return new SheduleLoader(this);
-
-            default:
-                return null;
-        }
-    }
-
-    //когда лоудер закончил работу
-    @Override
-    public void onLoadFinished(Loader<Response> loader, Response data) {
-        int id = loader.getId();
-        if (id == R.id.schedule_loader) {
-            if (data.getTypedAnswer() != null) {
-                Toast.makeText(this, "Запрос пришел", Toast.LENGTH_LONG).show();
-            } else {
-                Toast.makeText(this, "Что-то пошло не так..", Toast.LENGTH_LONG).show();
-            }
-        }
-        getLoaderManager().destroyLoader(id);
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Response> loader) {
-        //когда LoaderManager собрался уничтожать лоадер
-    }
-
 
     public class SpinnerActivity extends Activity implements AdapterView.OnItemSelectedListener {
 
