@@ -51,8 +51,11 @@ public class ScrollingActivity extends AppCompatActivity {
 
         //привязка интент сервера
         Intent intent = new Intent(ScrollingActivity.this, ScheduleIntentService.class);
-        //intent.setAction(ScheduleIntentService.ACTION_GET_SCHEDULE);
-        //intent.setAction(ScheduleIntentService.ACTION_GET_GROUPS);
+        // для получения всего расписания
+        // intent.setAction(ScheduleIntentService.ACTION_GET_SCHEDULE);
+        // для получения всех групп
+        // intent.setAction(ScheduleIntentService.ACTION_GET_GROUPS);
+        // для обновления расписания
         intent.setAction(ScheduleIntentService.ACTION_NEED_FETCH);
         startService(intent);
 
