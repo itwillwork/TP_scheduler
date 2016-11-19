@@ -1,17 +1,12 @@
 package com.example.edgarnurullin.tp_schedule;
 
 import android.app.Activity;
-import android.app.Application;
-import android.app.LoaderManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.Loader;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Parcelable;
-import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
@@ -25,19 +20,14 @@ import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.edgarnurullin.tp_schedule.content.Group;
 import com.example.edgarnurullin.tp_schedule.content.Lesson;
 import com.example.edgarnurullin.tp_schedule.db.dbApi;
-import com.example.edgarnurullin.tp_schedule.fetch.response.Response;
-import com.example.edgarnurullin.tp_schedule.loaders.SheduleLoader;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -59,14 +49,11 @@ public class ScrollingActivity extends AppCompatActivity {
         //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         //setSupportActionBar(toolbar);
 
-        //указание на создание лоудера
-        //getLoaderManager().initLoader(R.id.schedule_loader, Bundle.EMPTY, this);
-
         //привязка интент сервера
         Intent intent = new Intent(ScrollingActivity.this, ScheduleIntentService.class);
-        intent.setAction(ScheduleIntentService.ACTION_GET_SCHEDULE);
+        //intent.setAction(ScheduleIntentService.ACTION_GET_SCHEDULE);
         //intent.setAction(ScheduleIntentService.ACTION_GET_GROUPS);
-        //intent.setAction(ScheduleIntentService.ACTION_NEED_FETCH);
+        intent.setAction(ScheduleIntentService.ACTION_NEED_FETCH);
         startService(intent);
 
         //жмяк на кнопку
@@ -76,6 +63,12 @@ public class ScrollingActivity extends AppCompatActivity {
             public void onClick(View view) {
                 setGroupIdToPreferences(0);
                 Log.d("lol", "для дебаггера ");
+
+                SharedPreferences myPrefs = getApplicationContext().getSharedPreferences("app", 0);
+                String fetchDate = myPrefs.getString("fetchDate", "");
+
+                Log.d("lol", "для дебаггера ");
+
             }
         });
 
