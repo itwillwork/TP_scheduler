@@ -101,8 +101,6 @@ public class ScheduleIntentService extends IntentService {
             result = passedActualLessons(result);
         }
 
-
-
         //отправляем обратно занятия
         final Intent outIntent = new Intent(ACTION_RECEIVE_SCHEDULE);
         outIntent.putParcelableArrayListExtra("schedule", result);
