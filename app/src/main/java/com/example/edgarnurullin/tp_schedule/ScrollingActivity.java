@@ -39,6 +39,10 @@ import java.util.Locale;
 
 
 public class ScrollingActivity extends AppCompatActivity {
+
+    public ArrayList<Lesson> lessons;
+    public ArrayList<Group> groups;
+
     private com.example.edgarnurullin.tp_schedule.db.dbApi dbApi;
     private BroadcastReceiver receiver = null;
     @Override
@@ -46,8 +50,6 @@ public class ScrollingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         this.dbApi = new dbApi(getContentResolver());
         setContentView(R.layout.activity_scrolling);
-        //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        //setSupportActionBar(toolbar);
 
         //привязка интент сервера
         Intent intent = new Intent(ScrollingActivity.this, ScheduleIntentService.class);
@@ -59,24 +61,8 @@ public class ScrollingActivity extends AppCompatActivity {
         intent.setAction(ScheduleIntentService.ACTION_NEED_FETCH);
         startService(intent);
 
-        //жмяк на кнопку
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                setGroupIdToPreferences(0);
-                Log.d("lol", "для дебаггера ");
-
-                SharedPreferences myPrefs = getApplicationContext().getSharedPreferences("app", 0);
-                String fetchDate = myPrefs.getString("fetchDate", "");
-
-                Log.d("lol", "для дебаггера ");
-
-            }
-        });
-
         try{
-            JSONArray jsonArray = new JSONArray("" +
+          JSONArray jsonArray = new JSONArray("" +
                     "[" +
                     "{discipline: \"Тестирование\", status: \"ЛК\", location: \"ауд. 395\", startTime: \"Nov 1 20:29:30 2016\"}," +
                     "{discipline: \"Информационная безопасность\", status: \"РК\", location: \"ауд. 395\", startTime: \"Nov 2 20:29:30 2016\"}," +
@@ -163,21 +149,22 @@ public class ScrollingActivity extends AppCompatActivity {
             @Override
             public void onReceive(final Context context, final Intent intent) {
                 String action=intent.getAction();
+                // если приходят занятия группы
                 if(action.equals(ScheduleIntentService.ACTION_RECEIVE_SCHEDULE)) {
-                    ArrayList<Lesson> result = intent.getParcelableArrayListExtra("schedule");
-                    Log.d("lalka", "onReceive");
-                } else if(action.equals(ScheduleIntentService.ACTION_RECEIVE_GROUPS)) {
-
-                    ArrayList<Group> result = intent.getParcelableArrayListExtra("groups");
-                    Log.d("lalka", "onReceive");
+                    ArrayList<Lesson> lessons = intent.getParcelableArrayListExtra("schedule");
+                    Log.d("lessons", "onReceive");
+                }
+                // если приходят группы
+                else if(action.equals(ScheduleIntentService.ACTION_RECEIVE_GROUPS)) {
+                    ArrayList<Group> groups = intent.getParcelableArrayListExtra("groups");
+                    Log.d("groups", "onReceive");
                 }
             }
         };
-
         LocalBroadcastManager.getInstance(ScrollingActivity.this).registerReceiver(receiver, filter);
-
     }
 
+    // функция для записи выбранного id группы в преференсы
     private void setGroupIdToPreferences(int id) {
         SharedPreferences myPrefs = getApplicationContext().getSharedPreferences("app", 0);
         SharedPreferences.Editor prefsEditor = myPrefs.edit();
@@ -198,6 +185,74 @@ public class ScrollingActivity extends AppCompatActivity {
                 android.R.layout.simple_spinner_item, group_names);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
+
+        try{
+            JSONArray jsonArray = new JSONArray("" +
+                    "[" +
+                    "{discipline: \"sc\", status: \"ЛК\", location: \"аrthrth\", startTime: \"Nov 1 20:29:30 2016\"}," +
+                    "{discipline: \"sc безопасность\", status: \"РК\", location: \"ауд. 395\", startTime: \"Nov 2 20:29:30 2016\"}," +
+                    "{discipline: \"Android\", location: \"ауд. 395\",  status: \"ЛК\", startTime: \"Nov 3 20:29:30 2016\"}," +
+                    "{discipline: \"Тестирование\", location: \"ауд. 395\", status: \"ЛК\",  startTime: \"Nov 1 20:29:30 2016\"}," +
+                    "{discipline: \"Информационная безопасность\", status: \"СМ\",  location: \"ауд. 395\", startTime: \"Nov 2 20:29:30 2016\"}," +
+                     "]");
+
+            String[] weekdays = {"СБ", "ВС", "ПН", "ВТ", "СР", "ЧТ", "ПТ"};
+            String[] months = {"января", "февраля", "марта", "апреля", "мая", "июня",
+                    "июля", "августа", "сентября", "октября", "ноября", "декабря"};
+            String delimeter = ", ";
+            LinearLayout linearLayout = (LinearLayout) findViewById(R.id.pull_city);
+            linearLayout.setPadding(0, 0, 0, 50);
+            for (int i = 0; i < jsonArray.length(); i++) {
+                try {
+                    JSONObject dateLesson = jsonArray.getJSONObject(i);
+                    String nameLesson = dateLesson.getString("discipline");
+                    String locationLesson = delimeter + dateLesson.getString("location");
+                    String statusLesson = dateLesson.getString("status") + delimeter;
+                    DateFormat format = new SimpleDateFormat("MMM dd kk:mm:ss yyyy", Locale.ENGLISH);
+                    Date date = format.parse(dateLesson.getString("startTime"));
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTime(date);
+
+                    String weekdayLesson = weekdays[calendar.get(Calendar.DAY_OF_WEEK)];
+                    Integer dayLesson = calendar.get(Calendar.DAY_OF_MONTH);
+                    String monthLesson = " " + months[calendar.get(Calendar.MONTH)];
+
+                    LinearLayout lessonNodeH = new LinearLayout(this);
+                    LinearLayout lessonNodeV = new LinearLayout(this);
+                    LinearLayout lessonNodeH2 = new LinearLayout(this);
+                    lessonNodeV.setOrientation(LinearLayout.VERTICAL);
+                    lessonNodeH.setOrientation(LinearLayout.HORIZONTAL);
+                    lessonNodeH2.setOrientation(LinearLayout.HORIZONTAL);
+
+                    TextView nameLessonNode = new TextView(this);
+                    nameLessonNode.setTextSize(14);
+                    nameLessonNode.setText(statusLesson + nameLesson);
+
+
+                    TextView weekdayLessonNode = new TextView(this);
+                    weekdayLessonNode.setTextSize(28);
+                    weekdayLessonNode.setText(weekdayLesson);
+
+                    TextView dateLessonNode = new TextView(this);
+                    dateLessonNode.setTextSize(14);
+                    dateLessonNode.setText(dayLesson + monthLesson + locationLesson);
+
+                    weekdayLessonNode.setPadding(10, 0, 0, 0);
+                    lessonNodeV.setPadding(30, 0, 10, 0);
+                    lessonNodeH.setPadding(0, 30, 0, 30);
+
+                    lessonNodeV.addView(nameLessonNode);
+                    lessonNodeV.addView(dateLessonNode);
+
+                    lessonNodeH.addView(weekdayLessonNode);
+                    lessonNodeH.addView(lessonNodeV);
+                    linearLayout.addView(lessonNodeH);
+                } catch (ParseException e) {}
+            }
+        } catch (JSONException e) {}
+
+
+
     }
 
 
