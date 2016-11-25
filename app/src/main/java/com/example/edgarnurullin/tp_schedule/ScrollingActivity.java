@@ -53,6 +53,7 @@ public class ScrollingActivity extends AppCompatActivity {
 
         lessons = new ArrayList<Lesson>();
         groups = new ArrayList<Group>();
+
         //привязка интент сервера
         Intent intent = new Intent(ScrollingActivity.this, ScheduleIntentService.class);
         // для получения всего расписания
@@ -159,7 +160,7 @@ public class ScrollingActivity extends AppCompatActivity {
                 }
                 // если приходят группы
                 else if(action.equals(ScheduleIntentService.ACTION_RECEIVE_GROUPS)) {
-                    ArrayList<Group> groups = intent.getParcelableArrayListExtra("groups");
+                    groups = intent.getParcelableArrayListExtra("groups");
                     Log.d("groups", "onReceive");
                 }
             }
@@ -169,9 +170,9 @@ public class ScrollingActivity extends AppCompatActivity {
 
 
     private void updateScheduler() {
-        List<Group> all_groups = dbApi.getGroups();
+
         List<String> group_names = new ArrayList<String>();
-        for (Group cur_group: all_groups) {
+        for (Group cur_group: groups) {
             group_names.add(cur_group.getName());
         }
         Spinner spinner = (Spinner) findViewById(R.id.spinner);
@@ -184,7 +185,7 @@ public class ScrollingActivity extends AppCompatActivity {
         String disc = "testTEST";
         disc += lessons.get(0).getTitle();
         try{
-            JSONArray jsonArray = new JSONArray();
+            JSONArray cur_scheduler = new JSONArray();
             for (Lesson cur_lesson: lessons) {
                 JSONObject json_lesson = new JSONObject();
                 json_lesson.put("discipline", cur_lesson.getTitle());
@@ -192,19 +193,9 @@ public class ScrollingActivity extends AppCompatActivity {
                 json_lesson.put("location", cur_lesson.getPlace());
                 json_lesson.put("startTime", "Nov 1 20:29:30 2016");
 
-                jsonArray.put(json_lesson);
+                cur_scheduler.put(json_lesson);
             }
 
-//            JSONArray jsonArray = new JSONArray("" +
-//                    "[" +
-//                    "{discipline: \"sc\", status: \"ЛК\", location: \"аrthrth\", startTime: \"Nov 1 20:29:30 2016\"}," +
-//                    "{discipline: \""+disc+"sc безопасность\", status: \"РК\", location: \"ауд. 395\", startTime: \"Nov 2 20:29:30 2016\"}," +
-//                    "{discipline: \"sc\", location: \"ауд. 395\",  status: \"ЛК\", startTime: \"Nov 3 20:29:30 2016\"}," +
-//                    "{discipline: \"sc\", location: \"ауд. 395\", status: \"ЛК\",  startTime: \"Nov 1 20:29:30 2016\"}," +
-//                    "{discipline: \"sc безопасность\", status: \"СМ\",  location: \"ауд. 395\", startTime: \"Nov 2 20:29:30 2016\"}," +
-//                    "]");
-
-            //jsonArray = cur_scheduler;
 
             String[] weekdays = {"СБ", "ВС", "ПН", "ВТ", "СР", "ЧТ", "ПТ"};
             String[] months = {"января", "февраля", "марта", "апреля", "мая", "июня",
@@ -213,9 +204,10 @@ public class ScrollingActivity extends AppCompatActivity {
             LinearLayout linearLayout = (LinearLayout) findViewById(R.id.pull_city);
             linearLayout.removeAllViewsInLayout();
             linearLayout.setPadding(0, 0, 0, 50);
-            for (int i = 0; i < jsonArray.length(); i++) {
-                try {
-                    JSONObject dateLesson = jsonArray.getJSONObject(i);
+            //for (int i = 0; i < cur_scheduler.length(); i++) {
+            for (int i = 0; i < 4; i++) {
+                    try {
+                    JSONObject dateLesson = cur_scheduler.getJSONObject(i);
                     String nameLesson = dateLesson.getString("discipline");
                     String locationLesson = delimeter + dateLesson.getString("location");
                     String statusLesson = dateLesson.getString("status") + delimeter;
@@ -277,6 +269,12 @@ public class ScrollingActivity extends AppCompatActivity {
 
         Log.d("lessons", "onResume");
 
+//        Intent intent = new Intent(ScrollingActivity.this, ScheduleIntentService.class);
+//        intent.setAction(ScheduleIntentService.ACTION_RECEIVE_SCHEDULE);
+//        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+
+        //Intent intent = new Intent(ScrollingActivity.this, ScheduleIntentService.class);
+        //groups = intent.getParcelableArrayListExtra("groups");
         List<Group> all_groups = dbApi.getGroups();
         List<String> group_names = new ArrayList<String>();
         for (Group cur_group: all_groups) {
