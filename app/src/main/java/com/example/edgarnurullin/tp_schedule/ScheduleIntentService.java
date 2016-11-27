@@ -112,7 +112,7 @@ public class ScheduleIntentService extends IntentService {
         ArrayList<Group> result = getAllGroups();
 
         //отправляем обратно группы
-        final Intent outIntent = new Intent(ACTION_RECEIVE_GROUPS);
+        Intent outIntent = new Intent(ACTION_RECEIVE_GROUPS);
         outIntent.putParcelableArrayListExtra("groups", result);
         LocalBroadcastManager.getInstance(this).sendBroadcast(outIntent);
     }

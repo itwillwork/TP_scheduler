@@ -25,6 +25,7 @@ import android.widget.Toast;
 import com.example.edgarnurullin.tp_schedule.content.Group;
 import com.example.edgarnurullin.tp_schedule.content.Lesson;
 import com.example.edgarnurullin.tp_schedule.db.dbApi;
+import com.example.edgarnurullin.tp_schedule.fetch.ShedulerService;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -52,17 +53,19 @@ public class ScrollingActivity extends AppCompatActivity {
             String action=intent.getAction();
             // если приходят занятия группы
             if(action.equals(ScheduleIntentService.ACTION_RECEIVE_SCHEDULE)) {
+                intent.setAction(ScheduleIntentService.ACTION_GET_SCHEDULE);
+                startService(intent);
                 lessons = intent.getParcelableArrayListExtra("schedule");
                 Log.d("lessons", "onReceive");
-                if (lessons == null) {
-                    setTestLessons();
-                }
                 updateScheduler();
             }
             // если приходят группы
             else if(action.equals(ScheduleIntentService.ACTION_RECEIVE_GROUPS)) {
+                intent.setAction(ScheduleIntentService.ACTION_GET_GROUPS);
+                startService(intent);
                 groups = intent.getParcelableArrayListExtra("groups");
                 Log.d("groups", "onReceive");
+                updateGroups();
             }
         }
     };
@@ -87,84 +90,84 @@ public class ScrollingActivity extends AppCompatActivity {
         intent.setAction(ScheduleIntentService.ACTION_NEED_FETCH);
         startService(intent);
 
-        final IntentFilter filter = new IntentFilter();
-        filter.addAction(ScheduleIntentService.ACTION_RECEIVE_SCHEDULE);
-        filter.addAction(ScheduleIntentService.ACTION_RECEIVE_GROUPS);
-        LocalBroadcastManager.getInstance(this).registerReceiver(receiver, filter);
-//        try{
-//          JSONArray jsonArray = new JSONArray("" +
-//                    "[" +
-//                    "{discipline: \"Тестирование\", status: \"ЛК\", location: \"ауд. 395\", startTime: \"Nov 1 20:29:30 2016\"}," +
-//                    "{discipline: \"Информационная безопасность\", status: \"РК\", location: \"ауд. 395\", startTime: \"Nov 2 20:29:30 2016\"}," +
-//                    "{discipline: \"Android\", location: \"ауд. 395\",  status: \"ЛК\", startTime: \"Nov 3 20:29:30 2016\"}," +
-//                    "{discipline: \"Тестирование\", location: \"ауд. 395\", status: \"ЛК\",  startTime: \"Nov 1 20:29:30 2016\"}," +
-//                    "{discipline: \"Информационная безопасность\", status: \"СМ\",  location: \"ауд. 395\", startTime: \"Nov 2 20:29:30 2016\"}," +
-//                    "{discipline: \"Android\", location: \"ауд. 395\",  status: \"ЛК\", startTime: \"Nov 3 20:29:30 2016\"}," +
-//                    "{discipline: \"Тестирование\", location: \"ауд. 395\",  status: \"ЛК\", startTime: \"Nov 1 20:29:30 2016\"}," +
-//                    "{discipline: \"Информационная безопасность\",  status: \"РК\", location: \"ауд. 395\", startTime: \"Nov 2 20:29:30 2016\"}," +
-//                    "{discipline: \"Android\", location: \"ауд. 395\",  status: \"ЛК\", startTime: \"Nov 3 20:29:30 2016\"}," +
-//                    "{discipline: \"Тестирование\", location: \"ауд. 395\", status: \"ЛК\",  startTime: \"Nov 1 20:29:30 2016\"}," +
-//                    "{discipline: \"Информационная безопасность\",  status: \"СМ\", location: \"ауд. 395\", startTime: \"Nov 2 20:29:30 2016\"}," +
-//                    "{discipline: \"Android\", location: \"ауд. 395\",  status: \"ЛК\", startTime: \"Nov 3 20:29:30 2016\"}," +
-//                    "{discipline: \"Тестирование\", location: \"ауд. 395\",  status: \"ЛК\", startTime: \"Nov 1 20:29:30 2016\"}," +
-//                    "{discipline: \"Информационная безопасность\",  status: \"ЛК\", location: \"ауд. 395\", startTime: \"Nov 2 20:29:30 2016\"}," +
-//                    "{discipline: \"Android\", location: \"ауд. 395\",  status: \"ЛК\", startTime: \"Nov 3 20:29:30 2016\"}," +
-//                    "]");
-//
-//            String[] weekdays = {"СБ", "ВС", "ПН", "ВТ", "СР", "ЧТ", "ПТ"};
-//            String[] months = {"января", "февраля", "марта", "апреля", "мая", "июня",
-//                    "июля", "августа", "сентября", "октября", "ноября", "декабря"};
-//            String delimeter = ", ";
-//            LinearLayout linearLayout = (LinearLayout) findViewById(R.id.pull_city);
-//            linearLayout.setPadding(0, 0, 0, 50);
-//            for (int i = 0; i < jsonArray.length(); i++) {
-//                try {
-//                    JSONObject dateLesson = jsonArray.getJSONObject(i);
-//                    String nameLesson = dateLesson.getString("discipline");
-//                    String locationLesson = delimeter + dateLesson.getString("location");
-//                    String statusLesson = dateLesson.getString("status") + delimeter;
-//                    DateFormat format = new SimpleDateFormat("MMM dd kk:mm:ss yyyy", Locale.ENGLISH);
-//                    Date date = format.parse(dateLesson.getString("startTime"));
-//                    Calendar calendar = Calendar.getInstance();
-//                    calendar.setTime(date);
-//
-//                    String weekdayLesson = weekdays[calendar.get(Calendar.DAY_OF_WEEK)];
-//                    Integer dayLesson = calendar.get(Calendar.DAY_OF_MONTH);
-//                    String monthLesson = " " + months[calendar.get(Calendar.MONTH)];
-//
-//                    LinearLayout lessonNodeH = new LinearLayout(this);
-//                    LinearLayout lessonNodeV = new LinearLayout(this);
-//                    LinearLayout lessonNodeH2 = new LinearLayout(this);
-//                    lessonNodeV.setOrientation(LinearLayout.VERTICAL);
-//                    lessonNodeH.setOrientation(LinearLayout.HORIZONTAL);
-//                    lessonNodeH2.setOrientation(LinearLayout.HORIZONTAL);
-//
-//                    TextView nameLessonNode = new TextView(this);
-//                    nameLessonNode.setTextSize(14);
-//                    nameLessonNode.setText(statusLesson + nameLesson);
-//
-//
-//                    TextView weekdayLessonNode = new TextView(this);
-//                    weekdayLessonNode.setTextSize(28);
-//                    weekdayLessonNode.setText(weekdayLesson);
-//
-//                    TextView dateLessonNode = new TextView(this);
-//                    dateLessonNode.setTextSize(14);
-//                    dateLessonNode.setText(dayLesson + monthLesson + locationLesson);
-//
-//                    weekdayLessonNode.setPadding(10, 0, 0, 0);
-//                    lessonNodeV.setPadding(30, 0, 10, 0);
-//                    lessonNodeH.setPadding(0, 30, 0, 30);
-//
-//                    lessonNodeV.addView(nameLessonNode);
-//                    lessonNodeV.addView(dateLessonNode);
-//
-//                    lessonNodeH.addView(weekdayLessonNode);
-//                    lessonNodeH.addView(lessonNodeV);
-//                    linearLayout.addView(lessonNodeH);
-//                } catch (ParseException e) {}
-//            }
-//        } catch (JSONException e) {}
+//        final IntentFilter filter = new IntentFilter();
+//        filter.addAction(ScheduleIntentService.ACTION_RECEIVE_SCHEDULE);
+//        filter.addAction(ScheduleIntentService.ACTION_RECEIVE_GROUPS);
+//        LocalBroadcastManager.getInstance(this).registerReceiver(receiver, filter);
+//////        try{
+//////          JSONArray jsonArray = new JSONArray("" +
+//////                    "[" +
+//////                    "{discipline: \"Тестирование\", status: \"ЛК\", location: \"ауд. 395\", startTime: \"Nov 1 20:29:30 2016\"}," +
+//////                    "{discipline: \"Информационная безопасность\", status: \"РК\", location: \"ауд. 395\", startTime: \"Nov 2 20:29:30 2016\"}," +
+//////                    "{discipline: \"Android\", location: \"ауд. 395\",  status: \"ЛК\", startTime: \"Nov 3 20:29:30 2016\"}," +
+//////                    "{discipline: \"Тестирование\", location: \"ауд. 395\", status: \"ЛК\",  startTime: \"Nov 1 20:29:30 2016\"}," +
+//////                    "{discipline: \"Информационная безопасность\", status: \"СМ\",  location: \"ауд. 395\", startTime: \"Nov 2 20:29:30 2016\"}," +
+//////                    "{discipline: \"Android\", location: \"ауд. 395\",  status: \"ЛК\", startTime: \"Nov 3 20:29:30 2016\"}," +
+//////                    "{discipline: \"Тестирование\", location: \"ауд. 395\",  status: \"ЛК\", startTime: \"Nov 1 20:29:30 2016\"}," +
+//////                    "{discipline: \"Информационная безопасность\",  status: \"РК\", location: \"ауд. 395\", startTime: \"Nov 2 20:29:30 2016\"}," +
+//////                    "{discipline: \"Android\", location: \"ауд. 395\",  status: \"ЛК\", startTime: \"Nov 3 20:29:30 2016\"}," +
+//////                    "{discipline: \"Тестирование\", location: \"ауд. 395\", status: \"ЛК\",  startTime: \"Nov 1 20:29:30 2016\"}," +
+//////                    "{discipline: \"Информационная безопасность\",  status: \"СМ\", location: \"ауд. 395\", startTime: \"Nov 2 20:29:30 2016\"}," +
+//////                    "{discipline: \"Android\", location: \"ауд. 395\",  status: \"ЛК\", startTime: \"Nov 3 20:29:30 2016\"}," +
+//////                    "{discipline: \"Тестирование\", location: \"ауд. 395\",  status: \"ЛК\", startTime: \"Nov 1 20:29:30 2016\"}," +
+//////                    "{discipline: \"Информационная безопасность\",  status: \"ЛК\", location: \"ауд. 395\", startTime: \"Nov 2 20:29:30 2016\"}," +
+//////                    "{discipline: \"Android\", location: \"ауд. 395\",  status: \"ЛК\", startTime: \"Nov 3 20:29:30 2016\"}," +
+//////                    "]");
+//////
+//////            String[] weekdays = {"СБ", "ВС", "ПН", "ВТ", "СР", "ЧТ", "ПТ"};
+//////            String[] months = {"января", "февраля", "марта", "апреля", "мая", "июня",
+//////                    "июля", "августа", "сентября", "октября", "ноября", "декабря"};
+//////            String delimeter = ", ";
+//////            LinearLayout linearLayout = (LinearLayout) findViewById(R.id.pull_city);
+//////            linearLayout.setPadding(0, 0, 0, 50);
+//////            for (int i = 0; i < jsonArray.length(); i++) {
+//////                try {
+//////                    JSONObject dateLesson = jsonArray.getJSONObject(i);
+//////                    String nameLesson = dateLesson.getString("discipline");
+//////                    String locationLesson = delimeter + dateLesson.getString("location");
+//////                    String statusLesson = dateLesson.getString("status") + delimeter;
+//////                    DateFormat format = new SimpleDateFormat("MMM dd kk:mm:ss yyyy", Locale.ENGLISH);
+//////                    Date date = format.parse(dateLesson.getString("startTime"));
+//////                    Calendar calendar = Calendar.getInstance();
+//////                    calendar.setTime(date);
+//////
+//////                    String weekdayLesson = weekdays[calendar.get(Calendar.DAY_OF_WEEK)];
+//////                    Integer dayLesson = calendar.get(Calendar.DAY_OF_MONTH);
+//////                    String monthLesson = " " + months[calendar.get(Calendar.MONTH)];
+//////
+//////                    LinearLayout lessonNodeH = new LinearLayout(this);
+//////                    LinearLayout lessonNodeV = new LinearLayout(this);
+//////                    LinearLayout lessonNodeH2 = new LinearLayout(this);
+//////                    lessonNodeV.setOrientation(LinearLayout.VERTICAL);
+//////                    lessonNodeH.setOrientation(LinearLayout.HORIZONTAL);
+//////                    lessonNodeH2.setOrientation(LinearLayout.HORIZONTAL);
+//////
+//////                    TextView nameLessonNode = new TextView(this);
+//////                    nameLessonNode.setTextSize(14);
+//////                    nameLessonNode.setText(statusLesson + nameLesson);
+//////
+//////
+//////                    TextView weekdayLessonNode = new TextView(this);
+//////                    weekdayLessonNode.setTextSize(28);
+//////                    weekdayLessonNode.setText(weekdayLesson);
+//////
+//////                    TextView dateLessonNode = new TextView(this);
+//////                    dateLessonNode.setTextSize(14);
+//////                    dateLessonNode.setText(dayLesson + monthLesson + locationLesson);
+//////
+//////                    weekdayLessonNode.setPadding(10, 0, 0, 0);
+//////                    lessonNodeV.setPadding(30, 0, 10, 0);
+//////                    lessonNodeH.setPadding(0, 30, 0, 30);
+//////
+//////                    lessonNodeV.addView(nameLessonNode);
+//////                    lessonNodeV.addView(dateLessonNode);
+//////
+//////                    lessonNodeH.addView(weekdayLessonNode);
+//////                    lessonNodeH.addView(lessonNodeV);
+//////                    linearLayout.addView(lessonNodeH);
+//////                } catch (ParseException e) {}
+//////            }
+//////        } catch (JSONException e) {}
 
     }
 
@@ -210,112 +213,143 @@ public class ScrollingActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        //updateScheduler();
+
+
+        final IntentFilter filter = new IntentFilter();
+        filter.addAction(ScheduleIntentService.ACTION_RECEIVE_SCHEDULE);
+        filter.addAction(ScheduleIntentService.ACTION_RECEIVE_GROUPS);
+        LocalBroadcastManager.getInstance(this).registerReceiver(receiver, filter);
+
         updateGroups();
-        updateScheduler();
+
     }
 
     private void updateGroups() {
 
-        Intent intent = getIntent();
-        intent.setAction(ScheduleIntentService.ACTION_RECEIVE_GROUPS);
-        LocalBroadcastManager.getInstance(ScrollingActivity.this).sendBroadcast(intent);
+//        Intent intent = getIntent();
+//        intent.setAction(ScheduleIntentService.ACTION_RECEIVE_GROUPS);
+//        LocalBroadcastManager.getInstance(ScrollingActivity.this).sendBroadcast(intent);
 
-        List<Group> all_groups = dbApi.getGroups();
-        List<String> group_names = new ArrayList<String>();
-        for (Group cur_group: all_groups) {
-            group_names.add(cur_group.getName());
+        if (groups != null && groups.size() > 0) {
+            List<String> group_names = new ArrayList<String>();
+            for (Group cur_group : groups) {
+                group_names.add(cur_group.getName());
+            }
+
+            Spinner spinner = (Spinner) findViewById(R.id.spinner);
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(ScrollingActivity.this,
+                    android.R.layout.simple_spinner_item, group_names);
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spinner.setAdapter(adapter);
+
+            spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                public void onItemSelected(AdapterView<?> parent, View view,
+                                           int pos, long id) {
+                    setGroupIdToPreferences(pos);
+                    Intent intent = new Intent(ScrollingActivity.this, ScheduleIntentService.class);
+//                    Intent intent = getIntent();
+//                    intent.putParcelableArrayListExtra("schedule", getIntent()
+//                            .getParcelableArrayListExtra("schedule"));
+                    intent.setAction(ScheduleIntentService.ACTION_RECEIVE_SCHEDULE);
+                    //startActivity(intent);
+                    LocalBroadcastManager.getInstance(ScrollingActivity.this).sendBroadcast(intent);
+                }
+
+                public void onNothingSelected(AdapterView<?> parent) {
+                    // Another interface callback
+                }
+            });
         }
-        Spinner spinner = (Spinner) findViewById(R.id.spinner);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(ScrollingActivity.this,
-                android.R.layout.simple_spinner_item, group_names);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
-
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            public void onItemSelected(AdapterView<?> parent, View view,
-                                       int pos, long id) {
-                setGroupIdToPreferences(pos);
-                Intent intent = new Intent(ScrollingActivity.this, ScheduleIntentService.class);
-                intent.setAction(ScheduleIntentService.ACTION_RECEIVE_SCHEDULE);
-                LocalBroadcastManager.getInstance(ScrollingActivity.this).sendBroadcast(intent);
-            }
-            public void onNothingSelected(AdapterView<?> parent) {
-                // Another interface callback
-            }
-        });
+        else {
+            Intent intent = new Intent(ScrollingActivity.this, ScheduleIntentService.class);
+//            intent.setAction(ScheduleIntentService.ACTION_GET_GROUPS);
+//            startService(intent);
+            intent.setAction(ScheduleIntentService.ACTION_RECEIVE_GROUPS);
+            LocalBroadcastManager.getInstance(ScrollingActivity.this).sendBroadcast(intent);
+        }
     }
 
 
     private void updateScheduler() {
-        try{
-            JSONArray cur_scheduler = new JSONArray();
-            for (Lesson cur_lesson: lessons) {
-                JSONObject json_lesson = new JSONObject();
-                json_lesson.put("discipline", cur_lesson.getTitle());
-                json_lesson.put("status", cur_lesson.getTypeLesson());
-                json_lesson.put("location", cur_lesson.getPlace());
-                json_lesson.put("startTime", "Nov 30 20:29:30 2016");
+        if (lessons != null) {
+            try {
+                JSONArray cur_scheduler = new JSONArray();
+                for (Lesson cur_lesson : lessons) {
+                    JSONObject json_lesson = new JSONObject();
+                    json_lesson.put("discipline", cur_lesson.getTitle());
+                    json_lesson.put("status", cur_lesson.getTypeLesson());
+                    json_lesson.put("location", cur_lesson.getPlace());
+                    json_lesson.put("startTime", "Nov 30 20:29:30 2016");
 
-                cur_scheduler.put(json_lesson);
-            }
-
-
-            String[] weekdays = {"СБ", "ВС", "ПН", "ВТ", "СР", "ЧТ", "ПТ"};
-            String[] months = {"января", "февраля", "марта", "апреля", "мая", "июня",
-                    "июля", "августа", "сентября", "октября", "ноября", "декабря"};
-            String delimeter = ", ";
-            LinearLayout linearLayout = (LinearLayout) findViewById(R.id.pull_city);
-            linearLayout.removeAllViewsInLayout();
-            linearLayout.setPadding(0, 0, 0, 50);
-            //for (int i = 0; i < cur_scheduler.length(); i++) {
-            for (int i = 0; i < 2; i++) {
-                try {
-                    JSONObject dateLesson = cur_scheduler.getJSONObject(i);
-                    String nameLesson = dateLesson.getString("discipline");
-                    String locationLesson = delimeter + dateLesson.getString("location");
-                    String statusLesson = dateLesson.getString("status") + delimeter;
-                    DateFormat format = new SimpleDateFormat("MMM dd kk:mm:ss yyyy", Locale.ENGLISH);
-                    Date date = format.parse(dateLesson.getString("startTime"));
-                    Calendar calendar = Calendar.getInstance();
-                    calendar.setTime(date);
-
-                    String weekdayLesson = weekdays[calendar.get(Calendar.DAY_OF_WEEK)];
-                    Integer dayLesson = calendar.get(Calendar.DAY_OF_MONTH);
-                    String monthLesson = " " + months[calendar.get(Calendar.MONTH)];
-
-                    LinearLayout lessonNodeH = new LinearLayout(this);
-                    LinearLayout lessonNodeV = new LinearLayout(this);
-                    LinearLayout lessonNodeH2 = new LinearLayout(this);
-                    lessonNodeV.setOrientation(LinearLayout.VERTICAL);
-                    lessonNodeH.setOrientation(LinearLayout.HORIZONTAL);
-                    lessonNodeH2.setOrientation(LinearLayout.HORIZONTAL);
-
-                    TextView nameLessonNode = new TextView(this);
-                    nameLessonNode.setTextSize(14);
-                    nameLessonNode.setText(statusLesson + nameLesson);
+                    cur_scheduler.put(json_lesson);
+                }
 
 
-                    TextView weekdayLessonNode = new TextView(this);
-                    weekdayLessonNode.setTextSize(28);
-                    weekdayLessonNode.setText(weekdayLesson);
+                String[] weekdays = {"СБ", "ВС", "ПН", "ВТ", "СР", "ЧТ", "ПТ"};
+                String[] months = {"января", "февраля", "марта", "апреля", "мая", "июня",
+                        "июля", "августа", "сентября", "октября", "ноября", "декабря"};
+                String delimeter = ", ";
+                LinearLayout linearLayout = (LinearLayout) findViewById(R.id.pull_city);
+                linearLayout.removeAllViewsInLayout();
+                linearLayout.setPadding(0, 0, 0, 50);
+                //for (int i = 0; i < cur_scheduler.length(); i++) {
+                for (int i = 0; i < 2; i++) {
+                    try {
+                        JSONObject dateLesson = cur_scheduler.getJSONObject(i);
+                        String nameLesson = dateLesson.getString("discipline");
+                        String locationLesson = delimeter + dateLesson.getString("location");
+                        String statusLesson = dateLesson.getString("status") + delimeter;
+                        DateFormat format = new SimpleDateFormat("MMM dd kk:mm:ss yyyy", Locale.ENGLISH);
+                        Date date = format.parse(dateLesson.getString("startTime"));
+                        Calendar calendar = Calendar.getInstance();
+                        calendar.setTime(date);
 
-                    TextView dateLessonNode = new TextView(this);
-                    dateLessonNode.setTextSize(14);
-                    dateLessonNode.setText(dayLesson + monthLesson + locationLesson);
+                        String weekdayLesson = weekdays[calendar.get(Calendar.DAY_OF_WEEK)];
+                        Integer dayLesson = calendar.get(Calendar.DAY_OF_MONTH);
+                        String monthLesson = " " + months[calendar.get(Calendar.MONTH)];
 
-                    weekdayLessonNode.setPadding(10, 0, 0, 0);
-                    lessonNodeV.setPadding(30, 0, 10, 0);
-                    lessonNodeH.setPadding(0, 30, 0, 30);
+                        LinearLayout lessonNodeH = new LinearLayout(this);
+                        LinearLayout lessonNodeV = new LinearLayout(this);
+                        LinearLayout lessonNodeH2 = new LinearLayout(this);
+                        lessonNodeV.setOrientation(LinearLayout.VERTICAL);
+                        lessonNodeH.setOrientation(LinearLayout.HORIZONTAL);
+                        lessonNodeH2.setOrientation(LinearLayout.HORIZONTAL);
 
-                    lessonNodeV.addView(nameLessonNode);
-                    lessonNodeV.addView(dateLessonNode);
+                        TextView nameLessonNode = new TextView(this);
+                        nameLessonNode.setTextSize(14);
+                        nameLessonNode.setText(statusLesson + nameLesson);
 
-                    lessonNodeH.addView(weekdayLessonNode);
-                    lessonNodeH.addView(lessonNodeV);
-                    linearLayout.addView(lessonNodeH);
-                } catch (ParseException e) {}
-            }
-        } catch (JSONException e) {}
+
+                        TextView weekdayLessonNode = new TextView(this);
+                        weekdayLessonNode.setTextSize(28);
+                        weekdayLessonNode.setText(weekdayLesson);
+
+                        TextView dateLessonNode = new TextView(this);
+                        dateLessonNode.setTextSize(14);
+                        dateLessonNode.setText(dayLesson + monthLesson + locationLesson);
+
+                        weekdayLessonNode.setPadding(10, 0, 0, 0);
+                        lessonNodeV.setPadding(30, 0, 10, 0);
+                        lessonNodeH.setPadding(0, 30, 0, 30);
+
+                        lessonNodeV.addView(nameLessonNode);
+                        lessonNodeV.addView(dateLessonNode);
+
+                        lessonNodeH.addView(weekdayLessonNode);
+                        lessonNodeH.addView(lessonNodeV);
+                        linearLayout.addView(lessonNodeH);
+                    } catch (ParseException e) {
+                    }
+                }
+            } catch (JSONException e) {}
+        } else {
+
+            Intent intent = new Intent(ScrollingActivity.this, ScheduleIntentService.class);
+            intent.setAction(ScheduleIntentService.ACTION_RECEIVE_SCHEDULE);
+            LocalBroadcastManager.getInstance(ScrollingActivity.this).sendBroadcast(intent);
+
+        }
     }
 
 
@@ -334,9 +368,9 @@ public class ScrollingActivity extends AppCompatActivity {
 
         Log.d("lessons", "onResume");
 
-        Lesson test = new Lesson (0, "TITLE", "typeLesson", "date", "time", "place");
-        lessons.add(0, test);
-        updateScheduler();
+//        Lesson test = new Lesson (0, "TITLE", "typeLesson", "date", "time", "place");
+//        lessons.add(0, test);
+//        updateScheduler();
 
 //        try{
 //            JSONArray jsonArray = new JSONArray("" +
@@ -426,21 +460,21 @@ public class ScrollingActivity extends AppCompatActivity {
         }
     }
 
-    public class SpinnerActivity extends Activity implements AdapterView.OnItemSelectedListener {
-
-        public void onItemSelected(AdapterView<?> parent, View view,
-                                   int pos, long id) {
-
-            Intent intent = new Intent(ScrollingActivity.this, ScheduleIntentService.class);
-            intent.setAction(ScheduleIntentService.ACTION_RECEIVE_SCHEDULE);
-            LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
-
-        }
-
-        public void onNothingSelected(AdapterView<?> parent) {
-            // Another interface callback
-        }
-    }
+//    public class SpinnerActivity extends Activity implements AdapterView.OnItemSelectedListener {
+//
+//        public void onItemSelected(AdapterView<?> parent, View view,
+//                                   int pos, long id) {
+//
+//            Intent intent = new Intent(ScrollingActivity.this, ScheduleIntentService.class);
+//            intent.setAction(ScheduleIntentService.ACTION_RECEIVE_SCHEDULE);
+//            LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+//
+//        }
+//
+//        public void onNothingSelected(AdapterView<?> parent) {
+//            // Another interface callback
+//        }
+//    }
 
 
 
