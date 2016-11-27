@@ -53,16 +53,18 @@ public class ScrollingActivity extends AppCompatActivity {
             String action=intent.getAction();
             // если приходят занятия группы
             if(action.equals(ScheduleIntentService.ACTION_RECEIVE_SCHEDULE)) {
-                intent.setAction(ScheduleIntentService.ACTION_GET_SCHEDULE);
-                startService(intent);
+//                intent.setAction(ScheduleIntentService.ACTION_GET_SCHEDULE);
+//                startService(intent);
                 lessons = intent.getParcelableArrayListExtra("schedule");
+                //setTestLessons();
                 Log.d("lessons", "onReceive");
                 updateScheduler();
             }
             // если приходят группы
             else if(action.equals(ScheduleIntentService.ACTION_RECEIVE_GROUPS)) {
-                intent.setAction(ScheduleIntentService.ACTION_GET_GROUPS);
-                startService(intent);
+
+//                intent.setAction(ScheduleIntentService.ACTION_GET_GROUPS);
+//                startService(intent);
                 groups = intent.getParcelableArrayListExtra("groups");
                 Log.d("groups", "onReceive");
                 updateGroups();
@@ -215,7 +217,6 @@ public class ScrollingActivity extends AppCompatActivity {
         super.onStart();
         //updateScheduler();
 
-
         final IntentFilter filter = new IntentFilter();
         filter.addAction(ScheduleIntentService.ACTION_RECEIVE_SCHEDULE);
         filter.addAction(ScheduleIntentService.ACTION_RECEIVE_GROUPS);
@@ -226,10 +227,6 @@ public class ScrollingActivity extends AppCompatActivity {
     }
 
     private void updateGroups() {
-
-//        Intent intent = getIntent();
-//        intent.setAction(ScheduleIntentService.ACTION_RECEIVE_GROUPS);
-//        LocalBroadcastManager.getInstance(ScrollingActivity.this).sendBroadcast(intent);
 
         if (groups != null && groups.size() > 0) {
             List<String> group_names = new ArrayList<String>();
@@ -247,13 +244,16 @@ public class ScrollingActivity extends AppCompatActivity {
                 public void onItemSelected(AdapterView<?> parent, View view,
                                            int pos, long id) {
                     setGroupIdToPreferences(pos);
+
                     Intent intent = new Intent(ScrollingActivity.this, ScheduleIntentService.class);
-//                    Intent intent = getIntent();
-//                    intent.putParcelableArrayListExtra("schedule", getIntent()
-//                            .getParcelableArrayListExtra("schedule"));
-                    intent.setAction(ScheduleIntentService.ACTION_RECEIVE_SCHEDULE);
-                    //startActivity(intent);
-                    LocalBroadcastManager.getInstance(ScrollingActivity.this).sendBroadcast(intent);
+                    intent.setAction(ScheduleIntentService.ACTION_GET_SCHEDULE);
+                    startService(intent);
+
+//                    Intent intent = new Intent(ScrollingActivity.this, ScheduleIntentService
+//                            .class);
+//                    intent.setAction(ScheduleIntentService.ACTION_RECEIVE_SCHEDULE);
+//                    //startActivity(intent);
+//                    LocalBroadcastManager.getInstance(ScrollingActivity.this).sendBroadcast(intent);
                 }
 
                 public void onNothingSelected(AdapterView<?> parent) {
@@ -263,10 +263,10 @@ public class ScrollingActivity extends AppCompatActivity {
         }
         else {
             Intent intent = new Intent(ScrollingActivity.this, ScheduleIntentService.class);
-//            intent.setAction(ScheduleIntentService.ACTION_GET_GROUPS);
-//            startService(intent);
-            intent.setAction(ScheduleIntentService.ACTION_RECEIVE_GROUPS);
-            LocalBroadcastManager.getInstance(ScrollingActivity.this).sendBroadcast(intent);
+            intent.setAction(ScheduleIntentService.ACTION_GET_GROUPS);
+            startService(intent);
+            //intent.setAction(ScheduleIntentService.ACTION_RECEIVE_GROUPS);
+            //LocalBroadcastManager.getInstance(ScrollingActivity.this).sendBroadcast(intent);
         }
     }
 
@@ -293,8 +293,8 @@ public class ScrollingActivity extends AppCompatActivity {
                 LinearLayout linearLayout = (LinearLayout) findViewById(R.id.pull_city);
                 linearLayout.removeAllViewsInLayout();
                 linearLayout.setPadding(0, 0, 0, 50);
-                //for (int i = 0; i < cur_scheduler.length(); i++) {
-                for (int i = 0; i < 2; i++) {
+                for (int i = 0; i < cur_scheduler.length(); i++) {
+                //for (int i = 0; i < 2; i++) {
                     try {
                         JSONObject dateLesson = cur_scheduler.getJSONObject(i);
                         String nameLesson = dateLesson.getString("discipline");
@@ -346,8 +346,13 @@ public class ScrollingActivity extends AppCompatActivity {
         } else {
 
             Intent intent = new Intent(ScrollingActivity.this, ScheduleIntentService.class);
-            intent.setAction(ScheduleIntentService.ACTION_RECEIVE_SCHEDULE);
-            LocalBroadcastManager.getInstance(ScrollingActivity.this).sendBroadcast(intent);
+            intent.setAction(ScheduleIntentService.ACTION_GET_SCHEDULE);
+            startService(intent);
+
+
+//            final Intent intent = new Intent(ScrollingActivity.this, ScheduleIntentService.class);
+//            intent.setAction(ScheduleIntentService.ACTION_RECEIVE_SCHEDULE);
+//            LocalBroadcastManager.getInstance(ScrollingActivity.this).sendBroadcast(intent);
 
         }
     }
