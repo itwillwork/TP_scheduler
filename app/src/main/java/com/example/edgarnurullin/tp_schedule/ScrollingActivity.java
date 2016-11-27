@@ -280,31 +280,39 @@ public class ScrollingActivity extends AppCompatActivity {
                     json_lesson.put("discipline", cur_lesson.getTitle());
                     json_lesson.put("status", cur_lesson.getTypeLesson());
                     json_lesson.put("location", cur_lesson.getPlace());
-                    json_lesson.put("startTime", "Nov 30 20:29:30 2016");
+                    json_lesson.put("startTime",  cur_lesson.getDate() +" "+ cur_lesson.getTime());
+//                    json_lesson.put("startTime", "Nov 30 20:29:30 2016");
+//                    json_lesson.put("startTime1", cur_lesson.getDate());
+//                    json_lesson.put("startTime2", cur_lesson.getTime());
 
                     cur_scheduler.put(json_lesson);
                 }
 
-
-                String[] weekdays = {"СБ", "ВС", "ПН", "ВТ", "СР", "ЧТ", "ПТ"};
+                String[] weekdays = {"СБ", "ВС", "ПН", "ВТ", "СР", "ЧТ", "ПТ", "СБ", "ВС"};
                 String[] months = {"января", "февраля", "марта", "апреля", "мая", "июня",
                         "июля", "августа", "сентября", "октября", "ноября", "декабря"};
                 String delimeter = ", ";
                 LinearLayout linearLayout = (LinearLayout) findViewById(R.id.pull_city);
                 linearLayout.removeAllViewsInLayout();
                 linearLayout.setPadding(0, 0, 0, 50);
-                for (int i = 0; i < cur_scheduler.length(); i++) {
-                //for (int i = 0; i < 2; i++) {
-                    try {
+
+                int n = lessons.size() - 5;
+                if (n <= 0) {
+                    n = 2;
+                }
+                //for (int i = 0; i < cur_scheduler.length()-1; i++) {
+                    for (int i = 0; i < n; i++) {
+                        try {
                         JSONObject dateLesson = cur_scheduler.getJSONObject(i);
                         String nameLesson = dateLesson.getString("discipline");
                         String locationLesson = delimeter + dateLesson.getString("location");
                         String statusLesson = dateLesson.getString("status") + delimeter;
-                        DateFormat format = new SimpleDateFormat("MMM dd kk:mm:ss yyyy", Locale.ENGLISH);
+                        DateFormat format = new SimpleDateFormat("yyyy/MM/dd kk:mm", Locale
+                                .ENGLISH);
                         Date date = format.parse(dateLesson.getString("startTime"));
+
                         Calendar calendar = Calendar.getInstance();
                         calendar.setTime(date);
-
                         String weekdayLesson = weekdays[calendar.get(Calendar.DAY_OF_WEEK)];
                         Integer dayLesson = calendar.get(Calendar.DAY_OF_MONTH);
                         String monthLesson = " " + months[calendar.get(Calendar.MONTH)];
@@ -319,7 +327,6 @@ public class ScrollingActivity extends AppCompatActivity {
                         TextView nameLessonNode = new TextView(this);
                         nameLessonNode.setTextSize(14);
                         nameLessonNode.setText(statusLesson + nameLesson);
-
 
                         TextView weekdayLessonNode = new TextView(this);
                         weekdayLessonNode.setTextSize(28);
