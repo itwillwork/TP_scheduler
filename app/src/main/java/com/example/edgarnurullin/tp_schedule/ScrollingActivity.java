@@ -296,12 +296,7 @@ public class ScrollingActivity extends AppCompatActivity {
                 linearLayout.removeAllViewsInLayout();
                 linearLayout.setPadding(0, 0, 0, 50);
 
-                int n = lessons.size() - 5;
-                if (n <= 0) {
-                    n = 2;
-                }
-                //for (int i = 0; i < cur_scheduler.length()-1; i++) {
-                    for (int i = 0; i < n; i++) {
+                for (int i = 0; i < cur_scheduler.length()-1; i++) {
                         try {
                         JSONObject dateLesson = cur_scheduler.getJSONObject(i);
                         String nameLesson = dateLesson.getString("discipline");
