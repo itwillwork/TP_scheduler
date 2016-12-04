@@ -1,6 +1,7 @@
 package com.example.edgarnurullin.tp_schedule;
 
 import android.app.IntentService;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -49,6 +50,10 @@ public class ScheduleIntentService extends IntentService {
         super("ScheduleIntentService");
     }
 
+    public void onCreate() {
+        super.onCreate();
+        updateAllReceiveInfo();
+    }
     @Override
     protected void onHandleIntent(Intent intent) {
         if (intent != null) {
