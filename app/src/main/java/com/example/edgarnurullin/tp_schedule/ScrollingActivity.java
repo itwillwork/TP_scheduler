@@ -24,7 +24,6 @@ import android.widget.Toast;
 
 import com.example.edgarnurullin.tp_schedule.content.Group;
 import com.example.edgarnurullin.tp_schedule.content.Lesson;
-import com.example.edgarnurullin.tp_schedule.db.dbApi;
 import com.example.edgarnurullin.tp_schedule.fetch.ShedulerService;
 
 import org.json.JSONArray;
@@ -61,6 +60,12 @@ public class ScrollingActivity extends AppCompatActivity {
                 Log.d("groups", "onReceive");
                 updateGroups();
             }
+            else if(action.equals(ScheduleIntentService.ACTION_RECEIVE_FETCH_ERROR)) {
+                Toast.makeText(context, "Ошибка получения данных, что-то пошло не так (", Toast.LENGTH_LONG).show();
+            }
+            else if(action.equals(ScheduleIntentService.ACTION_RECEIVE_FETCH_SUCCESS)) {
+                Toast.makeText(context, "Расписание обновлено", Toast.LENGTH_LONG).show();
+            }
         }
     };
 
@@ -90,6 +95,8 @@ public class ScrollingActivity extends AppCompatActivity {
         final IntentFilter filter = new IntentFilter();
         filter.addAction(ScheduleIntentService.ACTION_RECEIVE_SCHEDULE);
         filter.addAction(ScheduleIntentService.ACTION_RECEIVE_GROUPS);
+        filter.addAction(ScheduleIntentService.ACTION_RECEIVE_FETCH_ERROR);
+        filter.addAction(ScheduleIntentService.ACTION_RECEIVE_FETCH_SUCCESS);
         LocalBroadcastManager.getInstance(this).registerReceiver(receiver, filter);
     }
 
