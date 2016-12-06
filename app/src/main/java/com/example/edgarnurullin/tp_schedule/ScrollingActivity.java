@@ -64,7 +64,7 @@ public class ScrollingActivity extends AppCompatActivity {
                 Toast.makeText(context, "Ошибка получения данных, что-то пошло не так (", Toast.LENGTH_LONG).show();
             }
             else if(action.equals(ScheduleIntentService.ACTION_RECEIVE_FETCH_SUCCESS)) {
-                Toast.makeText(context, "Расписание обновлено", Toast.LENGTH_LONG).show();
+                Toast.makeText(context, "Расписание синхронизировано", Toast.LENGTH_LONG).show();
             }
         }
     };
@@ -116,22 +116,21 @@ public class ScrollingActivity extends AppCompatActivity {
             spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 public void onItemSelected(AdapterView<?> parent, View view,
                                            int pos, long id) {
-                    setGroupIdToPreferences(pos);
-
-                    Intent intent = new Intent(ScrollingActivity.this, ScheduleIntentService.class);
-                    intent.setAction(ScheduleIntentService.ACTION_GET_SCHEDULE);
-                    startService(intent);
+                    Log.d("spinner", "onItemSelected");
+                    //TODO надо починить уходит в вечный цикл
+                    //при первом запуске приложения почему-то функция вызывается бесконечное число раз
+                    // или если при повторном запуске приложения выбираю что-нибудь в дропдауне
+                    // начинается огромное количество запросов в интент сервис и все виснит
+//                    setGroupIdToPreferences(pos);
+//                    Intent intent = new Intent(ScrollingActivity.this, ScheduleIntentService.class);
+//                    intent.setAction(ScheduleIntentService.ACTION_GET_SCHEDULE);
+//                    startService(intent);
                 }
 
                 public void onNothingSelected(AdapterView<?> parent) {
                     // Another interface callback
                 }
             });
-        }
-        else {
-            Intent intent = new Intent(ScrollingActivity.this, ScheduleIntentService.class);
-            intent.setAction(ScheduleIntentService.ACTION_GET_GROUPS);
-            startService(intent);
         }
     }
 
@@ -206,10 +205,6 @@ public class ScrollingActivity extends AppCompatActivity {
                     }
                 }
             } catch (JSONException e) {}
-        } else {
-            Intent intent = new Intent(ScrollingActivity.this, ScheduleIntentService.class);
-            intent.setAction(ScheduleIntentService.ACTION_GET_SCHEDULE);
-            startService(intent);
         }
     }
 
