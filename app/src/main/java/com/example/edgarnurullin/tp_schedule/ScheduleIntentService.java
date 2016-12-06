@@ -78,6 +78,9 @@ public class ScheduleIntentService extends IntentService {
         }
     }
 
+    /**
+     * Функция возвращающая все будующие уроки выбранной группы
+     */
     private ArrayList<Lesson> getLessonsOfSelectedGroup() {
         int groupId = getGroupIdFromPreferences();
         String selection = " group_id = " + String.valueOf(groupId);
@@ -119,6 +122,10 @@ public class ScheduleIntentService extends IntentService {
 
         return result;
     }
+
+    /**
+     * Обработчик запроса данных расписания
+     */
     private void handleActionGetSchedule() {
         Log.d("intentService", "handleActionGetSchedule");
         ArrayList<Lesson> schedule = getLessonsOfSelectedGroup();
@@ -130,6 +137,10 @@ public class ScheduleIntentService extends IntentService {
 
         receiveTypesLessons(schedule);
     }
+
+    /**
+     * Функция кидающая данные о типах занятий, вызывается в обработчике запроса расписания handleActionGetSchedule
+     */
     private void receiveTypesLessons(ArrayList<Lesson> schedule) {
         HashSet<String> typeLessons = new HashSet<String>();
         for (int idx = 0; idx < schedule.size(); idx++) {
@@ -141,6 +152,10 @@ public class ScheduleIntentService extends IntentService {
         outIntent.putStringArrayListExtra("types_lessons", new ArrayList<String>(typeLessons));
         LocalBroadcastManager.getInstance(this).sendBroadcast(outIntent);
     }
+
+    /**
+     * Обработчик запроса занятий по типу занятия
+     */
     private void handleActionGetTypesLessons(String type) {
         ArrayList<Lesson> schedule = getLessonsOfSelectedGroup();
         ArrayList<Lesson> scheduleBeforeTreatment = new ArrayList<Lesson>();
@@ -154,6 +169,10 @@ public class ScheduleIntentService extends IntentService {
         outIntent.putParcelableArrayListExtra("schedule", scheduleBeforeTreatment);
         LocalBroadcastManager.getInstance(this).sendBroadcast(outIntent);
     }
+
+    /**
+     * Обработчик запроса всех групп
+     */
     private void handleActionGetGroups() {
         //запрашиваем все группы
         ArrayList<Group> result = getAllGroups();
@@ -165,6 +184,9 @@ public class ScheduleIntentService extends IntentService {
     }
 
 
+    /**
+     * Отсеиватель уже прошедших занятий
+     */
     private ArrayList<Lesson> passedActualLessons (ArrayList<Lesson> listLessons) {
         ArrayList<Lesson> result = new ArrayList<>();
         for (int idx = 0; idx < listLessons.size(); idx++) {
@@ -176,12 +198,18 @@ public class ScheduleIntentService extends IntentService {
         return result;
     }
 
+    /**
+     * Функция возвращающая все группы
+     */
     private ArrayList<Group> getAllGroups () {
         Uri uri = Uri.parse(DB_PREFIX + GroupsTable.Requests.TABLE_NAME);
         Cursor cursor = getContentResolver().query(uri, null, null, null, "id ASC");
         return GroupsTable.listFromCursor(cursor);
     }
 
+    /**
+     * Запрос в бд для получения объекта группы зная id группы в базе
+     */
     private Group getGroupViaId(int id) {
         Uri uri = Uri.parse(DB_PREFIX + GroupsTable.Requests.TABLE_NAME);
         Cursor cursor = getContentResolver().query(uri, null, "id=" + String.valueOf(id), null, "id ASC");
@@ -191,20 +219,35 @@ public class ScheduleIntentService extends IntentService {
         }
         return null;
     }
+
+    /**
+     * Получаем id выбранной группы из преференсов
+     */
     private int getGroupIdFromPreferences() {
         SharedPreferences myPrefs = getApplicationContext().getSharedPreferences("app", 0);
         return myPrefs.getInt("groupId", 0);
     }
+    /**
+     * Ставим id выбранной группы в преференсы
+     */
     private void setFetchDateToPreferences() {
         SharedPreferences myPrefs = getApplicationContext().getSharedPreferences("app", 0);
         SharedPreferences.Editor prefsEditor = myPrefs.edit();
         prefsEditor.putString("fetchDate", TimeHelper.getInstance().getDate());
         prefsEditor.commit();
     }
+
+    /**
+     * Запускает цепную реакцию отдачу во вне расписания выбранной группа (внутри типов занятий) и списка групп
+     */
     private void updateAllReceiveInfo() {
         handleActionGetGroups();
         handleActionGetSchedule();
     }
+
+    /**
+     * Обработчик запроса на синхронизацию расписания
+     */
     private void handleActionNeedFetch() {
         try {
             Response response = apiCall();
@@ -229,6 +272,10 @@ public class ScheduleIntentService extends IntentService {
     private void onParsingError() {
         receiveStatus(ACTION_RECEIVE_FETCH_TREATMENT_ERROR);
     }
+
+    /**
+     * Кидает во вне статус фетча
+     */
     private void receiveStatus (String status) {
         final Intent outIntent = new Intent(status);
         LocalBroadcastManager.getInstance(this).sendBroadcast(outIntent);
