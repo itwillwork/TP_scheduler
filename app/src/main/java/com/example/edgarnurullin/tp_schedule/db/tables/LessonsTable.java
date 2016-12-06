@@ -63,9 +63,6 @@ public class LessonsTable {
                 stringTutors = stringTutors.substring(1, stringTutors.length()-1);
                 Log.d("tutors", stringTutors);
                 //resultLesson.setTitle(data.get(key));
-            } else if (key.equals("type_entity")) {
-                String lol = data.get(key);
-                //resultLesson.setTitle(data.get(key));
             } else if (key.equals("discipline_blog")) {
                 String lol = data.get(key);
                 //resultLesson.setTitle(data.get(key));

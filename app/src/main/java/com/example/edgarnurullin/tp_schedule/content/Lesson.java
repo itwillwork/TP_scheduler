@@ -13,17 +13,28 @@ public class Lesson implements Parcelable {
     private String date;
     private String time;
     private String place;
+    private String detailedDescription;
+    private String detailedTitle;
+    private String tutors;
+    private String disciplineBlog;
+    private String disciplineLink;
 
     public Lesson() {
     }
 
-    public Lesson(Integer groupId, String title, String typeLesson, String date, String time, String place) {
+    public Lesson(Integer groupId, String title, String typeLesson, String date, String time, String place,
+                  String detailedDescription, String detailedTitle, String tutors, String disciplineBlog, String disciplineLink) {
         this.groupId = groupId;
         this.title = title;
         this.typeLesson = typeLesson;
         this.date = date;
         this.time = time;
         this.place = place;
+        this.detailedDescription = detailedDescription;
+        this.detailedTitle = detailedTitle;
+        this.tutors = tutors;
+        this.disciplineBlog = disciplineBlog;
+        this.disciplineLink = disciplineLink;
     }
 
     public Integer getGroupId() {
@@ -72,6 +83,30 @@ public class Lesson implements Parcelable {
     }
     public void setGroupName(String groupName) { this.groupName = groupName; }
 
+    public String getDetailedDescription() {
+        return detailedDescription;
+    }
+    public void setDetailedDescription(String detailedDescription) { this.detailedDescription = detailedDescription; }
+
+    public String getDetailedTitle() {
+        return detailedTitle;
+    }
+    public void setDetailedTitle(String detailedTitle) { this.detailedTitle = detailedTitle; }
+
+    public String getTutors() {
+        return tutors;
+    }
+    public void setTutors(String tutors) { this.tutors = tutors; }
+
+    public String getDisciplineBlog() {
+        return disciplineBlog;
+    }
+    public void setDisciplineBlog(String disciplineBlog) { this.disciplineBlog = disciplineBlog; }
+
+    public String getDisciplineLink() {
+        return disciplineLink;
+    }
+    public void setDisciplineLink(String disciplineLink) { this.disciplineLink = disciplineLink; }
 
     public int describeContents() {
         return 0;
@@ -85,6 +120,11 @@ public class Lesson implements Parcelable {
         parcel.writeString(date);
         parcel.writeString(time);
         parcel.writeString(place);
+        parcel.writeString(detailedDescription);
+        parcel.writeString(detailedTitle);
+        parcel.writeString(tutors);
+        parcel.writeString(disciplineBlog);
+        parcel.writeString(disciplineLink);
     }
 
     public static final Parcelable.Creator<Lesson> CREATOR = new Parcelable.Creator<Lesson>() {
@@ -106,5 +146,10 @@ public class Lesson implements Parcelable {
         date = parcel.readString();
         time = parcel.readString();
         place = parcel.readString();
+        detailedDescription = parcel.readString();
+        detailedTitle = parcel.readString();
+        tutors = parcel.readString();
+        disciplineBlog = parcel.readString();
+        disciplineLink = parcel.readString();
     }
 }
