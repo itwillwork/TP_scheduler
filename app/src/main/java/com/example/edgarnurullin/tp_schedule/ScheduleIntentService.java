@@ -73,8 +73,7 @@ public class ScheduleIntentService extends IntentService {
                 Log.d("action", "handleActionGetSchedule");
                 handleActionGetSchedule();
             } else if (ACTION_GET_TYPES_LESSONS.equals(action)) {
-                String lol = intent.getExtras().getString("type_lesson");
-                getTypesLessons();
+                handleActionGetTypesLessons(intent.getExtras().getString("type_lesson"));
             }
         }
     }
@@ -142,13 +141,18 @@ public class ScheduleIntentService extends IntentService {
         outIntent.putStringArrayListExtra("types_lessons", new ArrayList<String>(typeLessons));
         LocalBroadcastManager.getInstance(this).sendBroadcast(outIntent);
     }
-    private void getTypesLessons() {
-        Log.d("intentService", "getTypesLessons");
-//
-//        //отправляем обратно занятия
-//        final Intent outIntent = new Intent(ACTION_RECEIVE_SCHEDULE);
-//        outIntent.putParcelableArrayListExtra("schedule", result);
-//        LocalBroadcastManager.getInstance(this).sendBroadcast(outIntent);
+    private void handleActionGetTypesLessons(String type) {
+        ArrayList<Lesson> schedule = getLessonsOfSelectedGroup();
+        ArrayList<Lesson> scheduleBeforeTreatment = new ArrayList<Lesson>();
+        for (int idx = 0; idx < schedule.size(); idx++) {
+            Lesson curLesson = schedule.get(idx);
+            if (curLesson.getTypeLesson().equals(type)) {
+                scheduleBeforeTreatment.add(curLesson);
+            }
+        }
+        final Intent outIntent = new Intent(ACTION_RECEIVE_SCHEDULE);
+        outIntent.putParcelableArrayListExtra("schedule", scheduleBeforeTreatment);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(outIntent);
     }
     private void handleActionGetGroups() {
         //запрашиваем все группы
@@ -200,7 +204,6 @@ public class ScheduleIntentService extends IntentService {
     private void updateAllReceiveInfo() {
         handleActionGetGroups();
         handleActionGetSchedule();
-        getTypesLessons();
     }
     private void handleActionNeedFetch() {
         try {
