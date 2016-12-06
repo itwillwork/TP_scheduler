@@ -7,6 +7,8 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
+
 import com.example.edgarnurullin.tp_schedule.content.Group;
 import com.example.edgarnurullin.tp_schedule.content.Lesson;
 import com.example.edgarnurullin.tp_schedule.db.tables.GroupsTable;
@@ -63,12 +65,14 @@ public class ScheduleIntentService extends IntentService {
             } else if (ACTION_GET_GROUPS.equals(action)) {
                 handleActionGetGroups();
             } else if (ACTION_GET_SCHEDULE.equals(action)) {
+                Log.d("action", "handleActionGetSchedule");
                 handleActionGetSchedule();
             }
         }
     }
 
     private void handleActionGetSchedule() {
+        Log.d("intentService", "handleActionGetSchedule");
         int groupId = getGroupIdFromPreferences();
         String selection = " group_id = " + String.valueOf(groupId);
         Boolean isAllGroupSelected = false;

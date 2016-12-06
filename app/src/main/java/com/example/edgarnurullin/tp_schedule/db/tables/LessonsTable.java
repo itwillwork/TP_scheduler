@@ -52,23 +52,17 @@ public class LessonsTable {
             } else if (key.equals("short_title")) {
                 resultLesson.setTitle(data.get(key));
             } else if (key.equals("lesson_topic")) {
-                String lol = data.get(key);
-                //resultLesson.setTitle(data.get(key));
+                resultLesson.setDetailedDescription(data.get(key));
             } else if (key.equals("lesson_title")) {
-                String lol = data.get(key);
-                //resultLesson.setTitle(data.get(key));
+                resultLesson.setDetailedTitle(data.get(key));
             } else if (key.equals("lesson_tutors")) {
                 Object[] tutors = data.values().toArray();
                 String stringTutors = tutors[tutors.length - 1].toString();
-                stringTutors = stringTutors.substring(1, stringTutors.length()-1);
-                Log.d("tutors", stringTutors);
-                //resultLesson.setTitle(data.get(key));
+                resultLesson.setTutors(stringTutors.substring(1, stringTutors.length()-1));
             } else if (key.equals("discipline_blog")) {
-                String lol = data.get(key);
-                //resultLesson.setTitle(data.get(key));
+                resultLesson.setDisciplineBlog(data.get(key));
             } else if (key.equals("discipline_link")) {
-                String lol = data.get(key);
-                //resultLesson.setTitle(data.get(key));
+                resultLesson.setDisciplineLink(data.get(key));
             } else {
                 //default
             }
@@ -88,6 +82,12 @@ public class LessonsTable {
         values.put(Columns.DATE, lessonData.getDate());
         values.put(Columns.TIME, lessonData.getTime());
         values.put(Columns.PLACE, lessonData.getPlace());
+        values.put(Columns.DETAILED_DESC, lessonData.getDetailedDescription());
+        values.put(Columns.DETAILED_TITLE, lessonData.getDetailedTitle());
+        values.put(Columns.TUTORS, lessonData.getTutors());
+        values.put(Columns.BLOG_LINK, lessonData.getDisciplineBlog());
+        values.put(Columns.DISCIPLINE_LINK, lessonData.getDisciplineLink());
+
         return values;
     }
 
@@ -99,7 +99,14 @@ public class LessonsTable {
         String date = cursor.getString(cursor.getColumnIndex(Columns.DATE));
         String time = cursor.getString(cursor.getColumnIndex(Columns.TIME));
         String place = cursor.getString(cursor.getColumnIndex(Columns.PLACE));
-        return new Lesson(groupId, title, typeLesson, date, time, place);
+        String detailedDesc = cursor.getString(cursor.getColumnIndex(Columns.DETAILED_DESC));
+        String detailedTitle = cursor.getString(cursor.getColumnIndex(Columns.DETAILED_TITLE));
+        String tutors = cursor.getString(cursor.getColumnIndex(Columns.TUTORS));
+        String blogLink = cursor.getString(cursor.getColumnIndex(Columns.BLOG_LINK));
+        String disciplineLink = cursor.getString(cursor.getColumnIndex(Columns.DISCIPLINE_LINK));
+
+        return new Lesson(groupId, title, typeLesson, date, time, place,
+                detailedDesc, detailedTitle, tutors, blogLink, disciplineLink);
     }
 
     @NonNull
@@ -135,7 +142,16 @@ public class LessonsTable {
         String TIME = "time";
         // ауд. 395
         String PLACE = "place";
-
+        // Сегодня будем делать broadcastReceiver
+        String DETAILED_DESC = "detailed_desc";
+        // Что такое broadcastReceiver
+        String DETAILED_TITLE = "detailed_title";
+        // Иван Иванов, Петр Петров
+        String TUTORS = "tutors";
+        // /blog/show/629/
+        String BLOG_LINK = "blog";
+        // /curriculum/program/discipline/198/
+        String DISCIPLINE_LINK = "discipline";
     }
 
     public interface Requests {
@@ -149,6 +165,11 @@ public class LessonsTable {
                 Columns.DATE + " VARCHAR(50), " +
                 Columns.TIME + " VARCHAR(50), " +
                 Columns.PLACE + " VARCHAR(50), " +
+                Columns.DETAILED_DESC + " VARCHAR(100), " +
+                Columns.DETAILED_TITLE + " VARCHAR(100), " +
+                Columns.TUTORS + " VARCHAR(100), " +
+                Columns.BLOG_LINK + " VARCHAR(100), " +
+                Columns.DISCIPLINE_LINK + " VARCHAR(100), " +
                 Columns.TYPE_LESSON + " VARCHAR(50)" + " );";
 
         String DROP_REQUEST = "DROP TABLE IF EXISTS " + TABLE_NAME;
