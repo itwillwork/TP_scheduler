@@ -93,6 +93,8 @@ public class ScrollingActivity extends AppCompatActivity {
         intent.setAction(ScheduleIntentService.ACTION_NEED_FETCH);
         startService(intent);
 
+        //TODO убрать
+        //добавил чтобы тестить
         Intent intent2 = new Intent(ScrollingActivity.this, ScheduleIntentService.class);
         intent2.putExtra("type_lesson", "Семинар");
         intent2.setAction(ScheduleIntentService.ACTION_GET_TYPES_LESSONS);
