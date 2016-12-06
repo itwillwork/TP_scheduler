@@ -60,6 +60,7 @@ public class ScrollingActivity extends AppCompatActivity {
                 Log.d("groups", "onReceive");
                 updateGroups();
             }
+            // если приходят типы занятий которые отображены
             else if(action.equals(ScheduleIntentService.ACTION_RECEIVE_TYPE_LESSONS)) {
                 ArrayList<String> lol = intent.getStringArrayListExtra("types_lessons");
                 Log.d("type_lessons", "onReceive");
@@ -91,6 +92,11 @@ public class ScrollingActivity extends AppCompatActivity {
         // для обновления расписания
         intent.setAction(ScheduleIntentService.ACTION_NEED_FETCH);
         startService(intent);
+
+        Intent intent2 = new Intent(ScrollingActivity.this, ScheduleIntentService.class);
+        intent2.putExtra("type_lesson", "Семинар");
+        intent2.setAction(ScheduleIntentService.ACTION_GET_TYPES_LESSONS);
+        startService(intent2);
     }
 
     @Override

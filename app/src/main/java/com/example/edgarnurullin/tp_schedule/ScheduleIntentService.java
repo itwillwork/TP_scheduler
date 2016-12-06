@@ -73,13 +73,13 @@ public class ScheduleIntentService extends IntentService {
                 Log.d("action", "handleActionGetSchedule");
                 handleActionGetSchedule();
             } else if (ACTION_GET_TYPES_LESSONS.equals(action)) {
+                String lol = intent.getExtras().getString("type_lesson");
                 getTypesLessons();
             }
         }
     }
 
-    private void handleActionGetSchedule() {
-        Log.d("intentService", "handleActionGetSchedule");
+    private ArrayList<Lesson> getLessonsOfSelectedGroup() {
         int groupId = getGroupIdFromPreferences();
         String selection = " group_id = " + String.valueOf(groupId);
         Boolean isAllGroupSelected = false;
@@ -90,7 +90,6 @@ public class ScheduleIntentService extends IntentService {
 
         Group selectedGroup = getGroupViaId(groupId);
         ArrayList<Lesson> result;
-        HashSet<String> typeLessons = new HashSet<String>();
 
         if (selectedGroup == null) {
             result = null;
@@ -107,7 +106,6 @@ public class ScheduleIntentService extends IntentService {
             //проставляем название группы
             for (int idx = 0; idx < result.size(); idx++) {
                 Lesson curLesson = result.get(idx);
-                typeLessons.add(curLesson.getTypeLesson());
                 if (isAllGroupSelected) {
                     int groudId = curLesson.getGroupId();
                     curLesson.setGroupName(groups.get(groudId).getName());
@@ -120,19 +118,28 @@ public class ScheduleIntentService extends IntentService {
             result = passedActualLessons(result);
         }
 
+        return result;
+    }
+    private void handleActionGetSchedule() {
+        Log.d("intentService", "handleActionGetSchedule");
+        ArrayList<Lesson> schedule = getLessonsOfSelectedGroup();
+
         //отправляем обратно занятия
         final Intent outIntent = new Intent(ACTION_RECEIVE_SCHEDULE);
-        outIntent.putParcelableArrayListExtra("schedule", result);
+        outIntent.putParcelableArrayListExtra("schedule", schedule);
         LocalBroadcastManager.getInstance(this).sendBroadcast(outIntent);
 
-        receiveTypesLessons(new ArrayList<String>(typeLessons));
+        receiveTypesLessons(schedule);
     }
-    private void receiveTypesLessons(ArrayList<String> typesLessons) {
-        Log.d("intentService", "getTypesLessons");
+    private void receiveTypesLessons(ArrayList<Lesson> schedule) {
+        HashSet<String> typeLessons = new HashSet<String>();
+        for (int idx = 0; idx < schedule.size(); idx++) {
+            typeLessons.add(schedule.get(idx).getTypeLesson());
+        }
 
         //отправляем обратно типы занятия
         final Intent outIntent = new Intent(ACTION_RECEIVE_TYPE_LESSONS);
-        outIntent.putStringArrayListExtra("types_lessons", typesLessons);
+        outIntent.putStringArrayListExtra("types_lessons", new ArrayList<String>(typeLessons));
         LocalBroadcastManager.getInstance(this).sendBroadcast(outIntent);
     }
     private void getTypesLessons() {
