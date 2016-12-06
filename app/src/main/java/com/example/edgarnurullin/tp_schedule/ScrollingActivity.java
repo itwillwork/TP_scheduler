@@ -60,11 +60,16 @@ public class ScrollingActivity extends AppCompatActivity {
                 Log.d("groups", "onReceive");
                 updateGroups();
             }
+            // если приходят типы занятий которые отображены
+            else if(action.equals(ScheduleIntentService.ACTION_RECEIVE_TYPE_LESSONS)) {
+                ArrayList<String> lol = intent.getStringArrayListExtra("types_lessons");
+                Log.d("type_lessons", "onReceive");
+            }
             else if(action.equals(ScheduleIntentService.ACTION_RECEIVE_FETCH_ERROR)) {
                 Toast.makeText(context, "Ошибка получения данных, что-то пошло не так (", Toast.LENGTH_LONG).show();
             }
             else if(action.equals(ScheduleIntentService.ACTION_RECEIVE_FETCH_SUCCESS)) {
-                Toast.makeText(context, "Расписание обновлено", Toast.LENGTH_LONG).show();
+                Toast.makeText(context, "Расписание синхронизировано", Toast.LENGTH_LONG).show();
             }
         }
     };
@@ -87,6 +92,13 @@ public class ScrollingActivity extends AppCompatActivity {
         // для обновления расписания
         intent.setAction(ScheduleIntentService.ACTION_NEED_FETCH);
         startService(intent);
+
+        //TODO убрать
+        //добавил чтобы тестить
+        Intent intent2 = new Intent(ScrollingActivity.this, ScheduleIntentService.class);
+        intent2.putExtra("type_lesson", "Семинар");
+        intent2.setAction(ScheduleIntentService.ACTION_GET_TYPES_LESSONS);
+        startService(intent2);
     }
 
     @Override
@@ -97,6 +109,7 @@ public class ScrollingActivity extends AppCompatActivity {
         filter.addAction(ScheduleIntentService.ACTION_RECEIVE_GROUPS);
         filter.addAction(ScheduleIntentService.ACTION_RECEIVE_FETCH_ERROR);
         filter.addAction(ScheduleIntentService.ACTION_RECEIVE_FETCH_SUCCESS);
+        filter.addAction(ScheduleIntentService.ACTION_RECEIVE_TYPE_LESSONS);
         LocalBroadcastManager.getInstance(this).registerReceiver(receiver, filter);
     }
 
@@ -116,8 +129,12 @@ public class ScrollingActivity extends AppCompatActivity {
             spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 public void onItemSelected(AdapterView<?> parent, View view,
                                            int pos, long id) {
+                    Log.d("spinner", "onItemSelected");
+                    //TODO надо починить уходит в вечный цикл
+                    //при первом запуске приложения почему-то функция вызывается бесконечное число раз
+                    // или если при повторном запуске приложения выбираю что-нибудь в дропдауне
+                    // начинается огромное количество запросов в интент сервис и все виснит
                     setGroupIdToPreferences(pos);
-
                     Intent intent = new Intent(ScrollingActivity.this, ScheduleIntentService.class);
                     intent.setAction(ScheduleIntentService.ACTION_GET_SCHEDULE);
                     startService(intent);
@@ -127,11 +144,6 @@ public class ScrollingActivity extends AppCompatActivity {
                     // Another interface callback
                 }
             });
-        }
-        else {
-            Intent intent = new Intent(ScrollingActivity.this, ScheduleIntentService.class);
-            intent.setAction(ScheduleIntentService.ACTION_GET_GROUPS);
-            startService(intent);
         }
     }
 
@@ -206,10 +218,6 @@ public class ScrollingActivity extends AppCompatActivity {
                     }
                 }
             } catch (JSONException e) {}
-        } else {
-            Intent intent = new Intent(ScrollingActivity.this, ScheduleIntentService.class);
-            intent.setAction(ScheduleIntentService.ACTION_GET_SCHEDULE);
-            startService(intent);
         }
     }
 

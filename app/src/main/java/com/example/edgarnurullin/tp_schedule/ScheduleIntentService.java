@@ -7,6 +7,8 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
+
 import com.example.edgarnurullin.tp_schedule.content.Group;
 import com.example.edgarnurullin.tp_schedule.content.Lesson;
 import com.example.edgarnurullin.tp_schedule.db.tables.GroupsTable;
@@ -19,6 +21,7 @@ import com.example.edgarnurullin.tp_schedule.fetch.response.ScheduleResponse;
 import com.example.edgarnurullin.tp_schedule.helpers.TimeHelper;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import retrofit2.Call;
@@ -34,11 +37,15 @@ public class ScheduleIntentService extends IntentService {
     public static final String ACTION_GET_GROUPS = PREFIX + "GET_GROUPS";
     //на обновление базы
     public static final String ACTION_NEED_FETCH = PREFIX + "NEED_FETCH";
+    //отдача по нужному типу занятия выбранной группы из базы
+    public static final String ACTION_GET_TYPES_LESSONS = PREFIX + "GET_TYPES_LESSONS";
 
     //отдача расписания группы
     public static final String ACTION_RECEIVE_SCHEDULE = PREFIX + "RECEIVE_SCHEDULE";
     //отдача групп
     public static final String ACTION_RECEIVE_GROUPS = PREFIX + "RECEIVE_GROUPS";
+    //отдача групп
+    public static final String ACTION_RECEIVE_TYPE_LESSONS = PREFIX + "RECEIVE_TYPE_LESSONS";
     //удачный фетч
     public static final String ACTION_RECEIVE_FETCH_ERROR = PREFIX + "RECEIVE_FETCH_ERROR";
     //неудачный фетч
@@ -63,12 +70,15 @@ public class ScheduleIntentService extends IntentService {
             } else if (ACTION_GET_GROUPS.equals(action)) {
                 handleActionGetGroups();
             } else if (ACTION_GET_SCHEDULE.equals(action)) {
+                Log.d("action", "handleActionGetSchedule");
                 handleActionGetSchedule();
+            } else if (ACTION_GET_TYPES_LESSONS.equals(action)) {
+                handleActionGetTypesLessons(intent.getExtras().getString("type_lesson"));
             }
         }
     }
 
-    private void handleActionGetSchedule() {
+    private ArrayList<Lesson> getLessonsOfSelectedGroup() {
         int groupId = getGroupIdFromPreferences();
         String selection = " group_id = " + String.valueOf(groupId);
         Boolean isAllGroupSelected = false;
@@ -91,14 +101,15 @@ public class ScheduleIntentService extends IntentService {
             if (isAllGroupSelected) {
                 groups = getAllGroups();
             }
+
             //проставляем название группы
             for (int idx = 0; idx < result.size(); idx++) {
+                Lesson curLesson = result.get(idx);
                 if (isAllGroupSelected) {
-                    Lesson curLesson = result.get(idx);
                     int groudId = curLesson.getGroupId();
-                    result.get(idx).setGroupName(groups.get(groudId).getName());
+                    curLesson.setGroupName(groups.get(groudId).getName());
                 } else {
-                    result.get(idx).setGroupName(selectedGroup.getName());
+                    curLesson.setGroupName(selectedGroup.getName());
                 }
             }
 
@@ -106,12 +117,43 @@ public class ScheduleIntentService extends IntentService {
             result = passedActualLessons(result);
         }
 
+        return result;
+    }
+    private void handleActionGetSchedule() {
+        Log.d("intentService", "handleActionGetSchedule");
+        ArrayList<Lesson> schedule = getLessonsOfSelectedGroup();
+
         //отправляем обратно занятия
         final Intent outIntent = new Intent(ACTION_RECEIVE_SCHEDULE);
-        outIntent.putParcelableArrayListExtra("schedule", result);
+        outIntent.putParcelableArrayListExtra("schedule", schedule);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(outIntent);
+
+        receiveTypesLessons(schedule);
+    }
+    private void receiveTypesLessons(ArrayList<Lesson> schedule) {
+        HashSet<String> typeLessons = new HashSet<String>();
+        for (int idx = 0; idx < schedule.size(); idx++) {
+            typeLessons.add(schedule.get(idx).getTypeLesson());
+        }
+
+        //отправляем обратно типы занятия
+        final Intent outIntent = new Intent(ACTION_RECEIVE_TYPE_LESSONS);
+        outIntent.putStringArrayListExtra("types_lessons", new ArrayList<String>(typeLessons));
         LocalBroadcastManager.getInstance(this).sendBroadcast(outIntent);
     }
-
+    private void handleActionGetTypesLessons(String type) {
+        ArrayList<Lesson> schedule = getLessonsOfSelectedGroup();
+        ArrayList<Lesson> scheduleBeforeTreatment = new ArrayList<Lesson>();
+        for (int idx = 0; idx < schedule.size(); idx++) {
+            Lesson curLesson = schedule.get(idx);
+            if (curLesson.getTypeLesson().equals(type)) {
+                scheduleBeforeTreatment.add(curLesson);
+            }
+        }
+        final Intent outIntent = new Intent(ACTION_RECEIVE_SCHEDULE);
+        outIntent.putParcelableArrayListExtra("schedule", scheduleBeforeTreatment);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(outIntent);
+    }
     private void handleActionGetGroups() {
         //запрашиваем все группы
         ArrayList<Group> result = getAllGroups();
