@@ -60,6 +60,10 @@ public class ScrollingActivity extends AppCompatActivity {
                 Log.d("groups", "onReceive");
                 updateGroups();
             }
+            else if(action.equals(ScheduleIntentService.ACTION_RECEIVE_TYPE_LESSONS)) {
+                ArrayList<String> lol = intent.getStringArrayListExtra("types_lessons");
+                Log.d("type_lessons", "onReceive");
+            }
             else if(action.equals(ScheduleIntentService.ACTION_RECEIVE_FETCH_ERROR)) {
                 Toast.makeText(context, "Ошибка получения данных, что-то пошло не так (", Toast.LENGTH_LONG).show();
             }
@@ -97,6 +101,7 @@ public class ScrollingActivity extends AppCompatActivity {
         filter.addAction(ScheduleIntentService.ACTION_RECEIVE_GROUPS);
         filter.addAction(ScheduleIntentService.ACTION_RECEIVE_FETCH_ERROR);
         filter.addAction(ScheduleIntentService.ACTION_RECEIVE_FETCH_SUCCESS);
+        filter.addAction(ScheduleIntentService.ACTION_RECEIVE_TYPE_LESSONS);
         LocalBroadcastManager.getInstance(this).registerReceiver(receiver, filter);
     }
 
@@ -121,10 +126,10 @@ public class ScrollingActivity extends AppCompatActivity {
                     //при первом запуске приложения почему-то функция вызывается бесконечное число раз
                     // или если при повторном запуске приложения выбираю что-нибудь в дропдауне
                     // начинается огромное количество запросов в интент сервис и все виснит
-//                    setGroupIdToPreferences(pos);
-//                    Intent intent = new Intent(ScrollingActivity.this, ScheduleIntentService.class);
-//                    intent.setAction(ScheduleIntentService.ACTION_GET_SCHEDULE);
-//                    startService(intent);
+                    setGroupIdToPreferences(pos);
+                    Intent intent = new Intent(ScrollingActivity.this, ScheduleIntentService.class);
+                    intent.setAction(ScheduleIntentService.ACTION_GET_SCHEDULE);
+                    startService(intent);
                 }
 
                 public void onNothingSelected(AdapterView<?> parent) {

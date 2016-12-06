@@ -21,6 +21,7 @@ import com.example.edgarnurullin.tp_schedule.fetch.response.ScheduleResponse;
 import com.example.edgarnurullin.tp_schedule.helpers.TimeHelper;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import retrofit2.Call;
@@ -36,11 +37,15 @@ public class ScheduleIntentService extends IntentService {
     public static final String ACTION_GET_GROUPS = PREFIX + "GET_GROUPS";
     //на обновление базы
     public static final String ACTION_NEED_FETCH = PREFIX + "NEED_FETCH";
+    //отдача по нужному типу занятия выбранной группы из базы
+    public static final String ACTION_GET_TYPES_LESSONS = PREFIX + "GET_TYPES_LESSONS";
 
     //отдача расписания группы
     public static final String ACTION_RECEIVE_SCHEDULE = PREFIX + "RECEIVE_SCHEDULE";
     //отдача групп
     public static final String ACTION_RECEIVE_GROUPS = PREFIX + "RECEIVE_GROUPS";
+    //отдача групп
+    public static final String ACTION_RECEIVE_TYPE_LESSONS = PREFIX + "RECEIVE_TYPE_LESSONS";
     //удачный фетч
     public static final String ACTION_RECEIVE_FETCH_ERROR = PREFIX + "RECEIVE_FETCH_ERROR";
     //неудачный фетч
@@ -67,6 +72,8 @@ public class ScheduleIntentService extends IntentService {
             } else if (ACTION_GET_SCHEDULE.equals(action)) {
                 Log.d("action", "handleActionGetSchedule");
                 handleActionGetSchedule();
+            } else if (ACTION_GET_TYPES_LESSONS.equals(action)) {
+                getTypesLessons();
             }
         }
     }
@@ -83,6 +90,7 @@ public class ScheduleIntentService extends IntentService {
 
         Group selectedGroup = getGroupViaId(groupId);
         ArrayList<Lesson> result;
+        HashSet<String> typeLessons = new HashSet<String>();
 
         if (selectedGroup == null) {
             result = null;
@@ -95,14 +103,16 @@ public class ScheduleIntentService extends IntentService {
             if (isAllGroupSelected) {
                 groups = getAllGroups();
             }
+
             //проставляем название группы
             for (int idx = 0; idx < result.size(); idx++) {
+                Lesson curLesson = result.get(idx);
+                typeLessons.add(curLesson.getTypeLesson());
                 if (isAllGroupSelected) {
-                    Lesson curLesson = result.get(idx);
                     int groudId = curLesson.getGroupId();
-                    result.get(idx).setGroupName(groups.get(groudId).getName());
+                    curLesson.setGroupName(groups.get(groudId).getName());
                 } else {
-                    result.get(idx).setGroupName(selectedGroup.getName());
+                    curLesson.setGroupName(selectedGroup.getName());
                 }
             }
 
@@ -114,8 +124,25 @@ public class ScheduleIntentService extends IntentService {
         final Intent outIntent = new Intent(ACTION_RECEIVE_SCHEDULE);
         outIntent.putParcelableArrayListExtra("schedule", result);
         LocalBroadcastManager.getInstance(this).sendBroadcast(outIntent);
-    }
 
+        receiveTypesLessons(new ArrayList<String>(typeLessons));
+    }
+    private void receiveTypesLessons(ArrayList<String> typesLessons) {
+        Log.d("intentService", "getTypesLessons");
+
+        //отправляем обратно типы занятия
+        final Intent outIntent = new Intent(ACTION_RECEIVE_TYPE_LESSONS);
+        outIntent.putStringArrayListExtra("types_lessons", typesLessons);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(outIntent);
+    }
+    private void getTypesLessons() {
+        Log.d("intentService", "getTypesLessons");
+//
+//        //отправляем обратно занятия
+//        final Intent outIntent = new Intent(ACTION_RECEIVE_SCHEDULE);
+//        outIntent.putParcelableArrayListExtra("schedule", result);
+//        LocalBroadcastManager.getInstance(this).sendBroadcast(outIntent);
+    }
     private void handleActionGetGroups() {
         //запрашиваем все группы
         ArrayList<Group> result = getAllGroups();
@@ -166,6 +193,7 @@ public class ScheduleIntentService extends IntentService {
     private void updateAllReceiveInfo() {
         handleActionGetGroups();
         handleActionGetSchedule();
+        getTypesLessons();
     }
     private void handleActionNeedFetch() {
         try {
