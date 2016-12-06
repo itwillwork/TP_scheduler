@@ -5,15 +5,19 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.util.Log;
+
 import com.example.edgarnurullin.tp_schedule.content.Lesson;
 import com.example.edgarnurullin.tp_schedule.db.SqliteHelper;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class LessonsTable {
 
@@ -47,6 +51,27 @@ public class LessonsTable {
                 resultLesson.setTitle(data.get(key));
             } else if (key.equals("short_title")) {
                 resultLesson.setTitle(data.get(key));
+            } else if (key.equals("lesson_topic")) {
+                String lol = data.get(key);
+                //resultLesson.setTitle(data.get(key));
+            } else if (key.equals("lesson_title")) {
+                String lol = data.get(key);
+                //resultLesson.setTitle(data.get(key));
+            } else if (key.equals("lesson_tutors")) {
+                Object[] tutors = data.values().toArray();
+                String stringTutors = tutors[tutors.length - 1].toString();
+                stringTutors = stringTutors.substring(1, stringTutors.length()-1);
+                Log.d("tutors", stringTutors);
+                //resultLesson.setTitle(data.get(key));
+            } else if (key.equals("type_entity")) {
+                String lol = data.get(key);
+                //resultLesson.setTitle(data.get(key));
+            } else if (key.equals("discipline_blog")) {
+                String lol = data.get(key);
+                //resultLesson.setTitle(data.get(key));
+            } else if (key.equals("discipline_link")) {
+                String lol = data.get(key);
+                //resultLesson.setTitle(data.get(key));
             } else {
                 //default
             }
