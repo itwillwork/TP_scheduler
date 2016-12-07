@@ -134,8 +134,9 @@ public class ScheduleIntentService extends IntentService {
         final Intent outIntent = new Intent(ACTION_RECEIVE_SCHEDULE);
         outIntent.putParcelableArrayListExtra("schedule", schedule);
         LocalBroadcastManager.getInstance(this).sendBroadcast(outIntent);
-
-        receiveTypesLessons(schedule);
+        if (schedule != null) {
+            receiveTypesLessons(schedule);
+        }
     }
 
     /**
