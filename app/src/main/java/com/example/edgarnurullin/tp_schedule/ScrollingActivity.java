@@ -109,6 +109,13 @@ public class ScrollingActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        mTracker.setScreenName("Image~" + nameForTracker);
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+    };
+
+    @Override
     protected void onStart() {
         super.onStart();
         final IntentFilter filter = new IntentFilter();
@@ -118,6 +125,11 @@ public class ScrollingActivity extends AppCompatActivity {
         filter.addAction(ScheduleIntentService.ACTION_RECEIVE_FETCH_SUCCESS);
         filter.addAction(ScheduleIntentService.ACTION_RECEIVE_TYPE_LESSONS);
         LocalBroadcastManager.getInstance(this).registerReceiver(receiver, filter);
+
+        mTracker.send(new HitBuilders.EventBuilder()
+                .setCategory("Action")
+                .setAction("FirstEventLol)")
+                .build());
     }
 
     private void updateGroups() {
@@ -234,9 +246,6 @@ public class ScrollingActivity extends AppCompatActivity {
         SharedPreferences.Editor prefsEditor = myPrefs.edit();
         prefsEditor.putInt("groupId", id);
         prefsEditor.commit();
-
-        mTracker.setScreenName("Image~" + nameForTracker);
-        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
     }
 
 }
