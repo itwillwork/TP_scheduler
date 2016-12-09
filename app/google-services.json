@@ -1,0 +1,38 @@
+{
+  "project_info": {
+    "project_number": "679889798045",
+    "project_id": "tp-schedule"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:679889798045:android:9a92b4567998d56b",
+        "android_client_info": {
+          "package_name": "com.example.edgarnurullin"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCQOF-DEJCPlgKJQJdtLHA2G3fTUeUQHN4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 2,
+          "analytics_property": {
+            "tracking_id": "UA-88736193-1"
+          }
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
