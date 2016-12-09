@@ -143,10 +143,11 @@ public class ScheduleIntentService extends IntentService {
      */
     private void receiveTypesLessons(ArrayList<Lesson> schedule) {
         HashSet<String> typeLessons = new HashSet<String>();
-        for (int idx = 0; idx < schedule.size(); idx++) {
-            typeLessons.add(schedule.get(idx).getTypeLesson());
+        if (schedule != null) { 
+            for (int idx = 0; idx < schedule.size(); idx++) { 
+                typeLessons.add(schedule.get(idx).getTypeLesson()); 
+            } 
         }
-
         //отправляем обратно типы занятия
         final Intent outIntent = new Intent(ACTION_RECEIVE_TYPE_LESSONS);
         outIntent.putStringArrayListExtra("types_lessons", new ArrayList<String>(typeLessons));
