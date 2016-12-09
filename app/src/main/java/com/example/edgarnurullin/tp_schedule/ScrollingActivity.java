@@ -25,6 +25,8 @@ import android.widget.Toast;
 import com.example.edgarnurullin.tp_schedule.content.Group;
 import com.example.edgarnurullin.tp_schedule.content.Lesson;
 import com.example.edgarnurullin.tp_schedule.fetch.ShedulerService;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -43,7 +45,8 @@ public class ScrollingActivity extends AppCompatActivity {
 
     ArrayList<Lesson> lessons;
     ArrayList<Group> groups;
-
+    private Tracker mTracker;
+    private final String nameForTracker = "ScrollingActivity";
     private final BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(final Context context, final Intent intent) {
@@ -99,6 +102,10 @@ public class ScrollingActivity extends AppCompatActivity {
         intent2.putExtra("type_lesson", "Семинар");
         intent2.setAction(ScheduleIntentService.ACTION_GET_TYPES_LESSONS);
         startService(intent2);
+
+        // Получение экземпляра общедоступного счетчика.
+        AnalyticsApplication application = (AnalyticsApplication) getApplication();
+        mTracker = application.getDefaultTracker();
     }
 
     @Override
@@ -227,6 +234,9 @@ public class ScrollingActivity extends AppCompatActivity {
         SharedPreferences.Editor prefsEditor = myPrefs.edit();
         prefsEditor.putInt("groupId", id);
         prefsEditor.commit();
+
+        mTracker.setScreenName("Image~" + nameForTracker);
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
     }
 
 }
