@@ -40,6 +40,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ScrollingActivity extends AppCompatActivity {
 
@@ -47,6 +49,7 @@ public class ScrollingActivity extends AppCompatActivity {
     ArrayList<Group> groups;
     private Tracker mTracker;
     private final String nameForTracker = "ScrollingActivity";
+    private static final Logger LOGGER = LoggerFactory.getLogger(ScrollingActivity.class);
     private final BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(final Context context, final Intent intent) {
@@ -70,9 +73,19 @@ public class ScrollingActivity extends AppCompatActivity {
             }
             else if(action.equals(ScheduleIntentService.ACTION_RECEIVE_FETCH_ERROR)) {
                 Toast.makeText(context, "Ошибка получения данных, что-то пошло не так (", Toast.LENGTH_LONG).show();
+                LOGGER.error("Ошибка фетча");
+                mTracker.send(new HitBuilders.EventBuilder()
+                        .setCategory("Action")
+                        .setAction("error fetch")
+                        .build());
             }
             else if(action.equals(ScheduleIntentService.ACTION_RECEIVE_FETCH_SUCCESS)) {
                 Toast.makeText(context, "Расписание синхронизировано", Toast.LENGTH_LONG).show();
+                LOGGER.info("Успешный фетч");
+                mTracker.send(new HitBuilders.EventBuilder()
+                        .setCategory("Action")
+                        .setAction("success fetch")
+                        .build());
             }
         }
     };
@@ -106,6 +119,8 @@ public class ScrollingActivity extends AppCompatActivity {
         // Получение экземпляра общедоступного счетчика.
         AnalyticsApplication application = (AnalyticsApplication) getApplication();
         mTracker = application.getDefaultTracker();
+
+        LOGGER.info("onCreate");
     }
 
     @Override
@@ -128,7 +143,7 @@ public class ScrollingActivity extends AppCompatActivity {
 
         mTracker.send(new HitBuilders.EventBuilder()
                 .setCategory("Action")
-                .setAction("FirstEventLol)")
+                .setAction("start application")
                 .build());
     }
 
