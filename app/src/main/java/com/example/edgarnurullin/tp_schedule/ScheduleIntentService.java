@@ -59,7 +59,7 @@ public class ScheduleIntentService extends IntentService {
 
     public void onCreate() {
         super.onCreate();
-        updateAllReceiveInfo();
+        //updateAllReceiveInfo();
     }
     @Override
     protected void onHandleIntent(Intent intent) {
