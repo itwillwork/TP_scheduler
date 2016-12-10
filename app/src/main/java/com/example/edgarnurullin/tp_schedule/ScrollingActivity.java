@@ -25,6 +25,8 @@ import android.widget.Toast;
 import com.example.edgarnurullin.tp_schedule.content.Group;
 import com.example.edgarnurullin.tp_schedule.content.Lesson;
 import com.example.edgarnurullin.tp_schedule.fetch.ShedulerService;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -38,12 +40,16 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ScrollingActivity extends AppCompatActivity {
 
     ArrayList<Lesson> lessons;
     ArrayList<Group> groups;
-
+    private Tracker mTracker;
+    private final String nameForTracker = "ScrollingActivity";
+    private static final Logger LOGGER = LoggerFactory.getLogger(ScrollingActivity.class);
     private final BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(final Context context, final Intent intent) {
@@ -67,9 +73,19 @@ public class ScrollingActivity extends AppCompatActivity {
             }
             else if(action.equals(ScheduleIntentService.ACTION_RECEIVE_FETCH_ERROR)) {
                 Toast.makeText(context, "Ошибка получения данных, что-то пошло не так (", Toast.LENGTH_LONG).show();
+                LOGGER.error("Ошибка фетча");
+                mTracker.send(new HitBuilders.EventBuilder()
+                        .setCategory("Action")
+                        .setAction("error fetch")
+                        .build());
             }
             else if(action.equals(ScheduleIntentService.ACTION_RECEIVE_FETCH_SUCCESS)) {
                 Toast.makeText(context, "Расписание синхронизировано", Toast.LENGTH_LONG).show();
+                LOGGER.info("Успешный фетч");
+                mTracker.send(new HitBuilders.EventBuilder()
+                        .setCategory("Action")
+                        .setAction("success fetch")
+                        .build());
             }
         }
     };
@@ -99,7 +115,20 @@ public class ScrollingActivity extends AppCompatActivity {
         intent2.putExtra("type_lesson", "Семинар");
         intent2.setAction(ScheduleIntentService.ACTION_GET_TYPES_LESSONS);
         startService(intent2);
+
+        // Получение экземпляра общедоступного счетчика.
+        AnalyticsApplication application = (AnalyticsApplication) getApplication();
+        mTracker = application.getDefaultTracker();
+
+        LOGGER.info("onCreate");
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mTracker.setScreenName("Image~" + nameForTracker);
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+    };
 
     @Override
     protected void onStart() {
@@ -111,6 +140,11 @@ public class ScrollingActivity extends AppCompatActivity {
         filter.addAction(ScheduleIntentService.ACTION_RECEIVE_FETCH_SUCCESS);
         filter.addAction(ScheduleIntentService.ACTION_RECEIVE_TYPE_LESSONS);
         LocalBroadcastManager.getInstance(this).registerReceiver(receiver, filter);
+
+        mTracker.send(new HitBuilders.EventBuilder()
+                .setCategory("Action")
+                .setAction("start application")
+                .build());
     }
 
     private void updateGroups() {
