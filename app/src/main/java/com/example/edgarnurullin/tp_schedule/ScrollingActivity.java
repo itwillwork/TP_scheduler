@@ -1,13 +1,21 @@
 package com.example.edgarnurullin.tp_schedule;
 
 import android.app.Activity;
+import android.app.FragmentManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.AnimRes;
+import android.support.annotation.IdRes;
+import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
+import android.support.annotation.StyleRes;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 //import android.support.v7.widget.Toolbar;
@@ -96,10 +104,21 @@ public class ScrollingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scrolling);
 
+        // получаем экземпляр FragmentTransaction
+        android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        // добавляем фрагмент
+        FragmentScheduler myFragment = new FragmentScheduler();
+        fragmentTransaction.add(R.id.pull_city, myFragment);
+        fragmentTransaction.commit();
+
+
         lessons = new ArrayList<Lesson>();
         groups = new ArrayList<Group>();
 
-       //привязка интент сервера
+
+
+        //привязка интент сервера
         Intent intent = new Intent(ScrollingActivity.this, ScheduleIntentService.class);
         // для получения всего расписания
         // intent.setAction(ScheduleIntentService.ACTION_GET_SCHEDULE);
@@ -108,6 +127,13 @@ public class ScrollingActivity extends AppCompatActivity {
         // для обновления расписания
         intent.setAction(ScheduleIntentService.ACTION_NEED_FETCH);
         startService(intent);
+
+       // startActivity(new Intent(ScrollingActivity.this, FragmentScheduler.class));
+
+//        Bundle bundle = new Bundle();
+//        bundle.putParcelable("key", lessons);
+//        fragment.setArguments(bundle);
+
 
         //TODO убрать
         //добавил чтобы тестить
@@ -183,76 +209,76 @@ public class ScrollingActivity extends AppCompatActivity {
 
 
     private void updateScheduler() {
-        if (lessons != null) {
-            try {
-                JSONArray cur_scheduler = new JSONArray();
-                for (Lesson cur_lesson : lessons) {
-                    JSONObject json_lesson = new JSONObject();
-                    json_lesson.put("discipline", cur_lesson.getTitle());
-                    json_lesson.put("status", cur_lesson.getTypeLesson());
-                    json_lesson.put("location", cur_lesson.getPlace());
-                    json_lesson.put("startTime",  cur_lesson.getDate() +" "+ cur_lesson.getTime());
-                    cur_scheduler.put(json_lesson);
-                }
-
-                String[] weekdays = {"СБ", "ВС", "ПН", "ВТ", "СР", "ЧТ", "ПТ", "СБ", "ВС"};
-                String[] months = {"января", "февраля", "марта", "апреля", "мая", "июня",
-                        "июля", "августа", "сентября", "октября", "ноября", "декабря"};
-                String delimeter = ", ";
-                LinearLayout linearLayout = (LinearLayout) findViewById(R.id.pull_city);
-                linearLayout.removeAllViewsInLayout();
-                linearLayout.setPadding(0, 0, 0, 50);
-
-                for (int i = 0; i < cur_scheduler.length()-1; i++) {
-                        try {
-                        JSONObject dateLesson = cur_scheduler.getJSONObject(i);
-                        String nameLesson = dateLesson.getString("discipline");
-                        String locationLesson = delimeter + dateLesson.getString("location");
-                        String statusLesson = dateLesson.getString("status") + delimeter;
-                        DateFormat format = new SimpleDateFormat("yyyy/MM/dd kk:mm", Locale
-                                .ENGLISH);
-                        Date date = format.parse(dateLesson.getString("startTime"));
-
-                        Calendar calendar = Calendar.getInstance();
-                        calendar.setTime(date);
-                        String weekdayLesson = weekdays[calendar.get(Calendar.DAY_OF_WEEK)];
-                        Integer dayLesson = calendar.get(Calendar.DAY_OF_MONTH);
-                        String monthLesson = " " + months[calendar.get(Calendar.MONTH)];
-
-                        LinearLayout lessonNodeH = new LinearLayout(this);
-                        LinearLayout lessonNodeV = new LinearLayout(this);
-                        LinearLayout lessonNodeH2 = new LinearLayout(this);
-                        lessonNodeV.setOrientation(LinearLayout.VERTICAL);
-                        lessonNodeH.setOrientation(LinearLayout.HORIZONTAL);
-                        lessonNodeH2.setOrientation(LinearLayout.HORIZONTAL);
-
-                        TextView nameLessonNode = new TextView(this);
-                        nameLessonNode.setTextSize(14);
-                        nameLessonNode.setText(statusLesson + nameLesson);
-
-                        TextView weekdayLessonNode = new TextView(this);
-                        weekdayLessonNode.setTextSize(28);
-                        weekdayLessonNode.setText(weekdayLesson);
-
-                        TextView dateLessonNode = new TextView(this);
-                        dateLessonNode.setTextSize(14);
-                        dateLessonNode.setText(dayLesson + monthLesson + locationLesson);
-
-                        weekdayLessonNode.setPadding(10, 0, 0, 0);
-                        lessonNodeV.setPadding(30, 0, 10, 0);
-                        lessonNodeH.setPadding(0, 30, 0, 30);
-
-                        lessonNodeV.addView(nameLessonNode);
-                        lessonNodeV.addView(dateLessonNode);
-
-                        lessonNodeH.addView(weekdayLessonNode);
-                        lessonNodeH.addView(lessonNodeV);
-                        linearLayout.addView(lessonNodeH);
-                    } catch (ParseException e) {
-                    }
-                }
-            } catch (JSONException e) {}
-        }
+//        if (lessons != null) {
+//            try {
+//                JSONArray cur_scheduler = new JSONArray();
+//                for (Lesson cur_lesson : lessons) {
+//                    JSONObject json_lesson = new JSONObject();
+//                    json_lesson.put("discipline", cur_lesson.getTitle());
+//                    json_lesson.put("status", cur_lesson.getTypeLesson());
+//                    json_lesson.put("location", cur_lesson.getPlace());
+//                    json_lesson.put("startTime",  cur_lesson.getDate() +" "+ cur_lesson.getTime());
+//                    cur_scheduler.put(json_lesson);
+//                }
+//
+//                String[] weekdays = {"СБ", "ВС", "ПН", "ВТ", "СР", "ЧТ", "ПТ", "СБ", "ВС"};
+//                String[] months = {"января", "февраля", "марта", "апреля", "мая", "июня",
+//                        "июля", "августа", "сентября", "октября", "ноября", "декабря"};
+//                String delimeter = ", ";
+//                LinearLayout linearLayout = (LinearLayout) findViewById(R.id.pull_city);
+//                linearLayout.removeAllViewsInLayout();
+//                linearLayout.setPadding(0, 0, 0, 50);
+//
+//                for (int i = 0; i < cur_scheduler.length()-1; i++) {
+//                        try {
+//                        JSONObject dateLesson = cur_scheduler.getJSONObject(i);
+//                        String nameLesson = dateLesson.getString("discipline");
+//                        String locationLesson = delimeter + dateLesson.getString("location");
+//                        String statusLesson = dateLesson.getString("status") + delimeter;
+//                        DateFormat format = new SimpleDateFormat("yyyy/MM/dd kk:mm", Locale
+//                                .ENGLISH);
+//                        Date date = format.parse(dateLesson.getString("startTime"));
+//
+//                        Calendar calendar = Calendar.getInstance();
+//                        calendar.setTime(date);
+//                        String weekdayLesson = weekdays[calendar.get(Calendar.DAY_OF_WEEK)];
+//                        Integer dayLesson = calendar.get(Calendar.DAY_OF_MONTH);
+//                        String monthLesson = " " + months[calendar.get(Calendar.MONTH)];
+//
+//                        LinearLayout lessonNodeH = new LinearLayout(this);
+//                        LinearLayout lessonNodeV = new LinearLayout(this);
+//                        LinearLayout lessonNodeH2 = new LinearLayout(this);
+//                        lessonNodeV.setOrientation(LinearLayout.VERTICAL);
+//                        lessonNodeH.setOrientation(LinearLayout.HORIZONTAL);
+//                        lessonNodeH2.setOrientation(LinearLayout.HORIZONTAL);
+//
+//                        TextView nameLessonNode = new TextView(this);
+//                        nameLessonNode.setTextSize(14);
+//                        nameLessonNode.setText(statusLesson + nameLesson);
+//
+//                        TextView weekdayLessonNode = new TextView(this);
+//                        weekdayLessonNode.setTextSize(28);
+//                        weekdayLessonNode.setText(weekdayLesson);
+//
+//                        TextView dateLessonNode = new TextView(this);
+//                        dateLessonNode.setTextSize(14);
+//                        dateLessonNode.setText(dayLesson + monthLesson + locationLesson);
+//
+//                        weekdayLessonNode.setPadding(10, 0, 0, 0);
+//                        lessonNodeV.setPadding(30, 0, 10, 0);
+//                        lessonNodeH.setPadding(0, 30, 0, 30);
+//
+//                        lessonNodeV.addView(nameLessonNode);
+//                        lessonNodeV.addView(dateLessonNode);
+//
+//                        lessonNodeH.addView(weekdayLessonNode);
+//                        lessonNodeH.addView(lessonNodeV);
+//                        linearLayout.addView(lessonNodeH);
+//                    } catch (ParseException e) {
+//                    }
+//                }
+//            } catch (JSONException e) {}
+//        }
     }
 
     // функция для записи выбранного id группы в преференсы

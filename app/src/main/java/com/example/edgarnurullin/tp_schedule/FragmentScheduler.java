@@ -8,6 +8,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import com.example.edgarnurullin.tp_schedule.content.Lesson;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 
 /**
@@ -60,16 +75,85 @@ public class FragmentScheduler extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
-        LinearLayout linearLayout = new LinearLayout (getContext());
-        linearLayout.removeAllViewsInLayout();
-        linearLayout.setPadding(0, 0, 0, 50);
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+
+        Context context = getActivity().getApplicationContext();
+        LinearLayout layout = new LinearLayout(context);
+        TextView text = new TextView(context);
+        text.setText("Это область фрагмента");
+        layout.addView(text);
+
+
+//        // Inflate the layout for this fragment
+//        String[] weekdays = {"СБ", "ВС", "ПН", "ВТ", "СР", "ЧТ", "ПТ", "СБ", "ВС"};
+//        String[] months = {"января", "февраля", "марта", "апреля", "мая", "июня",
+//                "июля", "августа", "сентября", "октября", "ноября", "декабря"};
+//        String delimeter = ", ";
+//        LinearLayout linearLayout = new LinearLayout(getContext());
+//        linearLayout.removeAllViewsInLayout();
+//        linearLayout.setPadding(0, 0, 0, 50);
+//
+//        JSONArray cur_scheduler = new JSONArray();
+
+
+
+
+
+//        for (int i = 0; i < cur_scheduler.length()-1; i++) {
+//            try {
+//                JSONObject dateLesson = cur_scheduler.getJSONObject(i);
+//                String nameLesson = dateLesson.getString("discipline");
+//                String locationLesson = delimeter + dateLesson.getString("location");
+//                String statusLesson = dateLesson.getString("status") + delimeter;
+//                DateFormat format = new SimpleDateFormat("yyyy/MM/dd kk:mm", Locale
+//                        .ENGLISH);
+//                Date date = format.parse(dateLesson.getString("startTime"));
+//
+//                Calendar calendar = Calendar.getInstance();
+//                calendar.setTime(date);
+//                String weekdayLesson = weekdays[calendar.get(Calendar.DAY_OF_WEEK)];
+//                Integer dayLesson = calendar.get(Calendar.DAY_OF_MONTH);
+//                String monthLesson = " " + months[calendar.get(Calendar.MONTH)];
+//
+//                LinearLayout lessonNodeH = new LinearLayout(this);
+//                LinearLayout lessonNodeV = new LinearLayout(this);
+//                LinearLayout lessonNodeH2 = new LinearLayout(this);
+//                lessonNodeV.setOrientation(LinearLayout.VERTICAL);
+//                lessonNodeH.setOrientation(LinearLayout.HORIZONTAL);
+//                lessonNodeH2.setOrientation(LinearLayout.HORIZONTAL);
+//
+//                TextView nameLessonNode = new TextView(this);
+//                nameLessonNode.setTextSize(14);
+//                nameLessonNode.setText(statusLesson + nameLesson);
+//
+//                TextView weekdayLessonNode = new TextView(this);
+//                weekdayLessonNode.setTextSize(28);
+//                weekdayLessonNode.setText(weekdayLesson);
+//
+//                TextView dateLessonNode = new TextView(this);
+//                dateLessonNode.setTextSize(14);
+//                dateLessonNode.setText(dayLesson + monthLesson + locationLesson);
+//
+//                weekdayLessonNode.setPadding(10, 0, 0, 0);
+//                lessonNodeV.setPadding(30, 0, 10, 0);
+//                lessonNodeH.setPadding(0, 30, 0, 30);
+//
+//                lessonNodeV.addView(nameLessonNode);
+//                lessonNodeV.addView(dateLessonNode);
+//
+//                lessonNodeH.addView(weekdayLessonNode);
+//                lessonNodeH.addView(lessonNodeV);
+//                linearLayout.addView(lessonNodeH);
+//            } catch (ParseException e) {
+//            }
+//        }
+
+
+
         return inflater.inflate(R.layout.fragment_fragment_scheduler, container, false);
     }
 
