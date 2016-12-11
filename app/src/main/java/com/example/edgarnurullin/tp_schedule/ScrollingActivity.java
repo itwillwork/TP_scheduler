@@ -53,6 +53,8 @@ import org.slf4j.LoggerFactory;
 
 public class ScrollingActivity extends AppCompatActivity {
 
+    int TESTVALUE;
+
     ArrayList<Lesson> lessons;
     ArrayList<Group> groups;
     private Tracker mTracker;
@@ -103,6 +105,8 @@ public class ScrollingActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scrolling);
+
+        TESTVALUE = 0;
 
         lessons = new ArrayList<Lesson>();
         groups = new ArrayList<Group>();
@@ -199,6 +203,10 @@ public class ScrollingActivity extends AppCompatActivity {
 
     private void updateScheduler() {
 
+        final FragmentScheduler myFragment = new FragmentScheduler();
+
+        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.fragment_container);
+        linearLayout.removeAllViewsInLayout();
 
         Bundle args = new Bundle();
         args.putSerializable("Lesson", lessons);
@@ -206,11 +214,11 @@ public class ScrollingActivity extends AppCompatActivity {
         // получаем экземпляр FragmentTransaction
         android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        // добавляем фрагмент
-        FragmentScheduler myFragment = new FragmentScheduler();
+
         myFragment.setArguments(args);
         fragmentTransaction.add(R.id.fragment_container, myFragment);
         fragmentTransaction.commit();
+        TESTVALUE = 1;
 
 
 //        if (lessons != null) {

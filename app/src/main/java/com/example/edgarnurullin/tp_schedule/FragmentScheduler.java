@@ -55,37 +55,90 @@ public class FragmentScheduler extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        final View rootView = inflater.inflate(R.layout.fragment_fragment_scheduler, container, false);
 
         Bundle args = getArguments();
-        ArrayList<Lesson> myClass = (ArrayList<Lesson>) args.getSerializable("Lesson");
+        ArrayList<Lesson> lessons = (ArrayList<Lesson>) args.getSerializable("Lesson");
 
-        final View rootView = inflater.inflate(R.layout.fragment_fragment_scheduler, container, false);
-        final TextView test = (TextView) rootView.findViewById(R.id.city_pick_autocompletetextview);
-        test.setText();
-        LinearLayout linearLayout = (LinearLayout) rootView.findViewById(R.id.fragment_layout);
-        Button btn = (Button) rootView.findViewById(R.id.btn_do_it);
-        btn.setText("TEST");
+        LinearLayout rootLayout = new LinearLayout(getActivity());
+        rootLayout.setOrientation(LinearLayout.VERTICAL);
 
 
-//        Context context = getActivity().getApplicationContext();
-//        LinearLayout layout = new LinearLayout(context);
-//        layout.setBackgroundColor(Color.BLUE);
-//        TextView text = new TextView(context);
-//        text.setText("Это область фрагмента");
-//        layout.addView(text);
+        if (lessons != null) {
+            try {
+                JSONArray cur_scheduler = new JSONArray();
+                for (Lesson cur_lesson : lessons) {
 
-//        LinearLayout lessonNodeH = new LinearLayout(this);
-//        lessonNodeH.setOrientation(LinearLayout.HORIZONTAL);
-//        TextView nameLessonNode = new TextView(context);
-//
-//        nameLessonNode.setText("statusLesson" + "nameLesson");
-//        lessonNodeH.setPadding(0, 30, 0, 30);
-//        lessonNodeH.addView(nameLessonNode);
-//
-//        linearLayout.addView(lessonNodeH);
+                    JSONObject json_lesson = new JSONObject();
+                    json_lesson.put("discipline", cur_lesson.getTitle());
+                    json_lesson.put("status", cur_lesson.getTypeLesson());
+                    json_lesson.put("location", cur_lesson.getPlace());
+                    json_lesson.put("startTime",  cur_lesson.getDate() +" "+ cur_lesson.getTime());
+                    cur_scheduler.put(json_lesson);
+                }
+
+                String[] weekdays = {"СБ", "ВС", "ПН", "ВТ", "СР", "ЧТ", "ПТ", "СБ", "ВС"};
+                String[] months = {"января", "февраля", "марта", "апреля", "мая", "июня",
+                        "июля", "августа", "сентября", "октября", "ноября", "декабря"};
+                String delimeter = ", ";
+                rootLayout.removeAllViewsInLayout();
+                rootLayout.setPadding(0, 0, 0, 50);
+
+                for (int i = 0; i < cur_scheduler.length()-1; i++) {
+                        try {
+                          JSONObject dateLesson = cur_scheduler.getJSONObject(i);
+                        String nameLesson = dateLesson.getString("discipline");
+                        String locationLesson = delimeter + dateLesson.getString("location");
+                        String statusLesson = dateLesson.getString("status") + delimeter;
+                        DateFormat format = new SimpleDateFormat("yyyy/MM/dd kk:mm", Locale
+                                .ENGLISH);
+                        Date date = format.parse(dateLesson.getString("startTime"));
+
+                        Calendar calendar = Calendar.getInstance();
+                        calendar.setTime(date);
+                        String weekdayLesson = weekdays[calendar.get(Calendar.DAY_OF_WEEK)];
+                        Integer dayLesson = calendar.get(Calendar.DAY_OF_MONTH);
+                        String monthLesson = " " + months[calendar.get(Calendar.MONTH)];
 
 
-        return rootView;
+
+                        LinearLayout lessonNodeH = new LinearLayout(getActivity());
+                        LinearLayout lessonNodeV = new LinearLayout(getActivity());
+                        LinearLayout lessonNodeH2 = new LinearLayout(getActivity());
+                        lessonNodeV.setOrientation(LinearLayout.VERTICAL);
+                        lessonNodeH.setOrientation(LinearLayout.HORIZONTAL);
+                        lessonNodeH2.setOrientation(LinearLayout.HORIZONTAL);
+
+                        TextView nameLessonNode = new TextView(getActivity());
+                        nameLessonNode.setTextSize(14);
+                        nameLessonNode.setText(statusLesson + nameLesson);
+
+                        TextView weekdayLessonNode = new TextView(getActivity());
+                        weekdayLessonNode.setTextSize(28);
+                        weekdayLessonNode.setText(weekdayLesson);
+
+                        TextView dateLessonNode = new TextView(getActivity());
+                        dateLessonNode.setTextSize(14);
+                        dateLessonNode.setText(dayLesson + monthLesson + locationLesson);
+
+                        weekdayLessonNode.setPadding(10, 0, 0, 0);
+                        lessonNodeV.setPadding(30, 0, 10, 0);
+                        lessonNodeH.setPadding(0, 30, 0, 30);
+
+                        lessonNodeV.addView(nameLessonNode);
+                        lessonNodeV.addView(dateLessonNode);
+
+                        lessonNodeH.addView(weekdayLessonNode);
+                        lessonNodeH.addView(lessonNodeV);
+                        rootLayout.addView(lessonNodeH);
+
+                        } catch (ParseException e) {
+                    }
+                }
+            } catch (JSONException e) {}
+        }
+
+        return rootLayout;
 
     }
 
