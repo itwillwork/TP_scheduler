@@ -10,4 +10,27 @@
         android:layout_height="match_parent"
         android:text="@string/hello_blank_fragment" />
 
+    <LinearLayout
+        android:orientation="vertical"
+        android:id="@+id/fragment_layout"
+        android:minWidth="196dip"
+        android:minHeight="196dip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/text_margin" >
+
+     <TextView
+            android:id="@+id/city_pick_autocompletetextview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:completionThreshold="1" />
+    <Button
+        android:id="@+id/btn_do_it"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"/>
+
+    </LinearLayout>
+
 </FrameLayout>

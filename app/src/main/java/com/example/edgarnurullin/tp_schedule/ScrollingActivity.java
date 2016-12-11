@@ -104,19 +104,8 @@ public class ScrollingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scrolling);
 
-        // получаем экземпляр FragmentTransaction
-        android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        // добавляем фрагмент
-        FragmentScheduler myFragment = new FragmentScheduler();
-        fragmentTransaction.add(R.id.pull_city, myFragment);
-        fragmentTransaction.commit();
-
-
         lessons = new ArrayList<Lesson>();
         groups = new ArrayList<Group>();
-
-
 
         //привязка интент сервера
         Intent intent = new Intent(ScrollingActivity.this, ScheduleIntentService.class);
@@ -209,10 +198,26 @@ public class ScrollingActivity extends AppCompatActivity {
 
 
     private void updateScheduler() {
+
+
+        Bundle args = new Bundle();
+        args.putSerializable("Lesson", lessons);
+
+        // получаем экземпляр FragmentTransaction
+        android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        // добавляем фрагмент
+        FragmentScheduler myFragment = new FragmentScheduler();
+        myFragment.setArguments(args);
+        fragmentTransaction.add(R.id.fragment_container, myFragment);
+        fragmentTransaction.commit();
+
+
 //        if (lessons != null) {
 //            try {
 //                JSONArray cur_scheduler = new JSONArray();
 //                for (Lesson cur_lesson : lessons) {
+
 //                    JSONObject json_lesson = new JSONObject();
 //                    json_lesson.put("discipline", cur_lesson.getTitle());
 //                    json_lesson.put("status", cur_lesson.getTypeLesson());
@@ -225,13 +230,13 @@ public class ScrollingActivity extends AppCompatActivity {
 //                String[] months = {"января", "февраля", "марта", "апреля", "мая", "июня",
 //                        "июля", "августа", "сентября", "октября", "ноября", "декабря"};
 //                String delimeter = ", ";
-//                LinearLayout linearLayout = (LinearLayout) findViewById(R.id.pull_city);
-//                linearLayout.removeAllViewsInLayout();
-//                linearLayout.setPadding(0, 0, 0, 50);
+                //LinearLayout linearLayout = (LinearLayout) findViewById(R.id.pull_city);
+                //linearLayout.removeAllViewsInLayout();
+                //linearLayout.setPadding(0, 0, 0, 50);
 //
 //                for (int i = 0; i < cur_scheduler.length()-1; i++) {
 //                        try {
-//                        JSONObject dateLesson = cur_scheduler.getJSONObject(i);
+//                          JSONObject dateLesson = cur_scheduler.getJSONObject(i);
 //                        String nameLesson = dateLesson.getString("discipline");
 //                        String locationLesson = delimeter + dateLesson.getString("location");
 //                        String statusLesson = dateLesson.getString("status") + delimeter;
@@ -274,7 +279,8 @@ public class ScrollingActivity extends AppCompatActivity {
 //                        lessonNodeH.addView(weekdayLessonNode);
 //                        lessonNodeH.addView(lessonNodeV);
 //                        linearLayout.addView(lessonNodeH);
-//                    } catch (ParseException e) {
+
+//                        } catch (ParseException e) {
 //                    }
 //                }
 //            } catch (JSONException e) {}
