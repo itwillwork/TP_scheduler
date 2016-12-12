@@ -1,6 +1,7 @@
 package com.example.edgarnurullin.tp_schedule;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.edgarnurullin.tp_schedule.content.Lesson;
 
@@ -36,7 +38,9 @@ public class FragmentScheduler extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-
+    private JSONObject dateLesson;
+    private int index_of_lesson;
+    private ArrayList<Lesson> fragment_lessons;
 
     public FragmentScheduler() {
         // Required empty public constructor
@@ -60,15 +64,15 @@ public class FragmentScheduler extends Fragment {
         Bundle args = getArguments();
         ArrayList<Lesson> lessons = (ArrayList<Lesson>) args.getSerializable("Lesson");
 
-        LinearLayout rootLayout = new LinearLayout(getActivity());
+        final LinearLayout rootLayout = new LinearLayout(getActivity());
         rootLayout.setOrientation(LinearLayout.VERTICAL);
 
+        fragment_lessons = lessons;
 
         if (lessons != null) {
             try {
                 JSONArray cur_scheduler = new JSONArray();
                 for (Lesson cur_lesson : lessons) {
-
                     JSONObject json_lesson = new JSONObject();
                     json_lesson.put("discipline", cur_lesson.getTitle());
                     json_lesson.put("status", cur_lesson.getTypeLesson());
@@ -86,7 +90,8 @@ public class FragmentScheduler extends Fragment {
 
                 for (int i = 0; i < cur_scheduler.length()-1; i++) {
                         try {
-                          JSONObject dateLesson = cur_scheduler.getJSONObject(i);
+                        dateLesson = cur_scheduler.getJSONObject(i);
+                        index_of_lesson = i;
                         String nameLesson = dateLesson.getString("discipline");
                         String locationLesson = delimeter + dateLesson.getString("location");
                         String statusLesson = dateLesson.getString("status") + delimeter;
@@ -132,14 +137,26 @@ public class FragmentScheduler extends Fragment {
                         lessonNodeH.addView(lessonNodeV);
                         rootLayout.addView(lessonNodeH);
 
+                        rootLayout.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Toast toast = Toast.makeText(getActivity(), "Пора покормить кота!", Toast.LENGTH_SHORT);
+                                toast.show();
+
+                                Intent intent = new Intent(getActivity(), CourseLessonInfo.class);
+                                intent.putExtra(Lesson.class.getCanonicalName(), fragment_lessons.get(index_of_lesson));
+                                startActivity(intent);
+
+                            }
+                        });
+
+
                         } catch (ParseException e) {
                     }
                 }
             } catch (JSONException e) {}
         }
-
         return rootLayout;
-
     }
 
 }
