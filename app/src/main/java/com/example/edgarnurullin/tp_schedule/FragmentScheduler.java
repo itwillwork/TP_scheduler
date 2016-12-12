@@ -105,8 +105,6 @@ public class FragmentScheduler extends Fragment {
                         Integer dayLesson = calendar.get(Calendar.DAY_OF_MONTH);
                         String monthLesson = " " + months[calendar.get(Calendar.MONTH)];
 
-
-
                         LinearLayout lessonNodeH = new LinearLayout(getActivity());
                         LinearLayout lessonNodeV = new LinearLayout(getActivity());
                         LinearLayout lessonNodeH2 = new LinearLayout(getActivity());
@@ -137,13 +135,13 @@ public class FragmentScheduler extends Fragment {
                         lessonNodeH.addView(lessonNodeV);
                         rootLayout.addView(lessonNodeH);
 
-                        rootLayout.setOnClickListener(new View.OnClickListener() {
+                        lessonNodeH.setId(i);
+
+                         lessonNodeH.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                Toast toast = Toast.makeText(getActivity(), "Пора покормить кота!", Toast.LENGTH_SHORT);
-                                toast.show();
-
                                 Intent intent = new Intent(getActivity(), CourseLessonInfo.class);
+                                index_of_lesson = v.getId();
                                 intent.putExtra(Lesson.class.getCanonicalName(), fragment_lessons.get(index_of_lesson));
                                 startActivity(intent);
 
