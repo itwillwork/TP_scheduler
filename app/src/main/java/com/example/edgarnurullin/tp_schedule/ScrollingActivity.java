@@ -32,7 +32,7 @@ import android.widget.Toast;
 
 import com.example.edgarnurullin.tp_schedule.content.Group;
 import com.example.edgarnurullin.tp_schedule.content.Lesson;
-import com.example.edgarnurullin.tp_schedule.fetch.ShedulerService;
+import com.example.edgarnurullin.tp_schedule.fetch.SchedulerService;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 

@@ -14,7 +14,7 @@ import com.example.edgarnurullin.tp_schedule.content.Lesson;
 import com.example.edgarnurullin.tp_schedule.db.tables.GroupsTable;
 import com.example.edgarnurullin.tp_schedule.db.tables.LessonsTable;
 import com.example.edgarnurullin.tp_schedule.fetch.ApiFactory;
-import com.example.edgarnurullin.tp_schedule.fetch.ShedulerService;
+import com.example.edgarnurullin.tp_schedule.fetch.SchedulerService;
 import com.example.edgarnurullin.tp_schedule.fetch.response.RequestResult;
 import com.example.edgarnurullin.tp_schedule.fetch.response.Response;
 import com.example.edgarnurullin.tp_schedule.fetch.response.ScheduleResponse;
@@ -283,7 +283,7 @@ public class ScheduleIntentService extends IntentService {
         LocalBroadcastManager.getInstance(this).sendBroadcast(outIntent);
     }
     protected Response apiCall() throws IOException {
-        ShedulerService service = ApiFactory.getLessonsService();
+        SchedulerService service = ApiFactory.getLessonsService();
         Call<Map<String, List<Map>>> call = service.lessons();
         Map<String, List<Map>> schedule = call.execute().body();
         return new ScheduleResponse()

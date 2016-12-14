@@ -39,8 +39,8 @@ public class ApiFactory {
             .create();
 
     @NonNull
-    public static ShedulerService getLessonsService() {
-        return buildRetrofit().create(ShedulerService.class);
+    public static SchedulerService getLessonsService() {
+        return buildRetrofit().create(SchedulerService.class);
     }
 
     @NonNull

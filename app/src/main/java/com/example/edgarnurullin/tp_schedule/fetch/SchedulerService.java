@@ -12,7 +12,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Query;
 
 
-public interface ShedulerService {
+public interface SchedulerService {
     @GET("api/")
     Call<Map<String, List<Map>>> lessons();
 }
