@@ -1,5 +1,6 @@
 package com.example.edgarnurullin.tp_schedule;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -50,11 +51,13 @@ public class FragmentScheduler extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.setRetainInstance(true);
 //        if (getArguments() != null) {
 //            mParam1 = getArguments().getString(ARG_PARAM1);
 //            mParam2 = getArguments().getString(ARG_PARAM2);
 //        }
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

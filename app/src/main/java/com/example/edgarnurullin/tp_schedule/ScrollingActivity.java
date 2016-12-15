@@ -55,6 +55,14 @@ public class ScrollingActivity extends AppCompatActivity {
 
     ArrayList<Lesson> lessons;
     ArrayList<Group> groups;
+    Spinner spinner;
+    int spinnetItem;
+    FragmentScheduler myFragment;
+
+    protected android.support.v4.app.FragmentManager fragmentManager;
+    protected FragmentTransaction fragmentTransaction;
+    protected Bundle mSavedInstanceState;
+
     private Tracker mTracker;
     private final String nameForTracker = "ScrollingActivity";
     private static final Logger LOGGER = LoggerFactory.getLogger(ScrollingActivity.class);
@@ -117,8 +125,8 @@ public class ScrollingActivity extends AppCompatActivity {
         intent.setAction(ScheduleIntentService.ACTION_NEED_FETCH);
         startService(intent);
 
-       // startActivity(new Intent(ScrollingActivity.this, FragmentScheduler.class));
 
+       // startActivity(new Intent(ScrollingActivity.this, FragmentScheduler.class));
 
         //TODO убрать
         //добавил чтобы тестить
@@ -126,6 +134,7 @@ public class ScrollingActivity extends AppCompatActivity {
         intent2.putExtra("type_lesson", "Семинар");
         intent2.setAction(ScheduleIntentService.ACTION_GET_TYPES_LESSONS);
         startService(intent2);
+
 
         // Получение экземпляра общедоступного счетчика.
         AnalyticsApplication application = (AnalyticsApplication) getApplication();
@@ -158,19 +167,36 @@ public class ScrollingActivity extends AppCompatActivity {
                 .build());
     }
 
-    private void updateGroups() {
 
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putSerializable("Lessons", lessons);
+        outState.putSerializable("Groups", groups);
+        outState.putInt("selected_pos_spinner", spinner.getSelectedItemPosition());
+    }
+
+
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        lessons =  (ArrayList<Lesson>)  savedInstanceState.getSerializable("Lessons");
+        groups =  (ArrayList<Group>)  savedInstanceState.getSerializable("Groups");
+        spinnetItem = savedInstanceState.getInt("selected_pos_spinner");
+    }
+
+
+    private void updateGroups() {
         if (groups != null && groups.size() > 0) {
             List<String> group_names = new ArrayList<String>();
             for (Group cur_group : groups) {
                 group_names.add(cur_group.getName());
             }
-            Spinner spinner = (Spinner) findViewById(R.id.spinner);
+            spinner = (Spinner) findViewById(R.id.spinner);
             ArrayAdapter<String> adapter = new ArrayAdapter<String>(ScrollingActivity.this,
                     android.R.layout.simple_spinner_item, group_names);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             spinner.setAdapter(adapter);
 
+            spinner.setSelection(spinnetItem);
             spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 public void onItemSelected(AdapterView<?> parent, View view,
                                            int pos, long id) {
@@ -192,10 +218,28 @@ public class ScrollingActivity extends AppCompatActivity {
         }
     }
 
+    void SetFragments () {
+
+        myFragment = new FragmentScheduler();
+
+        Bundle args = new Bundle();
+        args.putSerializable("Lesson", lessons);
+
+        // получаем экземпляр FragmentTransaction
+        fragmentManager = getSupportFragmentManager();
+        fragmentTransaction = fragmentManager.beginTransaction();
+
+        myFragment.setArguments(args);
+        fragmentTransaction.add(R.id.fragment_container, myFragment);
+        fragmentTransaction.commit();
+
+    }
+
+
+
 
     private void updateScheduler() {
 
-        final FragmentScheduler myFragment = new FragmentScheduler();
 
         LinearLayout linearLayout = (LinearLayout) findViewById(R.id.fragment_container);
         linearLayout.removeAllViewsInLayout();
@@ -204,8 +248,8 @@ public class ScrollingActivity extends AppCompatActivity {
         args.putSerializable("Lesson", lessons);
 
         // получаем экземпляр FragmentTransaction
-        android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentManager = getSupportFragmentManager();
+        fragmentTransaction = fragmentManager.beginTransaction();
 
         myFragment.setArguments(args);
         fragmentTransaction.add(R.id.fragment_container, myFragment);
