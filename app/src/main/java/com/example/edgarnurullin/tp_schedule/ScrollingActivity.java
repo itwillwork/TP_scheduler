@@ -128,12 +128,12 @@ public class ScrollingActivity extends AppCompatActivity {
 
        // startActivity(new Intent(ScrollingActivity.this, FragmentScheduler.class));
 
-        //TODO убрать
-        //добавил чтобы тестить
-        Intent intent2 = new Intent(ScrollingActivity.this, ScheduleIntentService.class);
-        intent2.putExtra("type_lesson", "Семинар");
-        intent2.setAction(ScheduleIntentService.ACTION_GET_TYPES_LESSONS);
-        startService(intent2);
+//        //TODO убрать
+//        //добавил чтобы тестить
+//        Intent intent2 = new Intent(ScrollingActivity.this, ScheduleIntentService.class);
+//        intent2.putExtra("type_lesson", "Семинар");
+//        intent2.setAction(ScheduleIntentService.ACTION_GET_TYPES_LESSONS);
+//        startService(intent2);
 
 
         // Получение экземпляра общедоступного счетчика.
@@ -146,13 +146,7 @@ public class ScrollingActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        mTracker.setScreenName("Image~" + nameForTracker);
-        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
-    };
 
-    @Override
-    protected void onStart() {
-        super.onStart();
         final IntentFilter filter = new IntentFilter();
         filter.addAction(ScheduleIntentService.ACTION_RECEIVE_SCHEDULE);
         filter.addAction(ScheduleIntentService.ACTION_RECEIVE_GROUPS);
@@ -160,6 +154,29 @@ public class ScrollingActivity extends AppCompatActivity {
         filter.addAction(ScheduleIntentService.ACTION_RECEIVE_FETCH_SUCCESS);
         filter.addAction(ScheduleIntentService.ACTION_RECEIVE_TYPE_LESSONS);
         LocalBroadcastManager.getInstance(this).registerReceiver(receiver, filter);
+
+        mTracker.setScreenName("Image~" + nameForTracker);
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+    };
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
+
+    };
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+//        final IntentFilter filter = new IntentFilter();
+//        filter.addAction(ScheduleIntentService.ACTION_RECEIVE_SCHEDULE);
+//        filter.addAction(ScheduleIntentService.ACTION_RECEIVE_GROUPS);
+//        filter.addAction(ScheduleIntentService.ACTION_RECEIVE_FETCH_ERROR);
+//        filter.addAction(ScheduleIntentService.ACTION_RECEIVE_FETCH_SUCCESS);
+//        filter.addAction(ScheduleIntentService.ACTION_RECEIVE_TYPE_LESSONS);
+//        LocalBroadcastManager.getInstance(this).registerReceiver(receiver, filter);
 
         mTracker.send(new HitBuilders.EventBuilder()
                 .setCategory("Action")
@@ -240,6 +257,7 @@ public class ScrollingActivity extends AppCompatActivity {
 
     private void updateScheduler() {
 
+        myFragment = new FragmentScheduler();
 
         LinearLayout linearLayout = (LinearLayout) findViewById(R.id.fragment_container);
         linearLayout.removeAllViewsInLayout();
