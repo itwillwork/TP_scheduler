@@ -124,8 +124,8 @@ public class ScrollingActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        toolbar.setPopupTheme(R.style.BlueTheme);
-        this.setTheme(R.style.BlueTheme);
+        //toolbar.setPopupTheme(R.style.BlueTheme);
+       // this.setTheme(R.style.BlueTheme);
 
         lessons = new ArrayList<Lesson>();
         groups = new ArrayList<Group>();
@@ -187,14 +187,19 @@ public class ScrollingActivity extends AppCompatActivity {
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         switch (item.getItemId()) {
             case R.id.white_and_black:
+                toolbar.setBackgroundColor(Color.BLACK);
+                spinner.setBackgroundColor(Color.WHITE);
                 ScrollingActivity.this.setTheme(R.style.BlackTheme);
                 return true;
             case R.id.blue:
+                toolbar.setBackgroundColor(Color.BLUE);
                 ScrollingActivity.this.setTheme(R.style.BlueTheme);
                 return true;
             case R.id.green:
+                toolbar.setBackgroundColor(Color.GREEN);
                 ScrollingActivity.this.setTheme(R.style.GreenTheme);
                 return true;
             default:
