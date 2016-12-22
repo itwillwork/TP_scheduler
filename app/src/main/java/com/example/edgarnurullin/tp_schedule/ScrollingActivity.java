@@ -62,6 +62,7 @@ public class ScrollingActivity extends AppCompatActivity {
     Menu menu;
     int spinnetItem;
     FragmentScheduler myFragment;
+    int id_color_scheme;
 
 
 
@@ -123,6 +124,8 @@ public class ScrollingActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        id_color_scheme = 1;
+        setColorScheme(id_color_scheme);
 
         //toolbar.setPopupTheme(R.style.BlueTheme);
        // this.setTheme(R.style.BlueTheme);
@@ -193,17 +196,20 @@ public class ScrollingActivity extends AppCompatActivity {
                 toolbar.setBackgroundColor(Color.GRAY);
                 toolbar.setTitleTextColor(Color.BLACK);
 //                spinner.setBackgroundColor(Color.WHITE);
-                ScrollingActivity.this.setTheme(R.style.BlackTheme);
+                //ScrollingActivity.this.setTheme(R.style.BlackTheme);
+                id_color_scheme = 1;
                 return true;
             case R.id.blue:
                 toolbar.setBackgroundColor(getResources().getColor(R.color.lightBlue));
                 toolbar.setTitleTextColor(getResources().getColor(R.color.darkBlue));
-                ScrollingActivity.this.setTheme(R.style.BlueTheme);
+                //ScrollingActivity.this.setTheme(R.style.BlueTheme);
+                id_color_scheme = 2;
                 return true;
             case R.id.green:
                 toolbar.setBackgroundColor(getResources().getColor(R.color.lightGreen));
                 toolbar.setTitleTextColor(getResources().getColor(R.color.darkGreen));
-                ScrollingActivity.this.setTheme(R.style.GreenTheme);
+                //ScrollingActivity.this.setTheme(R.style.GreenTheme);
+                id_color_scheme=3;
 
                 return true;
             default:
@@ -215,7 +221,6 @@ public class ScrollingActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
-
     };
 
     @Override
@@ -241,6 +246,7 @@ public class ScrollingActivity extends AppCompatActivity {
         outState.putSerializable("Lessons", lessons);
         outState.putSerializable("Groups", groups);
         outState.putInt("selected_pos_spinner", spinner.getSelectedItemPosition());
+        outState.putInt("color_scheme", id_color_scheme);
     }
 
 
@@ -249,8 +255,31 @@ public class ScrollingActivity extends AppCompatActivity {
         lessons =  (ArrayList<Lesson>)  savedInstanceState.getSerializable("Lessons");
         groups =  (ArrayList<Group>)  savedInstanceState.getSerializable("Groups");
         spinnetItem = savedInstanceState.getInt("selected_pos_spinner");
+        id_color_scheme = savedInstanceState.getInt("color_scheme");
+        setColorScheme(id_color_scheme);
+
     }
 
+    void setColorScheme(int id){
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        switch (id) {
+            case 1:
+                toolbar.setBackgroundColor(Color.GRAY);
+                toolbar.setTitleTextColor(Color.BLACK);
+                //ScrollingActivity.this.setTheme(R.style.BlackTheme);
+                return;
+            case 2:
+                toolbar.setBackgroundColor(getResources().getColor(R.color.lightBlue));
+                toolbar.setTitleTextColor(getResources().getColor(R.color.darkBlue));
+                //ScrollingActivity.this.setTheme(R.style.BlueTheme);
+                return;
+            case 3:
+                toolbar.setBackgroundColor(getResources().getColor(R.color.lightGreen));
+                toolbar.setTitleTextColor(getResources().getColor(R.color.darkGreen));
+               // ScrollingActivity.this.setTheme(R.style.GreenTheme);
+                return;
+        }
+    }
 
     private void updateGroups() {
 

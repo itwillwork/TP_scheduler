@@ -63,6 +63,8 @@ public class FragmentScheduler extends Fragment {
                              Bundle savedInstanceState) {
 //        LinearLayout rootView = (LinearLayout) inflater.inflate(R.layout.fragment_fragment_scheduler, container, true);
 
+
+
         Bundle args = getArguments();
         ArrayList<Lesson> lessons = (ArrayList<Lesson>) args.getSerializable("Lesson");
 
