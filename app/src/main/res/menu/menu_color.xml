@@ -18,7 +18,6 @@
             android:id="@+id/spinnertest"
             android:title="ActionBar Spinner"
             app:actionViewClass="android.widget.Spinner"
-            android:background="#ff00"
             app:showAsAction="always" />
             />
         android:showAsAction="ifRoom"

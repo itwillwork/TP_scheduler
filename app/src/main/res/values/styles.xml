@@ -13,32 +13,37 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="toolbar_style">
+        <item name="android:textSize">18dp</item>
+        <item name="android:textColor">#00FF00</item>
+        <item name="android:typeface">monospace</item>
+    </style>
+
+
+
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     <style name="BlackTheme" >
-
         <item name="android:background">#000000</item>
-
         <item name="android:textColor">#FFFFFF</item>
-
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowBackground">@color/colorAccent</item>
     </style>
 
-    <style name="BlueTheme" >
-
-        <item name="android:background">#B0E0E6</item>
-
-        <item name="android:textColor">#000000</item>
-
+    <style name="BlueTheme" parent="AppTheme.NoActionBar">
+        <item name="android:background">@color/lightBlue</item>
+        <item name="android:textColor">@color/darkBlue</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowBackground">@color/lightBlue</item>
     </style>
 
     <style name="GreenTheme" >
-
         <item name="android:background">#B010E6</item>
-
         <item name="android:textColor">#000000</item>
-
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowBackground">@color/lightGreen</item>
     </style>
 
 </resources>

@@ -190,24 +190,26 @@ public class ScrollingActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         switch (item.getItemId()) {
             case R.id.white_and_black:
-                toolbar.setBackgroundColor(Color.BLACK);
-                spinner.setBackgroundColor(Color.WHITE);
+                toolbar.setBackgroundColor(Color.GRAY);
+                toolbar.setTitleTextColor(Color.BLACK);
+//                spinner.setBackgroundColor(Color.WHITE);
                 ScrollingActivity.this.setTheme(R.style.BlackTheme);
                 return true;
             case R.id.blue:
-                toolbar.setBackgroundColor(Color.BLUE);
+                toolbar.setBackgroundColor(getResources().getColor(R.color.lightBlue));
+                toolbar.setTitleTextColor(getResources().getColor(R.color.darkBlue));
                 ScrollingActivity.this.setTheme(R.style.BlueTheme);
                 return true;
             case R.id.green:
-                toolbar.setBackgroundColor(Color.GREEN);
+                toolbar.setBackgroundColor(getResources().getColor(R.color.lightGreen));
+                toolbar.setTitleTextColor(getResources().getColor(R.color.darkGreen));
                 ScrollingActivity.this.setTheme(R.style.GreenTheme);
+
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
-
-
 
     @Override
     protected void onPause() {
@@ -258,11 +260,6 @@ public class ScrollingActivity extends AppCompatActivity {
                 group_names.add(cur_group.getName());
             }
 
-//            View view = mSpinnerItem.getActionView();
-//                Spinner spinner = (Spinner) view;
-
-
-           //spinner = (Spinner) findViewById(R.id.spinner);
             ArrayAdapter<String> adapter = new ArrayAdapter<String>(ScrollingActivity.this,
                     android.R.layout.simple_spinner_item, group_names);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -319,6 +316,7 @@ public class ScrollingActivity extends AppCompatActivity {
 
         Bundle args = new Bundle();
         args.putSerializable("Lesson", lessons);
+
 
         // получаем экземпляр FragmentTransaction
         fragmentManager = getSupportFragmentManager();

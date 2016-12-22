@@ -6,16 +6,29 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     tools:context="com.example.edgarnurullin.tp_schedule.ScrollingActivity">
+
     <include layout="@layout/content_scrolling" />
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/app_bar_height"
+        android:fitsSystemWindows="true"
+        android:theme="@style/AppTheme.AppBarOverlay">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:minHeight="?attr/actionBarSize"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/app_bar_height"
+        android:padding="2dp"
         app:titleTextColor="@android:color/white"
+        android:fitsSystemWindows="true"
         android:background="?attr/colorPrimary">
     </android.support.v7.widget.Toolbar>
+
+    </android.support.design.widget.AppBarLayout>
+
 
     <!---->
     <!--<android.support.design.widget.AppBarLayout-->
@@ -43,7 +56,6 @@
 
         <!--</android.support.design.widget.CollapsingToolbarLayout>-->
     <!--</android.support.design.widget.AppBarLayout>-->
-
 
 
 </android.support.design.widget.CoordinatorLayout>

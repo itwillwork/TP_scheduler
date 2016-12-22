@@ -52,23 +52,23 @@ public class FragmentScheduler extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.setRetainInstance(true);
-//        if (getArguments() != null) {
-//            mParam1 = getArguments().getString(ARG_PARAM1);
-//            mParam2 = getArguments().getString(ARG_PARAM2);
-//        }
+
+
+
     }
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        final View rootView = inflater.inflate(R.layout.fragment_fragment_scheduler, container, false);
+//        LinearLayout rootView = (LinearLayout) inflater.inflate(R.layout.fragment_fragment_scheduler, container, true);
 
         Bundle args = getArguments();
         ArrayList<Lesson> lessons = (ArrayList<Lesson>) args.getSerializable("Lesson");
 
-        final LinearLayout rootLayout = new LinearLayout(getActivity());
-        rootLayout.setOrientation(LinearLayout.VERTICAL);
+        final LinearLayout rootView = new LinearLayout(getActivity());
+        rootView.setOrientation(LinearLayout.VERTICAL);
+        rootView.removeAllViewsInLayout();
 
         fragment_lessons = lessons;
 
@@ -88,11 +88,12 @@ public class FragmentScheduler extends Fragment {
                 String[] months = {"января", "февраля", "марта", "апреля", "мая", "июня",
                         "июля", "августа", "сентября", "октября", "ноября", "декабря"};
                 String delimeter = ", ";
-                rootLayout.removeAllViewsInLayout();
-                rootLayout.setPadding(0, 0, 0, 50);
+                //rootLayout.removeAllViewsInLayout();
+                //rootLayout.setPadding(0, 0, 0, 50);
 
                 for (int i = 0; i < cur_scheduler.length()-1; i++) {
-                        try {
+                    try {
+
                         dateLesson = cur_scheduler.getJSONObject(i);
                         index_of_lesson = i;
                         String nameLesson = dateLesson.getString("discipline");
@@ -104,43 +105,27 @@ public class FragmentScheduler extends Fragment {
 
                         Calendar calendar = Calendar.getInstance();
                         calendar.setTime(date);
+
                         String weekdayLesson = weekdays[calendar.get(Calendar.DAY_OF_WEEK)];
                         Integer dayLesson = calendar.get(Calendar.DAY_OF_MONTH);
                         String monthLesson = " " + months[calendar.get(Calendar.MONTH)];
 
-                        LinearLayout lessonNodeH = new LinearLayout(getActivity());
-                        LinearLayout lessonNodeV = new LinearLayout(getActivity());
-                        LinearLayout lessonNodeH2 = new LinearLayout(getActivity());
-                        lessonNodeV.setOrientation(LinearLayout.VERTICAL);
-                        lessonNodeH.setOrientation(LinearLayout.HORIZONTAL);
-                        lessonNodeH2.setOrientation(LinearLayout.HORIZONTAL);
 
-                        TextView nameLessonNode = new TextView(getActivity());
-                        nameLessonNode.setTextSize(14);
+                        View myview = inflater.inflate(R.layout.lesson_layout, rootView,
+                                false);
+
+                        TextView nameLessonNode = (TextView) myview.findViewById(R.id.nameLessonNode);
                         nameLessonNode.setText(statusLesson + nameLesson);
 
-                        TextView weekdayLessonNode = new TextView(getActivity());
-                        weekdayLessonNode.setTextSize(28);
+                        TextView weekdayLessonNode = (TextView) myview.findViewById(R.id.weekdayLessonNode);
                         weekdayLessonNode.setText(weekdayLesson);
 
-                        TextView dateLessonNode = new TextView(getActivity());
-                        dateLessonNode.setTextSize(14);
+                        TextView dateLessonNode = (TextView) myview.findViewById(R.id.dateLessonNode);
                         dateLessonNode.setText(dayLesson + monthLesson + locationLesson);
 
-                        weekdayLessonNode.setPadding(10, 0, 0, 0);
-                        lessonNodeV.setPadding(30, 0, 10, 0);
-                        lessonNodeH.setPadding(0, 30, 0, 30);
+                        myview.setId(i);
 
-                        lessonNodeV.addView(nameLessonNode);
-                        lessonNodeV.addView(dateLessonNode);
-
-                        lessonNodeH.addView(weekdayLessonNode);
-                        lessonNodeH.addView(lessonNodeV);
-                        rootLayout.addView(lessonNodeH);
-
-                        lessonNodeH.setId(i);
-
-                         lessonNodeH.setOnClickListener(new View.OnClickListener() {
+                        myview.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
                                 Intent intent = new Intent(getActivity(), CourseLessonInfo.class);
@@ -151,13 +136,16 @@ public class FragmentScheduler extends Fragment {
                             }
                         });
 
+                        rootView.addView(myview);
 
-                        } catch (ParseException e) {
+                    } catch (ParseException e) {
                     }
                 }
             } catch (JSONException e) {}
         }
-        return rootLayout;
+
+        return rootView;
     }
+
 
 }
