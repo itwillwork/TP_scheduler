@@ -2,12 +2,17 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
         <item
-            android:id="@+id/background"
-            android:title="@string/background_title"/>
+            android:id="@+id/white_and_black"
+            android:title="@string/background_title_white_and_black"/>
         android:showAsAction="never"
         <item
-            android:id="@+id/toast"
-            android:title="@string/toast_title"/>
+            android:id="@+id/blue"
+            android:title="@string/background_title_blue"/>
+        android:showAsAction="never"
+        <item
+            android:id="@+id/green"
+            android:title="@string/background_title_green"/>
+        android:showAsAction="never"
 
         <item
             android:id="@+id/spinnertest"

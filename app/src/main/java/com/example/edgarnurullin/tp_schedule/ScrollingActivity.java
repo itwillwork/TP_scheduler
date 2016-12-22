@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.AnimRes;
 import android.support.annotation.IdRes;
@@ -62,6 +63,9 @@ public class ScrollingActivity extends AppCompatActivity {
     int spinnetItem;
     FragmentScheduler myFragment;
 
+
+
+
     private MenuItem mSpinnerItem;
 
     protected android.support.v4.app.FragmentManager fragmentManager;
@@ -116,6 +120,12 @@ public class ScrollingActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scrolling);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        toolbar.setPopupTheme(R.style.BlueTheme);
+        this.setTheme(R.style.BlueTheme);
 
         lessons = new ArrayList<Lesson>();
         groups = new ArrayList<Group>();
@@ -176,6 +186,22 @@ public class ScrollingActivity extends AppCompatActivity {
         return true;
     }
 
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.white_and_black:
+                ScrollingActivity.this.setTheme(R.style.BlackTheme);
+                return true;
+            case R.id.blue:
+                ScrollingActivity.this.setTheme(R.style.BlueTheme);
+                return true;
+            case R.id.green:
+                ScrollingActivity.this.setTheme(R.style.GreenTheme);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
 
 
     @Override
@@ -220,6 +246,7 @@ public class ScrollingActivity extends AppCompatActivity {
 
 
     private void updateGroups() {
+
         if (groups != null && groups.size() > 0) {
             List<String> group_names = new ArrayList<String>();
             for (Group cur_group : groups) {

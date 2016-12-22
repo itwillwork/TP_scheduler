@@ -6,6 +6,7 @@
     <string name="action_settings">Поменять группу</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="background_title">Change background colour</string>
-    <string name="toast_title">Show toast message</string>
+    <string name="background_title_white_and_black">Бело-черная</string>
+    <string name="background_title_blue">Голубая</string>
+    <string name="background_title_green">Зеленая</string>
 </resources>
