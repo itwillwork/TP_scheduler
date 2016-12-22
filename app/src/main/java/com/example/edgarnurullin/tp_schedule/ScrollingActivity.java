@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.AnimRes;
 import android.support.annotation.IdRes;
@@ -19,7 +20,9 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 //import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -55,6 +58,21 @@ public class ScrollingActivity extends AppCompatActivity {
 
     ArrayList<Lesson> lessons;
     ArrayList<Group> groups;
+    Spinner spinner;
+    Menu menu;
+    int spinnetItem;
+    FragmentScheduler myFragment;
+    int id_color_scheme;
+
+
+
+
+    private MenuItem mSpinnerItem;
+
+    protected android.support.v4.app.FragmentManager fragmentManager;
+    protected FragmentTransaction fragmentTransaction;
+    protected Bundle mSavedInstanceState;
+
     private Tracker mTracker;
     private final String nameForTracker = "ScrollingActivity";
     private static final Logger LOGGER = LoggerFactory.getLogger(ScrollingActivity.class);
@@ -104,8 +122,18 @@ public class ScrollingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scrolling);
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        id_color_scheme = 1;
+        setColorScheme(id_color_scheme);
+
+        //toolbar.setPopupTheme(R.style.BlueTheme);
+       // this.setTheme(R.style.BlueTheme);
+
         lessons = new ArrayList<Lesson>();
         groups = new ArrayList<Group>();
+
+
 
         //привязка интент сервера
         Intent intent = new Intent(ScrollingActivity.this, ScheduleIntentService.class);
@@ -117,15 +145,16 @@ public class ScrollingActivity extends AppCompatActivity {
         intent.setAction(ScheduleIntentService.ACTION_NEED_FETCH);
         startService(intent);
 
+
        // startActivity(new Intent(ScrollingActivity.this, FragmentScheduler.class));
 
+//        //TODO убрать
+//        //добавил чтобы тестить
+//        Intent intent2 = new Intent(ScrollingActivity.this, ScheduleIntentService.class);
+//        intent2.putExtra("type_lesson", "Семинар");
+//        intent2.setAction(ScheduleIntentService.ACTION_GET_TYPES_LESSONS);
+//        startService(intent2);
 
-        //TODO убрать
-        //добавил чтобы тестить
-        Intent intent2 = new Intent(ScrollingActivity.this, ScheduleIntentService.class);
-        intent2.putExtra("type_lesson", "Семинар");
-        intent2.setAction(ScheduleIntentService.ACTION_GET_TYPES_LESSONS);
-        startService(intent2);
 
         // Получение экземпляра общедоступного счетчика.
         AnalyticsApplication application = (AnalyticsApplication) getApplication();
@@ -137,13 +166,7 @@ public class ScrollingActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        mTracker.setScreenName("Image~" + nameForTracker);
-        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
-    };
 
-    @Override
-    protected void onStart() {
-        super.onStart();
         final IntentFilter filter = new IntentFilter();
         filter.addAction(ScheduleIntentService.ACTION_RECEIVE_SCHEDULE);
         filter.addAction(ScheduleIntentService.ACTION_RECEIVE_GROUPS);
@@ -152,10 +175,110 @@ public class ScrollingActivity extends AppCompatActivity {
         filter.addAction(ScheduleIntentService.ACTION_RECEIVE_TYPE_LESSONS);
         LocalBroadcastManager.getInstance(this).registerReceiver(receiver, filter);
 
+        mTracker.setScreenName("Image~" + nameForTracker);
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+    };
+
+
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_color, menu);
+        mSpinnerItem = menu.findItem( R.id.spinnertest);
+        spinner = (Spinner) mSpinnerItem.getActionView();
+
+        return true;
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        switch (item.getItemId()) {
+            case R.id.white_and_black:
+                toolbar.setBackgroundColor(Color.GRAY);
+                toolbar.setTitleTextColor(Color.BLACK);
+//                spinner.setBackgroundColor(Color.WHITE);
+                //ScrollingActivity.this.setTheme(R.style.BlackTheme);
+                id_color_scheme = 1;
+                return true;
+            case R.id.blue:
+                toolbar.setBackgroundColor(getResources().getColor(R.color.lightBlue));
+                toolbar.setTitleTextColor(getResources().getColor(R.color.darkBlue));
+                //ScrollingActivity.this.setTheme(R.style.BlueTheme);
+                id_color_scheme = 2;
+                return true;
+            case R.id.green:
+                toolbar.setBackgroundColor(getResources().getColor(R.color.lightGreen));
+                toolbar.setTitleTextColor(getResources().getColor(R.color.darkGreen));
+                //ScrollingActivity.this.setTheme(R.style.GreenTheme);
+                id_color_scheme=3;
+
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
+    };
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+//        final IntentFilter filter = new IntentFilter();
+//        filter.addAction(ScheduleIntentService.ACTION_RECEIVE_SCHEDULE);
+//        filter.addAction(ScheduleIntentService.ACTION_RECEIVE_GROUPS);
+//        filter.addAction(ScheduleIntentService.ACTION_RECEIVE_FETCH_ERROR);
+//        filter.addAction(ScheduleIntentService.ACTION_RECEIVE_FETCH_SUCCESS);
+//        filter.addAction(ScheduleIntentService.ACTION_RECEIVE_TYPE_LESSONS);
+//        LocalBroadcastManager.getInstance(this).registerReceiver(receiver, filter);
+
         mTracker.send(new HitBuilders.EventBuilder()
                 .setCategory("Action")
                 .setAction("start application")
                 .build());
+    }
+
+
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putSerializable("Lessons", lessons);
+        outState.putSerializable("Groups", groups);
+        outState.putInt("selected_pos_spinner", spinner.getSelectedItemPosition());
+        outState.putInt("color_scheme", id_color_scheme);
+    }
+
+
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        lessons =  (ArrayList<Lesson>)  savedInstanceState.getSerializable("Lessons");
+        groups =  (ArrayList<Group>)  savedInstanceState.getSerializable("Groups");
+        spinnetItem = savedInstanceState.getInt("selected_pos_spinner");
+        id_color_scheme = savedInstanceState.getInt("color_scheme");
+        setColorScheme(id_color_scheme);
+
+    }
+
+    void setColorScheme(int id){
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        switch (id) {
+            case 1:
+                toolbar.setBackgroundColor(Color.GRAY);
+                toolbar.setTitleTextColor(Color.BLACK);
+                //ScrollingActivity.this.setTheme(R.style.BlackTheme);
+                return;
+            case 2:
+                toolbar.setBackgroundColor(getResources().getColor(R.color.lightBlue));
+                toolbar.setTitleTextColor(getResources().getColor(R.color.darkBlue));
+                //ScrollingActivity.this.setTheme(R.style.BlueTheme);
+                return;
+            case 3:
+                toolbar.setBackgroundColor(getResources().getColor(R.color.lightGreen));
+                toolbar.setTitleTextColor(getResources().getColor(R.color.darkGreen));
+               // ScrollingActivity.this.setTheme(R.style.GreenTheme);
+                return;
+        }
     }
 
     private void updateGroups() {
@@ -165,12 +288,13 @@ public class ScrollingActivity extends AppCompatActivity {
             for (Group cur_group : groups) {
                 group_names.add(cur_group.getName());
             }
-            Spinner spinner = (Spinner) findViewById(R.id.spinner);
+
             ArrayAdapter<String> adapter = new ArrayAdapter<String>(ScrollingActivity.this,
                     android.R.layout.simple_spinner_item, group_names);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             spinner.setAdapter(adapter);
 
+            spinner.setSelection(spinnetItem);
             spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 public void onItemSelected(AdapterView<?> parent, View view,
                                            int pos, long id) {
@@ -192,10 +316,29 @@ public class ScrollingActivity extends AppCompatActivity {
         }
     }
 
+    void SetFragments () {
+
+        myFragment = new FragmentScheduler();
+
+        Bundle args = new Bundle();
+        args.putSerializable("Lesson", lessons);
+
+        // получаем экземпляр FragmentTransaction
+        fragmentManager = getSupportFragmentManager();
+        fragmentTransaction = fragmentManager.beginTransaction();
+
+        myFragment.setArguments(args);
+        fragmentTransaction.add(R.id.fragment_container, myFragment);
+        fragmentTransaction.commit();
+
+    }
+
+
+
 
     private void updateScheduler() {
 
-        final FragmentScheduler myFragment = new FragmentScheduler();
+        myFragment = new FragmentScheduler();
 
         LinearLayout linearLayout = (LinearLayout) findViewById(R.id.fragment_container);
         linearLayout.removeAllViewsInLayout();
@@ -203,9 +346,10 @@ public class ScrollingActivity extends AppCompatActivity {
         Bundle args = new Bundle();
         args.putSerializable("Lesson", lessons);
 
+
         // получаем экземпляр FragmentTransaction
-        android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentManager = getSupportFragmentManager();
+        fragmentTransaction = fragmentManager.beginTransaction();
 
         myFragment.setArguments(args);
         fragmentTransaction.add(R.id.fragment_container, myFragment);

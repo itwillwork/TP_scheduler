@@ -4,15 +4,6 @@
     android:layout_height="match_parent"
     tools:context="com.example.edgarnurullin.tp_schedule.FragmentScheduler">
 
-    <!--<LinearLayout-->
-        <!--android:orientation="vertical"-->
-        <!--android:id="@+id/fragment_layout"-->
-        <!--android:minWidth="196dip"-->
-        <!--android:minHeight="196dip"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_margin="@dimen/text_margin" >-->
-
      <TextView
             android:id="@+id/city_pick_autocompletetextview"
             android:layout_width="match_parent"

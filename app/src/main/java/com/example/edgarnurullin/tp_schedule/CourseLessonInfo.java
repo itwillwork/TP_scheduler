@@ -1,7 +1,9 @@
 package com.example.edgarnurullin.tp_schedule;
 
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,11 +23,10 @@ public class CourseLessonInfo extends AppCompatActivity {
     }
 
 
-
         @Override
     protected void onResume() {
         super.onResume();
-
+            
         if (BH == 0) {
             Lesson lesson = (Lesson) getIntent().getParcelableExtra(Lesson.class.getCanonicalName());
 

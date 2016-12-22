@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+        <item
+            android:id="@+id/white_and_black"
+            android:title="@string/background_title_white_and_black"/>
+        android:showAsAction="never"
+        <item
+            android:id="@+id/blue"
+            android:title="@string/background_title_blue"/>
+        android:showAsAction="never"
+        <item
+            android:id="@+id/green"
+            android:title="@string/background_title_green"/>
+        android:showAsAction="never"
+
+        <item
+            android:id="@+id/spinnertest"
+            android:title="ActionBar Spinner"
+            app:actionViewClass="android.widget.Spinner"
+            app:showAsAction="always" />
+            />
+        android:showAsAction="ifRoom"
+ </menu>
