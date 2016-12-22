@@ -19,7 +19,9 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 //import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -56,8 +58,11 @@ public class ScrollingActivity extends AppCompatActivity {
     ArrayList<Lesson> lessons;
     ArrayList<Group> groups;
     Spinner spinner;
+    Menu menu;
     int spinnetItem;
     FragmentScheduler myFragment;
+
+    private MenuItem mSpinnerItem;
 
     protected android.support.v4.app.FragmentManager fragmentManager;
     protected FragmentTransaction fragmentTransaction;
@@ -115,6 +120,8 @@ public class ScrollingActivity extends AppCompatActivity {
         lessons = new ArrayList<Lesson>();
         groups = new ArrayList<Group>();
 
+
+
         //привязка интент сервера
         Intent intent = new Intent(ScrollingActivity.this, ScheduleIntentService.class);
         // для получения всего расписания
@@ -158,6 +165,17 @@ public class ScrollingActivity extends AppCompatActivity {
         mTracker.setScreenName("Image~" + nameForTracker);
         mTracker.send(new HitBuilders.ScreenViewBuilder().build());
     };
+
+
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_color, menu);
+        mSpinnerItem = menu.findItem( R.id.spinnertest);
+        spinner = (Spinner) mSpinnerItem.getActionView();
+
+        return true;
+    }
+
 
 
     @Override
@@ -207,7 +225,12 @@ public class ScrollingActivity extends AppCompatActivity {
             for (Group cur_group : groups) {
                 group_names.add(cur_group.getName());
             }
-            spinner = (Spinner) findViewById(R.id.spinner);
+
+//            View view = mSpinnerItem.getActionView();
+//                Spinner spinner = (Spinner) view;
+
+
+           //spinner = (Spinner) findViewById(R.id.spinner);
             ArrayAdapter<String> adapter = new ArrayAdapter<String>(ScrollingActivity.this,
                     android.R.layout.simple_spinner_item, group_names);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
