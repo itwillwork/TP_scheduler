@@ -191,6 +191,7 @@ public class ScrollingActivity extends AppCompatActivity {
 
     public boolean onOptionsItemSelected(MenuItem item) {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
         switch (item.getItemId()) {
             case R.id.white_and_black:
                 toolbar.setBackgroundColor(Color.GRAY);
@@ -200,15 +201,16 @@ public class ScrollingActivity extends AppCompatActivity {
                 id_color_scheme = 1;
                 return true;
             case R.id.blue:
-                toolbar.setBackgroundColor(getResources().getColor(R.color.lightBlue));
-                toolbar.setTitleTextColor(getResources().getColor(R.color.darkBlue));
+                toolbar.setBackgroundColor(getResources().getColor(R.color.darkBlue));
+                toolbar.setTitleTextColor(getResources().getColor(R.color.lightBlue));
                 //ScrollingActivity.this.setTheme(R.style.BlueTheme);
                 id_color_scheme = 2;
                 return true;
             case R.id.green:
+
                 toolbar.setBackgroundColor(getResources().getColor(R.color.lightGreen));
                 toolbar.setTitleTextColor(getResources().getColor(R.color.darkGreen));
-                //ScrollingActivity.this.setTheme(R.style.GreenTheme);
+//                //ScrollingActivity.this.setTheme(R.style.GreenTheme);
                 id_color_scheme=3;
 
                 return true;
@@ -264,8 +266,8 @@ public class ScrollingActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         switch (id) {
             case 1:
-                toolbar.setBackgroundColor(Color.GRAY);
-                toolbar.setTitleTextColor(Color.BLACK);
+                toolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                toolbar.setTitleTextColor(getResources().getColor(R.color.colorPrimaryDark));
                 //ScrollingActivity.this.setTheme(R.style.BlackTheme);
                 return;
             case 2:

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Blue_ToolbarTheme">
+        <item name="android:textColorPrimary">#113F2F</item>
+        <item name="android:titleTextColor">#113F2F</item>
+        <item name="android:background">#aaa222</item>
+    </style>
+
+
+    <style name="Green_ToolbarTheme">
+        <item name="android:textColorPrimary">#113F2F</item>
+        <item name="android:titleTextColor">#A5D6A7</item>
+        <item name="android:background">#A5D6A7</item>
+    </style>
+
+</resources>

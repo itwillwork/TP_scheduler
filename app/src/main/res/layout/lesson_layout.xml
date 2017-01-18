@@ -7,6 +7,7 @@
     android:orientation="vertical"
     android:layout_margin="10dp">
 
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -17,7 +18,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="0dp"
-
+                android:textSize="20sp"
                 >
             </TextView>
             <TextView
@@ -25,6 +26,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="0dp"
+                android:textSize="20sp"
                >
              </TextView>
              <TextView
@@ -32,6 +34,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="0dp"
+                android:textSize="20sp"
                 >
               </TextView>
 
