@@ -5,8 +5,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.view.ViewParent;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,8 +32,6 @@ public class CourseLessonInfo extends AppCompatActivity {
         int iddd = R.id.toolbar;
         setContentView(R.layout.activity_course_lesson_info);
 
-
-
         BH = 0;
 
     }
@@ -41,66 +41,43 @@ public class CourseLessonInfo extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        if (BH == 0) {
+
+            if (BH == 0) {
             Lesson lesson = (Lesson) getIntent().getParcelableExtra(Lesson.class.getCanonicalName());
 
             LinearLayout rootLayout = (LinearLayout) findViewById(R.id.course_lesson_info);
-
-            TextView viewTitle = new TextView(this);
-            viewTitle.setTextSize(14);
-            viewTitle.setText("Title: " + lesson.getTitle());
-
-            TextView viewTutor = new TextView(this);
-            viewTutor.setPadding(0, 40, 0, 0);
-            viewTutor.setTextSize(14);
-            viewTutor.setText("Tutors: " + lesson.getTutors());
-
-            TextView viewDetailedTitle = new TextView(this);
-            viewDetailedTitle.setPadding(0, 80, 0, 0);
-            viewDetailedTitle.setTextSize(14);
-            viewDetailedTitle.setText("DetailedTitle: " + lesson.getDetailedTitle());
-
-            TextView viewDetailedDescription = new TextView(this);
-            viewDetailedDescription.setPadding(0, 40, 0, 0);
-            viewDetailedDescription.setTextSize(14);
-            viewDetailedDescription.setText("DetailedDescription: " + lesson.getDetailedDescription());
-
-            TextView viewDisciplineBlog = new TextView(this);
-            viewDisciplineBlog.setPadding(0, 40, 0, 0);
-            viewDisciplineBlog.setTextSize(14);
-            viewDisciplineBlog.setText("DisciplineBlog: " + lesson.getDisciplineBlog());
-
-            TextView viewDisciplineLink = new TextView(this);
-            viewDisciplineLink.setPadding(0, 40, 0, 0);
-            viewDisciplineLink.setTextSize(14);
-            viewDisciplineLink.setText("DisciplineLink: " + lesson.getDisciplineLink());
-
-            TextView viewGroupName = new TextView(this);
-            viewGroupName.setPadding(0, 40, 0, 0);
-            viewGroupName.setTextSize(14);
-            viewGroupName.setText("GroupName: " + lesson.getGroupName());
+                TableLayout tableLayout = (TableLayout) findViewById(R.id.course_lesson_info_table);
 
 
-            TextView viewDate = new TextView(this);
-            viewDate.setPadding(0, 40, 0, 0);
-            viewDate.setTextSize(14);
-            viewDate.setText("Date: " + lesson.getDate());
+            TextView viewTitle = (TextView) tableLayout.findViewById(R.id.viewTitle);
+            viewTitle.setText("Les" + lesson.getTitle());
 
-            TextView viewPlace = new TextView(this);
-            viewPlace.setPadding(0, 40, 0, 0);
-            viewPlace.setTextSize(14);
-            viewPlace.setText("Date: " + lesson.getPlace());
+            TextView viewTutor =  (TextView) tableLayout.findViewById(R.id.viewTutor);
+            viewTutor.setText(lesson.getTutors());
+
+//            TextView viewDetailedTitle = (TextView) rootLayout.findViewById(R.id.viewDetailedTitle);
+//            viewDetailedTitle.setText("DetailedTitle: " + lesson.getDetailedTitle());
+
+//            TextView viewDetailedDescription = (TextView) tableLayout.findViewById(R.id.viewDetailedDescription);
+//            viewDetailedDescription.setText("DetailedDescription: " + lesson.getDetailedDescription());
+
+//            TextView viewDisciplineBlog = (TextView) rootLayout.findViewById(R.id.viewDisciplineBlog);
+//             viewDisciplineBlog.setText("DisciplineBlog: " + lesson.getDisciplineBlog());
+//
+//            TextView viewDisciplineLink = (TextView) rootLayout.findViewById(R.id.viewDisciplineLink);
+//            viewDisciplineLink.setText("DisciplineLink: " + lesson.getDisciplineLink());
+//
+//            TextView viewGroupName = (TextView) rootLayout.findViewById(R.id.viewGroupName);
+//            viewGroupName.setText("GroupName: " + lesson.getGroupName());
 
 
-            rootLayout.addView(viewTitle);
-            rootLayout.addView(viewTutor);
-            rootLayout.addView(viewDate);
-            rootLayout.addView(viewDetailedTitle);
-            rootLayout.addView(viewDetailedDescription);
-            rootLayout.addView(viewDisciplineBlog);
-            rootLayout.addView(viewDisciplineLink);
-            rootLayout.addView(viewGroupName);
-            rootLayout.addView(viewPlace);
+            TextView viewDate = (TextView) tableLayout.findViewById(R.id.viewDate);
+             viewDate.setText(lesson.getDate());
+
+//            TextView viewPlace =(TextView) tableLayout.findViewById(R.id.viewPlace);
+//            viewPlace.setText("Date: " + lesson.getPlace());
+
+
 
             BH = 1;
         }
