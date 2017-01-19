@@ -49,33 +49,33 @@ public class CourseLessonInfo extends AppCompatActivity {
                 TableLayout tableLayout = (TableLayout) findViewById(R.id.course_lesson_info_table);
 
 
-            TextView viewTitle = (TextView) tableLayout.findViewById(R.id.viewTitle);
+            TextView viewTitle = (TextView) rootLayout.findViewById(R.id.viewTitle);
             viewTitle.setText("Les" + lesson.getTitle());
-
-            TextView viewTutor =  (TextView) tableLayout.findViewById(R.id.viewTutor);
+//
+            TextView viewTutor =  (TextView) rootLayout.findViewById(R.id.viewTutor);
             viewTutor.setText(lesson.getTutors());
 
 //            TextView viewDetailedTitle = (TextView) rootLayout.findViewById(R.id.viewDetailedTitle);
 //            viewDetailedTitle.setText("DetailedTitle: " + lesson.getDetailedTitle());
 
-//            TextView viewDetailedDescription = (TextView) tableLayout.findViewById(R.id.viewDetailedDescription);
-//            viewDetailedDescription.setText("DetailedDescription: " + lesson.getDetailedDescription());
+            TextView viewDetailedDescription = (TextView) rootLayout.findViewById(R.id.viewDetailedDescription);
+            viewDetailedDescription.setText(lesson.getDetailedDescription());
 
 //            TextView viewDisciplineBlog = (TextView) rootLayout.findViewById(R.id.viewDisciplineBlog);
 //             viewDisciplineBlog.setText("DisciplineBlog: " + lesson.getDisciplineBlog());
 //
-//            TextView viewDisciplineLink = (TextView) rootLayout.findViewById(R.id.viewDisciplineLink);
-//            viewDisciplineLink.setText("DisciplineLink: " + lesson.getDisciplineLink());
+            TextView viewDisciplineLink = (TextView) rootLayout.findViewById(R.id.viewDisciplineLink);
+            viewDisciplineLink.setText(lesson.getDisciplineLink());
 //
 //            TextView viewGroupName = (TextView) rootLayout.findViewById(R.id.viewGroupName);
 //            viewGroupName.setText("GroupName: " + lesson.getGroupName());
 
 
-            TextView viewDate = (TextView) tableLayout.findViewById(R.id.viewDate);
+            TextView viewDate = (TextView) rootLayout.findViewById(R.id.viewDate);
              viewDate.setText(lesson.getDate());
 
-//            TextView viewPlace =(TextView) tableLayout.findViewById(R.id.viewPlace);
-//            viewPlace.setText("Date: " + lesson.getPlace());
+            TextView viewPlace =(TextView) rootLayout.findViewById(R.id.viewPlace);
+            viewPlace.setText(lesson.getPlace());
 
 
 

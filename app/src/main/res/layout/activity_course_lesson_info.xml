@@ -13,24 +13,36 @@
     >
 
 
-        <TableLayout
+    <LinearLayout
+        android:id="@+id/course_lesson_info"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+
+
+    <TableLayout
             android:id="@+id/course_lesson_info_table"
             xmlns:android="http://schemas.android.com/apk/res/android"
             android:stretchColumns="*"
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent" >
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" >
                 <TableRow
                     android:padding="5dp">
                         <TextView
-                            android:layout_width="fill_parent"
-                            android:layout_height="fill_parent"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
                             android:textColor="@color/colorAccent"
                             android:text="Название"
                             android:textAppearance="?android:attr/textAppearanceMedium" />
                        <TextView
                             android:id="@+id/viewTitle"
-                            android:layout_width="fill_parent"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:gravity="left"
                             android:textAppearance="?android:attr/textAppearanceMedium" />
                 </TableRow>
                 <TableRow android:padding="5dp">
@@ -49,7 +61,33 @@
 
                 <TableRow
                     android:padding="5dp"
-                    android:layout_span="2">
+                    >
+                    <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:textColor="@color/colorAccent"
+                        android:text="Аудитория"
+                        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                    <TextView
+                        android:id="@+id/viewPlace"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceMedium" />
+                </TableRow>
+
+
+        </TableLayout>
+
+        <TableLayout
+            android:id="@+id/course_lesson_info_table_detailed"
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:stretchColumns="*"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" >
+              <TableRow
+                    android:padding="5dp"
+                   >
                         <TextView android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:textColor="@color/colorAccent"
@@ -58,7 +96,7 @@
                 </TableRow>
                 <TableRow
                     android:padding="5dp"
-                    android:layout_span="2">
+                    >
                         <TextView
                         android:id="@+id/viewTutor"
                         android:layout_width="wrap_content"
@@ -67,47 +105,48 @@
                         android:textAppearance="?android:attr/textAppearanceMedium" />
                 </TableRow>
 
-                <!--<TableRow-->
-                    <!--android:padding="5dp"-->
-                    <!--android:layout_span="2">-->
-                        <!--<TextView-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:textColor="@color/colorAccent"-->
-                        <!--android:text="Детали"-->
-                        <!--android:gravity="center_horizontal"-->
-                        <!--android:textAppearance="?android:attr/textAppearanceMedium" />-->
-                <!--</TableRow>-->
-                <!--<TableRow-->
-                    <!--android:padding="5dp"-->
-                    <!--android:layout_span="2">-->
-                        <!--<TextView-->
-                        <!--android:id="@+id/viewDetailedDescription"-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:textAppearance="?android:attr/textAppearanceMedium"/>-->
-                <!--</TableRow>-->
-                <!--<TableRow-->
-                    <!--android:padding="5dp"-->
-                    <!--android:layout_span="2">-->
-                        <!--<TextView-->
-                        <!--android:layout_width="fill_parent"-->
-                        <!--android:layout_height="fill_parent"-->
-                        <!--android:textColor="@color/colorAccent"-->
-                        <!--android:text="Аудитория"-->
-                        <!--android:textAppearance="?android:attr/textAppearanceMedium" />-->
-                <!--</TableRow>-->
-                <!--<TableRow-->
-                    <!--android:padding="5dp"-->
-                    <!--android:layout_span="2">-->
-                        <!--<TextView-->
-                        <!--android:id="@+id/viewPlace"-->
-                        <!--android:layout_width="fill_parent"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:textAppearance="?android:attr/textAppearanceMedium" />-->
-                <!--</TableRow>-->
+                <TableRow
+                    android:padding="5dp"
+                    >
+                        <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/colorAccent"
+                        android:text="Детали"
+                        android:textAppearance="?android:attr/textAppearanceMedium" />
+                </TableRow>
+                <TableRow
+                    android:padding="5dp"
+                   >
+                        <TextView
+                        android:id="@+id/viewDetailedDescription"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceMedium"/>
+                </TableRow>
+
+            <TableRow
+                android:padding="5dp"
+                >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorAccent"
+                    android:text="Ссылка на блог"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+            </TableRow>
+            <TableRow
+                android:padding="5dp"
+                >
+                <TextView
+                    android:id="@+id/viewDisciplineLink"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"/>
+            </TableRow>
         </TableLayout>
 
+    </LinearLayout>
 
 
 
@@ -219,7 +258,6 @@
 
 
         <LinearLayout
-            android:id="@+id/course_lesson_info"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
